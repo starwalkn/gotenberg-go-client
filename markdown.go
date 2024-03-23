@@ -24,6 +24,10 @@ func (req *MarkdownRequest) postURL() string {
 	return "/convert/markdown"
 }
 
+func (req *MarkdownRequest) screenshotURL() string {
+	return "/screenshot/markdown"
+}
+
 func (req *MarkdownRequest) formFiles() map[string]Document {
 	files := make(map[string]Document)
 	files["index.html"] = req.index

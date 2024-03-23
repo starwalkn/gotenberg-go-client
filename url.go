@@ -24,6 +24,10 @@ func (req *URLRequest) postURL() string {
 	return "/convert/url"
 }
 
+func (req *URLRequest) screenshotURL() string {
+	return "/screenshot/url"
+}
+
 // AddRemoteURLHTTPHeader add a remote URL custom HTTP header.
 func (req *URLRequest) AddRemoteURLHTTPHeader(key, value string) {
 	key = fmt.Sprintf("%s%s", remoteURLBaseHTTPHeaderKey, key)
