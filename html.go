@@ -23,6 +23,10 @@ func (req *HTMLRequest) postURL() string {
 	return "/convert/html"
 }
 
+func (req *HTMLRequest) screenshotURL() string {
+	return "/screenshot/html"
+}
+
 func (req *HTMLRequest) formFiles() map[string]Document {
 	files := make(map[string]Document)
 	files["index.html"] = req.index

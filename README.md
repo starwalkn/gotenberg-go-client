@@ -1,13 +1,13 @@
-**⚠️ Not working for Gotenberg >= 7 ⚠️** 
+**🔥 Working with Gotenberg version 8 and higher! 🔥** 
 
 # Gotenberg Go client
 
-A simple Go client for interacting with a Gotenberg API.
+A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
 
 ## Install
 
 ```bash
-$ go get -u github.com/thecodingmachine/gotenberg-go-client/v7
+$ go get -u github.com/dcaraxes/gotenberg-go-client/v8
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ import (
     "time"
     "net/http"
 
-    "github.com/thecodingmachine/gotenberg-go-client/v7"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
 // create the client.
@@ -49,6 +49,7 @@ req.Assets(style, img)
 req.PaperSize(gotenberg.A4)
 req.Margins(gotenberg.NoMargins)
 req.Scale(0.75)
+req.SkipNetworkIdleEvent() // for higher PDF generation speed
 
 // store method allows you to... store the resulting PDF in a particular destination.
 client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")

@@ -18,6 +18,7 @@ const (
 	googleChromeRpccBufferSize string = "googleChromeRpccBufferSize"
 	scale                      string = "scale"
 	skipNetworkIdleEvent       string = "skipNetworkIdleEvent"
+	singlePage                 string = "singlePage"
 )
 
 // nolint: gochecknoglobals
@@ -104,11 +105,17 @@ func (req *chromeRequest) GoogleChromeRpccBufferSize(bufferSize int64) {
 	req.values[googleChromeRpccBufferSize] = strconv.FormatInt(bufferSize, 10)
 }
 
-// Scale sets scale form field
+// Scale sets scale form field.
 func (req *chromeRequest) Scale(scaleFactor float64) {
 	req.values[scale] = fmt.Sprintf("%f", scaleFactor)
 }
 
+// SkipNetworkIdleEvent sets skipNetworkIdleEvent form field as true.
 func (req *chromeRequest) SkipNetworkIdleEvent() {
 	req.values[skipNetworkIdleEvent] = "true"
+}
+
+// SinglePage sets singlePage form field as true.
+func (req *chromeRequest) SinglePage() {
+	req.values[singlePage] = "true"
 }
