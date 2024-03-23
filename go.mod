@@ -1,5 +1,5 @@
-module github.com/thecodingmachine/gotenberg-go-client/v7
+module github.com/dcaraxes/gotenberg-go-client/v8
 
-go 1.13
+go 1.22
 
-require github.com/stretchr/testify v1.3.0
+require github.com/stretchr/testify v1.9.0
