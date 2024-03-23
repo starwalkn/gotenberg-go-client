@@ -19,6 +19,7 @@ const (
 	scale                      string = "scale"
 	skipNetworkIdleEvent       string = "skipNetworkIdleEvent"
 	singlePage                 string = "singlePage"
+	format                     string = "format"
 )
 
 // nolint: gochecknoglobals
@@ -47,6 +48,13 @@ var (
 	NormalMargins = [4]float64{1, 1, 1, 1}
 	// LargeMargins uses 2 inche margins.
 	LargeMargins = [4]float64{2, 2, 2, 2}
+)
+
+// nolint: gochecknoglobals
+var (
+	PNG  = "png"
+	JPEG = "jpeg"
+	WebP = "webp"
 )
 
 type chromeRequest struct {
@@ -118,4 +126,12 @@ func (req *chromeRequest) SkipNetworkIdleEvent() {
 // SinglePage sets singlePage form field as true.
 func (req *chromeRequest) SinglePage() {
 	req.values[singlePage] = "true"
+}
+
+// Format sets format form field
+func (req *chromeRequest) Format(format string) {
+	req.values[format] = format
+	if format == "" {
+		req.values[format] = JPEG
+	}
 }
