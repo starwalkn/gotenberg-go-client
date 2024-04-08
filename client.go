@@ -34,10 +34,14 @@ type Client struct {
 // the Gotenberg API.
 type Request interface {
 	postURL() string
-	screenshotURL() string
 	customHTTPHeaders() map[string]string
 	formValues() map[string]string
 	formFiles() map[string]Document
+}
+
+type Screenshoter interface {
+	Request
+	screenshotURL() string
 }
 
 type request struct {
@@ -92,10 +96,6 @@ func (c *Client) Post(req Request) (*http.Response, error) {
 	return c.PostContext(context.Background(), req)
 }
 
-func (c *Client) Screenshot(req Request) (*http.Response, error) {
-	return c.ScreenshotContext(context.Background(), req)
-}
-
 // PostContext sends a request to the Gotenberg API
 // and returns the response.
 // The created HTTP request can be canceled by the passed context.
@@ -108,33 +108,6 @@ func (c *Client) PostContext(ctx context.Context, req Request) (*http.Response, 
 		c.HTTPClient = &http.Client{}
 	}
 	URL := fmt.Sprintf("%s%s", c.Hostname, req.postURL())
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, URL, body)
-	if err != nil {
-		return nil, err
-	}
-	httpReq.Header.Set("Content-Type", contentType)
-	for key, value := range req.customHTTPHeaders() {
-		httpReq.Header.Set(key, value)
-	}
-	resp, err := c.HTTPClient.Do(httpReq) /* #nosec */
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-// ScreenshotContext sends a request to the Gotenberg API
-// and returns the response.
-// The created HTTP request can be canceled by the passed context.
-func (c *Client) ScreenshotContext(ctx context.Context, req Request) (*http.Response, error) {
-	body, contentType, err := multipartForm(req)
-	if err != nil {
-		return nil, err
-	}
-	if c.HTTPClient == nil {
-		c.HTTPClient = &http.Client{}
-	}
-	URL := fmt.Sprintf("%s%s", c.Hostname, req.screenshotURL())
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, URL, body)
 	if err != nil {
 		return nil, err
@@ -171,6 +144,37 @@ func (c *Client) StoreContext(ctx context.Context, req Request, dest string) err
 		return errors.New("failed to generate the result PDF")
 	}
 	return writeNewFile(dest, resp.Body)
+}
+
+func (c *Client) Screenshot(scr Screenshoter) (*http.Response, error) {
+	return c.ScreenshotContext(context.Background(), scr)
+}
+
+// ScreenshotContext sends a request to the Gotenberg API
+// and returns the response.
+// The created HTTP request can be canceled by the passed context.
+func (c *Client) ScreenshotContext(ctx context.Context, scr Screenshoter) (*http.Response, error) {
+	body, contentType, err := multipartForm(scr)
+	if err != nil {
+		return nil, err
+	}
+	if c.HTTPClient == nil {
+		c.HTTPClient = &http.Client{}
+	}
+	URL := fmt.Sprintf("%s%s", c.Hostname, scr.screenshotURL())
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, URL, body)
+	if err != nil {
+		return nil, err
+	}
+	httpReq.Header.Set("Content-Type", contentType)
+	for key, value := range scr.customHTTPHeaders() {
+		httpReq.Header.Set(key, value)
+	}
+	resp, err := c.HTTPClient.Do(httpReq) /* #nosec */
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
 
 func hasWebhook(req Request) bool {

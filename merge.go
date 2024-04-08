@@ -17,10 +17,6 @@ func (req *MergeRequest) postURL() string {
 	return "/merge"
 }
 
-func (req *MergeRequest) screenshotURL() string {
-	return "/screenshot"
-}
-
 func (req *MergeRequest) formFiles() map[string]Document {
 	files := make(map[string]Document)
 	for _, pdf := range req.pdfs {

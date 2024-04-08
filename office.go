@@ -36,10 +36,6 @@ func (req *OfficeRequest) postURL() string {
 	return "/convert/office"
 }
 
-func (req *OfficeRequest) screenshotURL() string {
-	return "/screenshot/office"
-}
-
 func (req *OfficeRequest) formFiles() map[string]Document {
 	files := make(map[string]Document)
 	for _, doc := range req.docs {
