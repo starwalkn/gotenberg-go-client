@@ -14,7 +14,7 @@ func NewMergeRequest(pdfs ...Document) *MergeRequest {
 }
 
 func (req *MergeRequest) postURL() string {
-	return "/merge"
+	return "/forms/pdfengines/merge"
 }
 
 func (req *MergeRequest) formFiles() map[string]Document {

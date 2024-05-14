@@ -21,11 +21,11 @@ func NewURLRequest(url string) *URLRequest {
 }
 
 func (req *URLRequest) postURL() string {
-	return "/convert/url"
+	return "/forms/chromium/convert/url"
 }
 
 func (req *URLRequest) screenshotURL() string {
-	return "/screenshot/url"
+	return "/forms/chromium/screenshot/url"
 }
 
 // AddRemoteURLHTTPHeader add a remote URL custom HTTP header.

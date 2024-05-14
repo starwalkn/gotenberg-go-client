@@ -21,11 +21,11 @@ func (req *MarkdownRequest) Assets(assets ...Document) {
 }
 
 func (req *MarkdownRequest) postURL() string {
-	return "/convert/markdown"
+	return "/forms/chromium/convert/markdown"
 }
 
 func (req *MarkdownRequest) screenshotURL() string {
-	return "/screenshot/markdown"
+	return "/forms/chromium/screenshot/markdown"
 }
 
 func (req *MarkdownRequest) formFiles() map[string]Document {
