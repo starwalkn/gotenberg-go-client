@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/thecodingmachine/gotenberg-go-client/v7/test"
+
+	"github.com/dcaraxes/gotenberg-go-client/v8/test"
 )
 
 func TestMarkdown(t *testing.T) {
@@ -56,7 +58,7 @@ func TestMarkdownComplete(t *testing.T) {
 	req.Assets(font, img, style)
 	req.ResultFilename("foo.pdf")
 	req.WaitTimeout(5)
-	req.WaitDelay(1)
+	req.WaitDelay(1 * time.Second)
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
 	req.Landscape(false)

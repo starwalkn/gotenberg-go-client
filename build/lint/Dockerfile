@@ -1,6 +1,6 @@
 ARG GOLANG_VERSION
 
-FROM golang:${GOLANG_VERSION}-stretch
+FROM golang:${GOLANG_VERSION}-alpine
 
 # |--------------------------------------------------------------------------
 # | GolangCI-Lint
@@ -12,7 +12,7 @@ FROM golang:${GOLANG_VERSION}-stretch
 
 ARG GOLANGCI_LINT_VERSION
 
-RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b /usr/local/bin v${GOLANGCI_LINT_VERSION} &&\
+RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s | sh -s -- -b /usr/local/bin v${GOLANGCI_LINT_VERSION} &&\
     golangci-lint --version
 
 # |--------------------------------------------------------------------------

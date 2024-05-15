@@ -3,7 +3,7 @@ package gotenberg
 import "fmt"
 
 const (
-	remoteURL                  string = "remoteURL"
+	formFieldURL               string = "url"
 	remoteURLBaseHTTPHeaderKey string = "Gotenberg-Remoteurl-"
 )
 
@@ -16,16 +16,16 @@ type URLRequest struct {
 // NewURLRequest create URLRequest.
 func NewURLRequest(url string) *URLRequest {
 	req := &URLRequest{newChromeRequest()}
-	req.values[remoteURL] = url
+	req.values[formFieldURL] = url
 	return req
 }
 
 func (req *URLRequest) postURL() string {
-	return "/convert/url"
+	return "/forms/chromium/convert/url"
 }
 
 func (req *URLRequest) screenshotURL() string {
-	return "/screenshot/url"
+	return "/forms/chromium/screenshot/url"
 }
 
 // AddRemoteURLHTTPHeader add a remote URL custom HTTP header.

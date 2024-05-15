@@ -7,7 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/thecodingmachine/gotenberg-go-client/v7/test"
+
+	"github.com/dcaraxes/gotenberg-go-client/v8/test"
 )
 
 func TestMerge(t *testing.T) {

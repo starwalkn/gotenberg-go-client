@@ -3,6 +3,7 @@ package gotenberg
 import (
 	"fmt"
 	"strconv"
+	"time"
 )
 
 const (
@@ -69,8 +70,8 @@ func newChromeRequest() *chromeRequest {
 }
 
 // WaitDelay sets waitDelay form field.
-func (req *chromeRequest) WaitDelay(delay float64) {
-	req.values[waitDelay] = strconv.FormatFloat(delay, 'f', 2, 64)
+func (req *chromeRequest) WaitDelay(delay time.Duration) {
+	req.values[waitDelay] = delay.String()
 }
 
 // Header sets header form file.
