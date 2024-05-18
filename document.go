@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -69,7 +68,7 @@ func NewDocumentFromString(filename, data string) (Document, error) {
 }
 
 func (doc *documentFromString) Reader() (io.ReadCloser, error) {
-	return ioutil.NopCloser(strings.NewReader(doc.data)), nil
+	return io.NopCloser(strings.NewReader(doc.data)), nil
 }
 
 type documentFromBytes struct {
@@ -91,7 +90,7 @@ func NewDocumentFromBytes(filename string, data []byte) (Document, error) {
 }
 
 func (doc *documentFromBytes) Reader() (io.ReadCloser, error) {
-	return ioutil.NopCloser(bytes.NewReader(doc.data)), nil
+	return io.NopCloser(bytes.NewReader(doc.data)), nil
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
