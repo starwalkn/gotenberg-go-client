@@ -3,7 +3,7 @@ ARG GOTENBERG_VERSION
 
 FROM golang:${GOLANG_VERSION}-alpine AS golang
 
-FROM thecodingmachine/gotenberg:${GOTENBERG_VERSION}
+FROM gotenberg/gotenberg:${GOTENBERG_VERSION}
 
 USER root
 
@@ -13,9 +13,9 @@ USER root
 # |
 # | Libraries used in the build process of this image.
 # |
-RUN apt-get update
-RUN apt-get install -y build-essential
-RUN apt-get install manpages-dev
+RUN apt-get update \
+  && apt-get install -y build-essential \
+  && apt-get install manpages-dev
 
 # |--------------------------------------------------------------------------
 # | Golang

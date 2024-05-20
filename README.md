@@ -1,4 +1,4 @@
-**🔥 Working with Gotenberg version 8 and higher! 🔥** 
+**🔥 Working with Gotenberg version 8 and higher! 🔥**
 
 # Gotenberg Go client
 
@@ -62,6 +62,5 @@ For more complete usages, head to the [documentation](https://gotenberg.dev/).
 
 ## Badges
 
-[![Travis CI](https://travis-ci.org/thecodingmachine/gotenberg-go-client.svg?branch=master)](https://travis-ci.org/thecodingmachine/gotenberg-go-client)
-[![GoDoc](https://godoc.org/github.com/thecodingmachine/gotenberg-go-client?status.svg)](https://godoc.org/github.com/thecodingmachine/gotenberg-go-client)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thecodingmachine/gotenberg-go-client)](https://goreportcard.com/report/thecodingmachine/gotenberg-go-client)
+[![GoDoc](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8?status.svg)](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dcaraxes/gotenberg-go-client/v8)](https://goreportcard.com/report/github.com/dcaraxes/gotenberg-go-client/v8)
