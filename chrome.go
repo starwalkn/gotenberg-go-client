@@ -20,6 +20,9 @@ const (
 	scale                      string = "scale"
 	skipNetworkIdleEvent       string = "skipNetworkIdleEvent"
 	singlePage                 string = "singlePage"
+	preferCssPageSize          string = "preferCssPageSize"
+	printBackground            string = "printBackground"
+	omitBackground             string = "omitBackground"
 	format                     string = "format"
 )
 
@@ -127,6 +130,21 @@ func (req *chromeRequest) SkipNetworkIdleEvent() {
 // SinglePage sets singlePage form field as true.
 func (req *chromeRequest) SinglePage() {
 	req.values[singlePage] = "true"
+}
+
+// Define whether to prefer page size as defined by CSS.
+func (req *chromeRequest) PreferCssPageSize() {
+	req.values[preferCssPageSize] = "true"
+}
+
+// Print the background graphics.
+func (req *chromeRequest) PrintBackground() {
+	req.values[printBackground] = "true"
+}
+
+// Omit the background graphics.
+func (req *chromeRequest) OmitBackground() {
+	req.values[omitBackground] = "true"
 }
 
 // Format sets format form field
