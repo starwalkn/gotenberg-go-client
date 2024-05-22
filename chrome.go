@@ -111,6 +111,7 @@ var (
 		Bottom: 0,
 		Left:   0,
 		Right:  0,
+		Unit:   IN,
 	}
 	// NormalMargins uses 1 inch margins.
 	NormalMargins = PageMargins{
