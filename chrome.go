@@ -26,32 +26,109 @@ const (
 	format                     string = "format"
 )
 
+type SizeUnit string
+
+const (
+	// Points.
+	PT SizeUnit = "pt"
+	// Pixels.
+	PX SizeUnit = "px"
+	// Inches.
+	IN SizeUnit = "in"
+	// Millimeters.
+	MM SizeUnit = "mm"
+	// Centimeters.
+	CM SizeUnit = "cm"
+	// Picas.
+	PC SizeUnit = "pc"
+)
+
+type PaperDimensions struct {
+	Width  float64
+	Height float64
+	Unit   SizeUnit
+}
+
 // nolint: gochecknoglobals
 var (
 	// A3 paper size.
-	A3 = [2]float64{11.7, 16.5}
+	A3 = PaperDimensions{
+		Height: 16.5,
+		Width:  11.7,
+		Unit:   IN,
+	}
 	// A4 paper size.
-	A4 = [2]float64{8.27, 11.7}
+	A4 = PaperDimensions{
+		Height: 11.7,
+		Width:  8.27,
+		Unit:   IN,
+	}
 	// A5 paper size.
-	A5 = [2]float64{5.8, 8.3}
+	A5 = PaperDimensions{
+		Height: 8.3,
+		Width:  5.8,
+		Unit:   IN,
+	}
 	// A6 paper size.
-	A6 = [2]float64{4.1, 5.8}
+	A6 = PaperDimensions{
+		Height: 5.8,
+		Width:  4.1,
+		Unit:   IN,
+	}
 	// Letter paper size.
-	Letter = [2]float64{8.5, 11}
+	Letter = PaperDimensions{
+		Height: 11,
+		Width:  8.5,
+		Unit:   IN,
+	}
 	// Legal paper size.
-	Legal = [2]float64{8.5, 14}
+	Legal = PaperDimensions{
+		Height: 14,
+		Width:  8.5,
+		Unit:   IN,
+	}
 	// Tabloid paper size.
-	Tabloid = [2]float64{11, 17}
+	Tabloid = PaperDimensions{
+		Height: 17,
+		Width:  11,
+		Unit:   IN,
+	}
 )
+
+type PageMargins struct {
+	Top    float64
+	Bottom float64
+	Left   float64
+	Right  float64
+	Unit   SizeUnit
+}
 
 // nolint: gochecknoglobals
 var (
 	// NoMargins removes margins.
-	NoMargins = [4]float64{0, 0, 0, 0}
-	// NormalMargins uses 1 inche margins.
-	NormalMargins = [4]float64{1, 1, 1, 1}
-	// LargeMargins uses 2 inche margins.
-	LargeMargins = [4]float64{2, 2, 2, 2}
+	NoMargins = PageMargins{
+		Top:    0,
+		Bottom: 0,
+		Left:   0,
+		Right:  0,
+		Unit:   IN,
+	}
+	// NormalMargins uses 1 inch margins.
+	NormalMargins = PageMargins{
+		Top:    1,
+		Bottom: 1,
+		Left:   1,
+		Right:  1,
+		Unit:   IN,
+	}
+	// LargeMargins uses 2 inch margins.
+	LargeMargins = PageMargins{
+		Top:    2,
+		Bottom: 2,
+		Left:   2,
+		Right:  2,
+		Unit:   IN,
+	}
 )
 
 // nolint: gochecknoglobals
@@ -87,19 +164,26 @@ func (req *chromeRequest) Footer(footer Document) {
 	req.footer = footer
 }
 
-// PaperSize sets paperWidth and paperHeight form fields.
-func (req *chromeRequest) PaperSize(size [2]float64) {
-	req.values[paperWidth] = fmt.Sprintf("%f", size[0])
-	req.values[paperHeight] = fmt.Sprintf("%f", size[1])
+// PaperSize sets paperWidth and paperHeight form fields with the provided unit. If unit is empty, it defaults to inches. Default is Letter (8.5 x 11 inches).
+func (req *chromeRequest) PaperSize(size PaperDimensions) {
+	if size.Unit == "" {
+		size.Unit = IN
+	}
+	req.values[paperWidth] = fmt.Sprintf("%f%s", size.Width, size.Unit)
+	req.values[paperHeight] = fmt.Sprintf("%f%s", size.Height, size.Unit)
 }
 
 // Margins sets marginTop, marginBottom,
 // marginLeft and marginRight form fields.
-func (req *chromeRequest) Margins(margins [4]float64) {
-	req.values[marginTop] = fmt.Sprintf("%f", margins[0])
-	req.values[marginBottom] = fmt.Sprintf("%f", margins[1])
-	req.values[marginLeft] = fmt.Sprintf("%f", margins[2])
-	req.values[marginRight] = fmt.Sprintf("%f", margins[3])
+// Default unit is inches.
+func (req *chromeRequest) Margins(margins PageMargins) {
+	if margins.Unit == "" {
+		margins.Unit = IN
+	}
+	req.values[marginTop] = fmt.Sprintf("%f%s", margins.Top, margins.Unit)
+	req.values[marginBottom] = fmt.Sprintf("%f%s", margins.Bottom, margins.Unit)
+	req.values[marginLeft] = fmt.Sprintf("%f%s", margins.Left, margins.Unit)
+	req.values[marginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
 }
 
 // Landscape sets landscape form field.
