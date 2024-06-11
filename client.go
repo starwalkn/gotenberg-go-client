@@ -3,6 +3,7 @@ package gotenberg
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -20,6 +21,7 @@ const (
 	webhookURL                  string = "webhookURL"
 	webhookURLTimeout           string = "webhookURLTimeout"
 	webhookURLBaseHTTPHeaderKey string = "Gotenberg-Webhookurl-"
+	authorizationHeader         string = "Authorization"
 )
 
 // Client facilitates interacting with
@@ -84,6 +86,11 @@ func (req *request) AddWebhookURLHTTPHeader(key, value string) {
 
 func (req *request) customHTTPHeaders() map[string]string {
 	return req.httpHeaders
+}
+
+func (req *request) SetBasicAuth(username, password string) {
+	auth := username + ":" + password
+	req.httpHeaders[authorizationHeader] = "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
 func (req *request) formValues() map[string]string {

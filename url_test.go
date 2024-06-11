@@ -14,7 +14,8 @@ import (
 
 func TestURL(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
-	req := NewURLRequest("http://google.com")
+	req := NewURLRequest("http://example.com")
+	req.SetBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
 	require.Nil(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -27,7 +28,8 @@ func TestURL(t *testing.T) {
 
 func TestURLComplete(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
-	req := NewURLRequest("http://google.com")
+	req := NewURLRequest("http://example.com")
+	req.SetBasicAuth("foo", "bar")
 	header, err := NewDocumentFromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.Nil(t, err)
 	req.Header(header)
@@ -54,7 +56,8 @@ func TestURLComplete(t *testing.T) {
 
 func TestURLPageRanges(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
-	req := NewURLRequest("http://google.com")
+	req := NewURLRequest("http://example.com")
+	req.SetBasicAuth("foo", "bar")
 	req.PageRanges("1-1")
 	resp, err := c.Post(req)
 	assert.Nil(t, err)
@@ -63,7 +66,8 @@ func TestURLPageRanges(t *testing.T) {
 
 func TestURLWebhook(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
-	req := NewURLRequest("http://google.com")
+	req := NewURLRequest("http://example.com")
+	req.SetBasicAuth("foo", "bar")
 	req.WebhookURL("https://google.com")
 	req.WebhookURLTimeout(5.0)
 	req.AddWebhookURLHTTPHeader("A-Header", "Foo")

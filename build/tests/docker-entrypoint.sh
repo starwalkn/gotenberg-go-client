@@ -3,7 +3,7 @@
 set -xe
 
 # Testing Go client.
-gotenberg &
+gotenberg --api-enable-basic-auth &
 sleep 10
 export CGO_ENABLED=1
 go test -race -cover -covermode=atomic github.com/dcaraxes/gotenberg-go-client/v8

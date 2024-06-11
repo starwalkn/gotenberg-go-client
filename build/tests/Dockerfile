@@ -42,6 +42,8 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 ARG GOTENBERG_LOG_LEVEL
 
 ENV LOG_LEVEL=${GOTENBERG_LOG_LEVEL}
+ENV GOTENBERG_API_BASIC_AUTH_USERNAME=foo
+ENV GOTENBERG_API_BASIC_AUTH_PASSWORD=bar
 
 # Define our workding outside of $GOPATH (we're using go modules).
 WORKDIR /tests
