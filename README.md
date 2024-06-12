@@ -77,10 +77,10 @@ Reading metadata available only for PDF files, but you can write metadata to all
 #### Write
 ```golang
 import (
-"time"
-"net/http"
+	"time"
+	"net/http"
 
-"github.com/dcaraxes/gotenberg-go-client/v8"
+	"github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
 // create the client.
@@ -116,10 +116,10 @@ resp, _ := client.Post(req)
 #### Read
 ```golang
 import (
-"time"
-"net/http"
+	"time"
+	"net/http"
 
-"github.com/dcaraxes/gotenberg-go-client/v8"
+	"github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
 // create the client.
