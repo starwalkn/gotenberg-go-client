@@ -130,17 +130,18 @@ func (c *Client) PostContext(ctx context.Context, req Request) (*http.Response, 
 	return resp, nil
 }
 
-// Store creates the resulting PDF to given destination.
+// Store creates the resulting file to given destination.
 func (c *Client) Store(req Request, dest string) error {
 	return c.StoreContext(context.Background(), req, dest)
 }
 
-// StoreContext creates the resulting PDF to given destination.
+// StoreContext creates the resulting file to given destination.
 // The created HTTP request can be canceled by the passed context.
 func (c *Client) StoreContext(ctx context.Context, req Request, dest string) error {
 	if hasWebhook(req) {
 		return errors.New("cannot use Store method with a webhook")
 	}
+
 	resp, err := c.PostContext(ctx, req)
 	if err != nil {
 		return err
@@ -148,7 +149,7 @@ func (c *Client) StoreContext(ctx context.Context, req Request, dest string) err
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("failed to generate the result PDF")
+		return errors.New("failed to generate the result PDF" + resp.Status)
 	}
 	return writeNewFile(dest, resp.Body)
 }
@@ -182,6 +183,30 @@ func (c *Client) ScreenshotContext(ctx context.Context, scr Screenshoter) (*http
 		return nil, err
 	}
 	return resp, nil
+}
+
+// StoreScreenshot creates the resulting file to given destination.
+func (c *Client) StoreScreenshot(req Screenshoter, dest string) error {
+	return c.StoreScreenshotContext(context.Background(), req, dest)
+}
+
+// StoreScreenshotContext creates the resulting file to given destination.
+// The created HTTP request can be canceled by the passed context.
+func (c *Client) StoreScreenshotContext(ctx context.Context, scr Screenshoter, dest string) error {
+	if hasWebhook(scr) {
+		return errors.New("cannot use StoreScreenshot method with a webhook")
+	}
+
+	resp, err := c.ScreenshotContext(ctx, scr)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("failed to generate the result PDF" + resp.Status)
+	}
+	return writeNewFile(dest, resp.Body)
 }
 
 func hasWebhook(req Request) bool {

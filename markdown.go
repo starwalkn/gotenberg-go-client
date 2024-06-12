@@ -20,6 +20,10 @@ func (req *MarkdownRequest) Assets(assets ...Document) {
 	req.assets = assets
 }
 
+func (req *MarkdownRequest) Metadata(jsonData []byte) {
+	req.values[formFieldMetadata] = string(jsonData)
+}
+
 func (req *MarkdownRequest) postURL() string {
 	return "/forms/chromium/convert/markdown"
 }

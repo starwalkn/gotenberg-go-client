@@ -7,40 +7,34 @@ import (
 )
 
 const (
-	waitDelay                  string = "waitDelay"
-	paperWidth                 string = "paperWidth"
-	paperHeight                string = "paperHeight"
-	marginTop                  string = "marginTop"
-	marginBottom               string = "marginBottom"
-	marginLeft                 string = "marginLeft"
-	marginRight                string = "marginRight"
-	landscapeChrome            string = "landscape"
-	pageRanges                 string = "pageRanges"
-	googleChromeRpccBufferSize string = "googleChromeRpccBufferSize"
-	scale                      string = "scale"
-	skipNetworkIdleEvent       string = "skipNetworkIdleEvent"
-	singlePage                 string = "singlePage"
-	preferCssPageSize          string = "preferCssPageSize"
-	printBackground            string = "printBackground"
-	omitBackground             string = "omitBackground"
-	format                     string = "format"
+	formFieldWaitDelay                  string = "waitDelay"
+	formFieldPaperWidth                 string = "formFieldPaperWidth"
+	formFieldPaperHeight                string = "paperHeight"
+	formFieldMarginTop                  string = "marginTop"
+	formFieldMarginBottom               string = "marginBottom"
+	formFieldMarginLeft                 string = "marginLeft"
+	formFieldMarginRight                string = "marginRight"
+	formFieldLandscapeChrome            string = "landscape"
+	formFieldPageRanges                 string = "pageRanges"
+	formFieldGoogleChromeRpccBufferSize string = "googleChromeRpccBufferSize"
+	formFieldScale                      string = "scale"
+	formFieldSkipNetworkIdleEvent       string = "skipNetworkIdleEvent"
+	formFieldSinglePage                 string = "singlePage"
+	formFieldPreferCssPageSize          string = "preferCssPageSize"
+	formFieldPrintBackground            string = "printBackground"
+	formFieldOmitBackground             string = "omitBackground"
+	formFieldFormat                     string = "format"
 )
 
 type SizeUnit string
 
 const (
-	// Points.
-	PT SizeUnit = "pt"
-	// Pixels.
-	PX SizeUnit = "px"
-	// Inches.
-	IN SizeUnit = "in"
-	// Millimeters.
-	MM SizeUnit = "mm"
-	// Centimeters.
-	CM SizeUnit = "cm"
-	// Picas.
-	PC SizeUnit = "pc"
+	PT SizeUnit = "pt" // Points.
+	PX SizeUnit = "px" // Pixels.
+	IN SizeUnit = "in" // Inches.
+	MM SizeUnit = "mm" // Millimeters.
+	CM SizeUnit = "cm" // Centimeters.
+	PC SizeUnit = "pc" // Picas.
 )
 
 type PaperDimensions struct {
@@ -151,7 +145,7 @@ func newChromeRequest() *chromeRequest {
 
 // WaitDelay sets waitDelay form field.
 func (req *chromeRequest) WaitDelay(delay time.Duration) {
-	req.values[waitDelay] = delay.String()
+	req.values[formFieldWaitDelay] = delay.String()
 }
 
 // Header sets header form file.
@@ -164,13 +158,14 @@ func (req *chromeRequest) Footer(footer Document) {
 	req.footer = footer
 }
 
-// PaperSize sets paperWidth and paperHeight form fields with the provided unit. If unit is empty, it defaults to inches. Default is Letter (8.5 x 11 inches).
+// PaperSize sets paperWidth and paperHeight form fields with the provided unit.
+// If unit is empty, it defaults to inches. Default is Letter (8.5 x 11 inches).
 func (req *chromeRequest) PaperSize(size PaperDimensions) {
 	if size.Unit == "" {
 		size.Unit = IN
 	}
-	req.values[paperWidth] = fmt.Sprintf("%f%s", size.Width, size.Unit)
-	req.values[paperHeight] = fmt.Sprintf("%f%s", size.Height, size.Unit)
+	req.values[formFieldPaperWidth] = fmt.Sprintf("%f%s", size.Width, size.Unit)
+	req.values[formFieldPaperHeight] = fmt.Sprintf("%f%s", size.Height, size.Unit)
 }
 
 // Margins sets marginTop, marginBottom,
@@ -180,61 +175,65 @@ func (req *chromeRequest) Margins(margins PageMargins) {
 	if margins.Unit == "" {
 		margins.Unit = IN
 	}
-	req.values[marginTop] = fmt.Sprintf("%f%s", margins.Top, margins.Unit)
-	req.values[marginBottom] = fmt.Sprintf("%f%s", margins.Bottom, margins.Unit)
-	req.values[marginLeft] = fmt.Sprintf("%f%s", margins.Left, margins.Unit)
-	req.values[marginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
+	req.values[formFieldMarginTop] = fmt.Sprintf("%f%s", margins.Top, margins.Unit)
+	req.values[formFieldMarginBottom] = fmt.Sprintf("%f%s", margins.Bottom, margins.Unit)
+	req.values[formFieldMarginLeft] = fmt.Sprintf("%f%s", margins.Left, margins.Unit)
+	req.values[formFieldMarginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
 }
 
 // Landscape sets landscape form field.
 func (req *chromeRequest) Landscape(isLandscape bool) {
-	req.values[landscapeChrome] = strconv.FormatBool(isLandscape)
+	req.values[formFieldLandscapeChrome] = strconv.FormatBool(isLandscape)
 }
 
 // PageRanges sets pageRanges form field.
 func (req *chromeRequest) PageRanges(ranges string) {
-	req.values[pageRanges] = ranges
+	req.values[formFieldPageRanges] = ranges
 }
 
 // GoogleChromeRpccBufferSize sets googleChromeRpccBufferSize form field.
 func (req *chromeRequest) GoogleChromeRpccBufferSize(bufferSize int64) {
-	req.values[googleChromeRpccBufferSize] = strconv.FormatInt(bufferSize, 10)
+	req.values[formFieldGoogleChromeRpccBufferSize] = strconv.FormatInt(bufferSize, 10)
 }
 
 // Scale sets scale form field.
 func (req *chromeRequest) Scale(scaleFactor float64) {
-	req.values[scale] = fmt.Sprintf("%f", scaleFactor)
+	req.values[formFieldScale] = fmt.Sprintf("%f", scaleFactor)
 }
 
 // SkipNetworkIdleEvent sets skipNetworkIdleEvent form field as true.
 func (req *chromeRequest) SkipNetworkIdleEvent() {
-	req.values[skipNetworkIdleEvent] = "true"
+	req.values[formFieldSkipNetworkIdleEvent] = "true"
 }
 
 // SinglePage sets singlePage form field as true.
 func (req *chromeRequest) SinglePage() {
-	req.values[singlePage] = "true"
+	req.values[formFieldSinglePage] = "true"
 }
 
 // Define whether to prefer page size as defined by CSS.
 func (req *chromeRequest) PreferCssPageSize() {
-	req.values[preferCssPageSize] = "true"
+	req.values[formFieldPreferCssPageSize] = "true"
 }
 
-// Print the background graphics.
+// PrintBackground print the background graphics.
 func (req *chromeRequest) PrintBackground() {
-	req.values[printBackground] = "true"
+	req.values[formFieldPrintBackground] = "true"
 }
 
-// Omit the background graphics.
+// OmitBackground omit the background graphics.
 func (req *chromeRequest) OmitBackground() {
-	req.values[omitBackground] = "true"
+	req.values[formFieldOmitBackground] = "true"
 }
 
 // Format sets format form field
 func (req *chromeRequest) Format(format string) {
-	req.values[format] = format
+	req.values[formFieldFormat] = format
 	if format == "" {
 		req.values[format] = JPEG
 	}
+}
+
+func (req *chromeRequest) Metadata(jsonData []byte) {
+	req.values[formFieldMetadata] = string(jsonData)
 }

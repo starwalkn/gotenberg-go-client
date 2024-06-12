@@ -75,3 +75,18 @@ func TestURLWebhook(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
+
+func TestURLScreenshot(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	req := NewURLRequest("https://example.com")
+	req.SetBasicAuth("foo", "bar")
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	req.Format(JPEG)
+	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+	err = c.StoreScreenshot(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}

@@ -119,3 +119,21 @@ func TestHTMLWebhook(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
+
+func TestHTMLScreenshot(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	index, err := NewDocumentFromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	require.Nil(t, err)
+	req := NewHTMLRequest(index)
+	req.SetBasicAuth("foo", "bar")
+	req.AddWebhookURLHTTPHeader("A-Header", "Foo")
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	req.Format(JPEG)
+	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+	err = c.StoreScreenshot(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}

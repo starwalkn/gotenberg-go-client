@@ -112,3 +112,27 @@ func TestMarkdownWebhook(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
+
+func TestMarkdownScreenshot(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	index, err := NewDocumentFromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
+	require.Nil(t, err)
+	markdown1, err := NewDocumentFromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
+	require.Nil(t, err)
+	markdown2, err := NewDocumentFromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
+	require.Nil(t, err)
+	markdown3, err := NewDocumentFromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
+	require.Nil(t, err)
+	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
+	req.SetBasicAuth("foo", "bar")
+	require.Nil(t, err)
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	req.Format(JPEG)
+	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+	err = c.StoreScreenshot(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}

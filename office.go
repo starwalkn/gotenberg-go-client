@@ -32,6 +32,10 @@ func (req *OfficeRequest) PageRanges(ranges string) {
 	req.values[pageRangesOffice] = ranges
 }
 
+func (req *OfficeRequest) Metadata(jsonData []byte) {
+	req.values[formFieldMetadata] = string(jsonData)
+}
+
 func (req *OfficeRequest) postURL() string {
 	return "/forms/libreoffice/convert"
 }

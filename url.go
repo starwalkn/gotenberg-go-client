@@ -20,6 +20,10 @@ func NewURLRequest(url string) *URLRequest {
 	return req
 }
 
+func (req *URLRequest) Metadata(jsonData []byte) {
+	req.values[formFieldMetadata] = string(jsonData)
+}
+
 func (req *URLRequest) postURL() string {
 	return "/forms/chromium/convert/url"
 }
