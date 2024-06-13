@@ -102,7 +102,7 @@ writeDataStruct := struct {
 }
 jsonMetadata, _ := json.Marshal(writeDataStruct)
 req.Metadata(jsonMetadata)
-client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
+_ = client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
 
 // if you wish to redirect the response directly to the browser, you may also use:
 resp, _ := client.Post(req)
@@ -129,7 +129,7 @@ req.SetBasicAuth("your_username", "your_password") // if needed
 req.ResultFilename("foo.pdf")
 req.SkipNetworkIdleEvent() // for faster PDF generation
 
-client.Post(req)
+respRead, _ := client.Post(req)
 
 var readData = struct {
     FooPdf struct {
