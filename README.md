@@ -1,3 +1,17 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Gotenberg Go Client](#gotenberg-go-client)
+   * [Install](#install)
+   * [Usage](#usage)
+      + [Generating PDF from HTML](#generating-pdf-from-html)
+      + [Read and write EXIF metadata](#read-and-write-exif-metadata)
+         - [Write](#write)
+         - [Read](#read)
+      + [Making screenshots](#making-screenshots)
+   * [Badges](#badges)
+
+<!-- TOC end -->
+
 **🔥 Working with Gotenberg version 8 and higher! 🔥**
 
 # Gotenberg Go Client
