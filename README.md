@@ -22,8 +22,6 @@ import (
 )
 
 // create the client.
-client := &gotenberg.Client{Hostname: "http://localhost:3000"}
-// ... or use your own *http.Client.
 httpClient := &http.Client{
     Timeout: time.Duration(5) * time.Second,
 }
@@ -83,9 +81,6 @@ import (
 	"github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
-// create the client.
-client := &gotenberg.Client{Hostname: "http://localhost:3000"}
-// ... or use your own *http.Client.
 httpClient := &http.Client{
 Timeout: time.Duration(5) * time.Second,
 }
@@ -122,9 +117,6 @@ import (
 	"github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
-// create the client.
-client := &gotenberg.Client{Hostname: "http://localhost:3000"}
-// ... or use your own *http.Client.
 httpClient := &http.Client{
 Timeout: time.Duration(5) * time.Second,
 }
@@ -158,9 +150,6 @@ import (
     "github.com/dcaraxes/gotenberg-go-client/v8"
 )
 
-// create the client.
-client := &gotenberg.Client{Hostname: "http://localhost:3000"}
-// ... or use your own *http.Client.
 httpClient := &http.Client{
     Timeout: time.Duration(5) * time.Second,
 }
