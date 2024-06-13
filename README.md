@@ -1,6 +1,6 @@
 **🔥 Working with Gotenberg version 8 and higher! 🔥**
 
-# Gotenberg Go client
+# Gotenberg Go Client
 
 A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
 
