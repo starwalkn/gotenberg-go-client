@@ -51,8 +51,8 @@ func main() {
     httpClient := &http.Client{
 		Timeout: 5*time.Second,
     }
-	// Create the Gotenberg client
-	client := &gotenberg.Client{Hostname: "http://localhost:3000", HTTPClient: httpClient}
+    // Create the Gotenberg client
+    client := &gotenberg.Client{Hostname: "http://localhost:3000", HTTPClient: httpClient}
 }
 ```
 
