@@ -1,18 +1,40 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Gotenberg Go Client](#gotenberg-go-client)
+   * [Install](#install)
+   * [Usage](#usage)
+      + [First steps](#first-steps)
+         - [Create the client](#create-the-client)
+         - [Prepare files](#prepare-files)
+      + [Generating PDF from HTML](#generating-pdf-from-html)
+      + [Read and write EXIF metadata](#read-and-write-exif-metadata)
+         - [Write](#write)
+         - [Read](#read)
+      + [Making screenshots](#making-screenshots)
+   * [Badges](#badges)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="gotenberg-go-client"></a>
 # Gotenberg Go Client
-**🔥 Working with Gotenberg version 8 and higher! 🔥**
+**🔥 Supports Gotenberg version 8 and higher! 🔥**
 
-A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
+A simple Go client for interacting with a Gotenberg API. This project is a further development of the client github.com/thecodingmachine/gotenberg-go-client, which does not support the functionality of version 8.
 
+<!-- TOC --><a name="install"></a>
 ## Install
 
 ```bash
 $ go get -u github.com/dcaraxes/gotenberg-go-client/v8
 ```
 
+<!-- TOC --><a name="usage"></a>
 ## Usage
 
+<!-- TOC --><a name="first-steps"></a>
 ### First steps
 
+<!-- TOC --><a name="create-the-client"></a>
 #### Create the client
 ```golang
 package main
@@ -25,15 +47,16 @@ import (
 )
 
 func main() {
-	// Create the HTTP-client.
+    // Create the HTTP-client.
     httpClient := &http.Client{
 		Timeout: 5*time.Second,
     }
-	// Create the Gotenberg client
-	client := &gotenberg.Client{Hostname: "http://localhost:3000", HTTPClient: httpClient}
+    // Create the Gotenberg client
+    client := &gotenberg.Client{Hostname: "http://localhost:3000", HTTPClient: httpClient}
 }
 ```
 
+<!-- TOC --><a name="prepare-files"></a>
 #### Prepare files
 ```golang
 // From a path.
@@ -46,6 +69,7 @@ index, _ := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
 index, _ := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
 ```
 
+<!-- TOC --><a name="generating-pdf-from-html"></a>
 ### Generating PDF from HTML
 ```golang
 // Creates the Gotenberg documents from a files paths.
@@ -88,9 +112,11 @@ client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
 resp, _ := client.Post(req)
 ```
 
+<!-- TOC --><a name="read-and-write-exif-metadata"></a>
 ### Read and write EXIF metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
+<!-- TOC --><a name="write"></a>
 #### Write
 ```golang
 // Prepare the files required for your conversion.
@@ -115,6 +141,7 @@ _ = client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
 resp, _ := client.Post(req)
 ```
 
+<!-- TOC --><a name="read"></a>
 #### Read
 ```golang
 // Prepare the files required for your conversion.
@@ -137,6 +164,7 @@ var readData = struct {
 _ = json.NewDecoder(respRead.Body).Decode(&readData)
 ```
 
+<!-- TOC --><a name="making-screenshots"></a>
 ### Making screenshots
 Making screenshots only available for HTML, URL and Markdown requests.
 ```golang
@@ -157,6 +185,7 @@ resp, _ := client.Screenshot(req)
 
 For more complete usages, head to the [documentation](https://gotenberg.dev/).
 
+<!-- TOC --><a name="badges"></a>
 ## Badges
 
 [![GoDoc](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8?status.svg)](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8)
