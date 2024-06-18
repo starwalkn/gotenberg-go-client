@@ -47,7 +47,7 @@ import (
 )
 
 func main() {
-	// Create the HTTP-client.
+    // Create the HTTP-client.
     httpClient := &http.Client{
 		Timeout: 5*time.Second,
     }
