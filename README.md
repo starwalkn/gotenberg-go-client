@@ -19,7 +19,7 @@
 # Gotenberg Go Client
 **🔥 Working with Gotenberg version 8 and higher! 🔥**
 
-A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
+A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7). This project is a further development of the client github.com/thecodingmachine/gotenberg-go-client, which does not support the functionality of version 8.
 
 <!-- TOC --><a name="install"></a>
 ## Install
