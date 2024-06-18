@@ -211,7 +211,7 @@ func (req *chromeRequest) SinglePage() {
 	req.values[formFieldSinglePage] = "true"
 }
 
-// Define whether to prefer page size as defined by CSS.
+// PreferCssPageSize defines whether to prefer page size as defined by CSS.
 func (req *chromeRequest) PreferCssPageSize() {
 	req.values[formFieldPreferCssPageSize] = "true"
 }
