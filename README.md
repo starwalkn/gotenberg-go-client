@@ -1,6 +1,3 @@
-# Gotenberg Go Client
-**🔥 Working with Gotenberg version 8 and higher! 🔥**
-
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Gotenberg Go Client](#gotenberg-go-client)
@@ -15,17 +12,23 @@
 
 <!-- TOC end -->
 
+<!-- TOC --><a name="gotenberg-go-client"></a>
+# Gotenberg Go Client
+**🔥 Working with Gotenberg version 8 and higher! 🔥**
 
 A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
 
+<!-- TOC --><a name="install"></a>
 ## Install
 
 ```bash
 $ go get -u github.com/dcaraxes/gotenberg-go-client/v8
 ```
 
+<!-- TOC --><a name="usage"></a>
 ## Usage
 
+<!-- TOC --><a name="generating-pdf-from-html"></a>
 ### Generating PDF from HTML
 ```golang
 import (
@@ -84,8 +87,10 @@ client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
 resp, _ := client.Post(req)
 ```
 
+<!-- TOC --><a name="read-and-write-exif-metadata"></a>
 ### Read and write EXIF metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
+<!-- TOC --><a name="write"></a>
 #### Write
 ```golang
 import (
@@ -122,6 +127,7 @@ _ = client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
 resp, _ := client.Post(req)
 ```
 
+<!-- TOC --><a name="read"></a>
 #### Read
 ```golang
 import (
@@ -154,6 +160,7 @@ var readData = struct {
 _ = json.NewDecoder(respRead.Body).Decode(&readData)
 ```
 
+<!-- TOC --><a name="making-screenshots"></a>
 ### Making screenshots
 Making screenshots only available for HTML, URL and Markdown requests.
 ```go
@@ -188,6 +195,7 @@ resp, _ := client.Screenshot(req)
 
 For more complete usages, head to the [documentation](https://gotenberg.dev/).
 
+<!-- TOC --><a name="badges"></a>
 ## Badges
 
 [![GoDoc](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8?status.svg)](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8)
