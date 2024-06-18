@@ -1,3 +1,6 @@
+# Gotenberg Go Client
+**🔥 Working with Gotenberg version 8 and higher! 🔥**
+
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Gotenberg Go Client](#gotenberg-go-client)
@@ -12,9 +15,6 @@
 
 <!-- TOC end -->
 
-**🔥 Working with Gotenberg version 8 and higher! 🔥**
-
-# Gotenberg Go Client
 
 A simple Go client for interacting with a Gotenberg API (forked github.com/thecodingmachine/gotenberg-go-client/v7).
 
