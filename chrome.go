@@ -7,23 +7,22 @@ import (
 )
 
 const (
-	formFieldWaitDelay                  string = "waitDelay"
-	formFieldPaperWidth                 string = "formFieldPaperWidth"
-	formFieldPaperHeight                string = "paperHeight"
-	formFieldMarginTop                  string = "marginTop"
-	formFieldMarginBottom               string = "marginBottom"
-	formFieldMarginLeft                 string = "marginLeft"
-	formFieldMarginRight                string = "marginRight"
-	formFieldLandscapeChrome            string = "landscape"
-	formFieldPageRanges                 string = "pageRanges"
-	formFieldGoogleChromeRpccBufferSize string = "googleChromeRpccBufferSize"
-	formFieldScale                      string = "scale"
-	formFieldSkipNetworkIdleEvent       string = "skipNetworkIdleEvent"
-	formFieldSinglePage                 string = "singlePage"
-	formFieldPreferCssPageSize          string = "preferCssPageSize"
-	formFieldPrintBackground            string = "printBackground"
-	formFieldOmitBackground             string = "omitBackground"
-	formFieldFormat                     string = "format"
+	formFieldWaitDelay            string = "waitDelay"
+	formFieldPaperWidth           string = "paperWidth"
+	formFieldPaperHeight          string = "paperHeight"
+	formFieldMarginTop            string = "marginTop"
+	formFieldMarginBottom         string = "marginBottom"
+	formFieldMarginLeft           string = "marginLeft"
+	formFieldMarginRight          string = "marginRight"
+	formFieldLandscapeChrome      string = "landscape"
+	formFieldNativePageRanges     string = "nativePageRanges"
+	formFieldScale                string = "scale"
+	formFieldSkipNetworkIdleEvent string = "skipNetworkIdleEvent"
+	formFieldSinglePage           string = "singlePage"
+	formFieldPreferCssPageSize    string = "preferCssPageSize"
+	formFieldPrintBackground      string = "printBackground"
+	formFieldOmitBackground       string = "omitBackground"
+	formFieldFormat               string = "format"
 )
 
 type SizeUnit string
@@ -149,11 +148,12 @@ var (
 	}
 )
 
-// nolint: gochecknoglobals
-var (
-	PNG  = "png"
-	JPEG = "jpeg"
-	WebP = "webp"
+type ImageFormat string
+
+const (
+	PNG  ImageFormat = "png"
+	JPEG ImageFormat = "jpeg"
+	WebP ImageFormat = "webp"
 )
 
 type chromeRequest struct {
@@ -167,17 +167,17 @@ func newChromeRequest() *chromeRequest {
 	return &chromeRequest{nil, nil, newRequest()}
 }
 
-// WaitDelay sets waitDelay form field.
+// Duration (e.g, '5s') to wait when loading an HTML document before converting it into PDF.
 func (req *chromeRequest) WaitDelay(delay time.Duration) {
 	req.values[formFieldWaitDelay] = delay.String()
 }
 
-// Header sets header form file.
+// HTML file containing the header.
 func (req *chromeRequest) Header(header Document) {
 	req.header = header
 }
 
-// Footer sets footer form file.
+// HTML file containing the footer.
 func (req *chromeRequest) Footer(footer Document) {
 	req.footer = footer
 }
@@ -205,59 +205,54 @@ func (req *chromeRequest) Margins(margins PageMargins) {
 	req.values[formFieldMarginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
 }
 
-// Landscape sets landscape form field.
+// Set the paper orientation to landscape.
 func (req *chromeRequest) Landscape(isLandscape bool) {
 	req.values[formFieldLandscapeChrome] = strconv.FormatBool(isLandscape)
 }
 
-// PageRanges sets pageRanges form field.
+// Page ranges to print, e.g., '1-5, 8, 11-13' - empty means all pages.
 func (req *chromeRequest) PageRanges(ranges string) {
-	req.values[formFieldPageRanges] = ranges
+	req.values[formFieldNativePageRanges] = ranges
 }
 
-// GoogleChromeRpccBufferSize sets googleChromeRpccBufferSize form field.
-func (req *chromeRequest) GoogleChromeRpccBufferSize(bufferSize int64) {
-	req.values[formFieldGoogleChromeRpccBufferSize] = strconv.FormatInt(bufferSize, 10)
-}
-
-// Scale sets scale form field.
+// The scale of the page rendering.
+// Default is 1.0.
 func (req *chromeRequest) Scale(scaleFactor float64) {
 	req.values[formFieldScale] = fmt.Sprintf("%f", scaleFactor)
 }
 
-// SkipNetworkIdleEvent sets skipNetworkIdleEvent form field as true.
+// Do not wait for Chromium network to be idle.
 func (req *chromeRequest) SkipNetworkIdleEvent() {
-	req.values[formFieldSkipNetworkIdleEvent] = "true"
+	req.values[formFieldSkipNetworkIdleEvent] = strconv.FormatBool(true)
 }
 
-// SinglePage sets singlePage form field as true.
+// Print the entire content in one single page.
 func (req *chromeRequest) SinglePage() {
-	req.values[formFieldSinglePage] = "true"
+	req.values[formFieldSinglePage] = strconv.FormatBool(true)
 }
 
-// PreferCssPageSize defines whether to prefer page size as defined by CSS.
+// Prefer page size as defined by CSS.
 func (req *chromeRequest) PreferCssPageSize() {
-	req.values[formFieldPreferCssPageSize] = "true"
+	req.values[formFieldPreferCssPageSize] = strconv.FormatBool(true)
 }
 
-// PrintBackground print the background graphics.
+// Print the background graphics.
 func (req *chromeRequest) PrintBackground() {
-	req.values[formFieldPrintBackground] = "true"
+	req.values[formFieldPrintBackground] = strconv.FormatBool(true)
 }
 
-// OmitBackground omit the background graphics.
+// Hide the default white background and allow generating PDFs/screenshots with transparency.
 func (req *chromeRequest) OmitBackground() {
-	req.values[formFieldOmitBackground] = "true"
+	req.values[formFieldOmitBackground] = strconv.FormatBool(true)
 }
 
-// Format sets format form field
-func (req *chromeRequest) Format(format string) {
-	req.values[formFieldFormat] = format
-	if format == "" {
-		req.values[format] = JPEG
-	}
+// The image compression format, either "png", "jpeg" or "webp".
+// Default is "png".
+func (req *chromeRequest) Format(format ImageFormat) {
+	req.values[formFieldFormat] = string(format)
 }
 
+// The metadata to write (JSON format).
 func (req *chromeRequest) Metadata(jsonData []byte) {
 	req.values[formFieldMetadata] = string(jsonData)
 }
