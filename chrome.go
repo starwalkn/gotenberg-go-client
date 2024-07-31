@@ -45,6 +45,24 @@ type PaperDimensions struct {
 
 // nolint: gochecknoglobals
 var (
+	// A0 paper size.
+	A0 = PaperDimensions{
+		Height: 46.8,
+		Width:  33.1,
+		Unit:   IN,
+	}
+	// A1 paper size.
+	A1 = PaperDimensions{
+		Height: 33.1,
+		Width:  23.4,
+		Unit:   IN,
+	}
+	// A2 paper size.
+	A2 = PaperDimensions{
+		Height: 23.4,
+		Width:  16.5,
+		Unit:   IN,
+	}
 	// A3 paper size.
 	A3 = PaperDimensions{
 		Height: 16.5,
@@ -83,6 +101,12 @@ var (
 	}
 	// Tabloid paper size.
 	Tabloid = PaperDimensions{
+		Height: 17,
+		Width:  11,
+		Unit:   IN,
+	}
+	// Ledger paper size.
+	Ledger = PaperDimensions{
 		Height: 17,
 		Width:  11,
 		Unit:   IN,
