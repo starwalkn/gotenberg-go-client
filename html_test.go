@@ -31,6 +31,7 @@ func TestHTML(t *testing.T) {
 func TestHTMLFromString(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
 	index, err := NewDocumentFromString("index.html", "<html>Foo</html>")
+	require.Nil(t, err)
 	req := NewHTMLRequest(index)
 	req.SetBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
@@ -46,6 +47,7 @@ func TestHTMLFromString(t *testing.T) {
 func TestHTMLFromBytes(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
 	index, err := NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+	require.Nil(t, err)
 	req := NewHTMLRequest(index)
 	req.SetBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
@@ -75,6 +77,7 @@ func TestHTMLComplete(t *testing.T) {
 	img, err := NewDocumentFromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
 	require.Nil(t, err)
 	style, err := NewDocumentFromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
+	require.Nil(t, err)
 	req.Assets(font, img, style)
 	req.ResultFilename("foo.pdf")
 	req.WaitTimeout(5)
@@ -82,7 +85,6 @@ func TestHTMLComplete(t *testing.T) {
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
 	req.Landscape(false)
-	req.GoogleChromeRpccBufferSize(1048576)
 	req.Scale(1.5)
 	dirPath, err := test.Rand()
 	require.Nil(t, err)
