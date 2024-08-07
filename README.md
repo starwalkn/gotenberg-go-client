@@ -67,6 +67,10 @@ index, _ := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
 
 // From a bytes.
 index, _ := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+
+// From a io.Reader.
+r, err := os.Open("index.html")
+index, _ := gotenberg.NewDocumentFromReader("index.html", r)
 ```
 
 <!-- TOC --><a name="generating-pdf-from-html"></a>
