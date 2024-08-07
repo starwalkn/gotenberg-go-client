@@ -60,6 +60,23 @@ func TestHTMLFromBytes(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestHTMLFromReader(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	r, err := os.Open(test.HTMLTestFilePath(t, "index.html"))
+	index, err := NewDocumentFromReader("index.html", r)
+	require.Nil(t, err)
+	req := NewHTMLRequest(index)
+	req.SetBasicAuth("foo", "bar")
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}
+
 func TestHTMLComplete(t *testing.T) {
 	c := &Client{Hostname: "http://localhost:3000"}
 	index, err := NewDocumentFromPath("index.html", test.HTMLTestFilePath(t, "index.html"))

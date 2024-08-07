@@ -93,9 +93,32 @@ func (doc *documentFromBytes) Reader() (io.ReadCloser, error) {
 	return io.NopCloser(bytes.NewReader(doc.data)), nil
 }
 
+type documentFromReader struct {
+	r io.Reader
+
+	*document
+}
+
+// NewDocumentFromReader creates a Document from
+// a reader.
+func NewDocumentFromReader(filename string, r io.Reader) (Document, error) {
+	if r == nil {
+		return nil, fmt.Errorf("%s: reader is nil", filename)
+	}
+	return &documentFromReader{
+		r,
+		&document{filename},
+	}, nil
+}
+
+func (doc *documentFromReader) Reader() (io.ReadCloser, error) {
+	return io.NopCloser(doc.r), nil
+}
+
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = Document(new(documentFromPath))
 	_ = Document(new(documentFromString))
 	_ = Document(new(documentFromBytes))
+	_ = Document(new(documentFromReader))
 )
