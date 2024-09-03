@@ -93,6 +93,10 @@ func (req *request) SetBasicAuth(username, password string) {
 	req.httpHeaders[authorizationHeader] = "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
+func (req *request) SetBearerToken(token string) {
+	req.httpHeaders[authorizationHeader] = "Bearer " + token
+}
+
 func (req *request) formValues() map[string]string {
 	return req.values
 }
