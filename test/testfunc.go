@@ -2,12 +2,16 @@
 package test
 
 import (
+	"bufio"
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -64,4 +68,62 @@ func abs(t *testing.T, kind, filename string) string {
 	path, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s/%s", path.Dir(gofilename), kind, filename))
 	require.Nil(t, err, `getting the absolute path of "%s"`, filename)
 	return path
+}
+
+// IsPDF checks if the given file is a PDF file by looking for the PDF header.
+func IsPDF(filePath string) (bool, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	buffer := make([]byte, 5)
+	_, err = file.Read(buffer)
+	if err != nil {
+		return false, err
+	}
+
+	if bytes.Equal(buffer, []byte("%PDF-")) {
+		return true, nil
+	}
+	return false, nil
+}
+
+// IsPDFA checks if the given PDF file is PDF/A compliant
+func IsPDFA(filePath string) (bool, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "pdfaid:part") {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+// IsPDFUA checks if the given PDF file is PDF/UA compliant
+func IsPDFUA(filePath string) (bool, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "pdfuaid:part") {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

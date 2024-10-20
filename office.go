@@ -4,6 +4,14 @@ import (
 	"strconv"
 )
 
+type PdfAFormat string
+
+const (
+	PdfA1b PdfAFormat = "PDF/A-1b"
+	PdfA2b PdfAFormat = "PDF/A-2b"
+	PdfA3b PdfAFormat = "PDF/A-3b"
+)
+
 const (
 	formFieldLandscapeOffice                 string = "landscape"
 	formFieldPageRangesOffice                string = "pageRanges"
@@ -20,6 +28,13 @@ const (
 	formFieldExportHiddenSlides              string = "exportHiddenSlides"
 	formFieldSkipEmptyPages                  string = "skipEmptyPages"
 	formFieldAddOriginalDocumentAsStream     string = "addOriginalDocumentAsStream"
+	formFieldMerge                           string = "merge"
+	formFieldPdfa                            string = "pdfa"
+	formFieldPdfUa                           string = "pdfua"
+	formFieldLosslessImageCompression        string = "losslessImageCompression"
+	formFieldQuality                         string = "quality"
+	formFieldReduceImageResolution           string = "reduceImageResolution"
+	formFieldMaxImageResolution              string = "maxImageResolution"
 )
 
 // OfficeRequest facilitates Office documents
@@ -116,6 +131,41 @@ func (req *OfficeRequest) SkipEmptyPages() {
 // Specify that a stream is inserted to the PDF file which contains the original document for archiving purposes.
 func (req *OfficeRequest) AddOriginalDocumentAsStream() {
 	req.values[formFieldAddOriginalDocumentAsStream] = strconv.FormatBool(true)
+}
+
+// Merge alphanumerically the resulting PDFs.
+func (req *OfficeRequest) Merge() {
+	req.values[formFieldMerge] = strconv.FormatBool(true)
+}
+
+// Convert the resulting PDF into the given PDF/A format.
+func (req *OfficeRequest) PdfA(pdfa PdfAFormat) {
+	req.values[formFieldPdfa] = string(pdfa)
+}
+
+// Enable PDF for Universal Access for optimal accessibility.
+func (req *OfficeRequest) PdfUA() {
+	req.values[formFieldPdfUa] = strconv.FormatBool(true)
+}
+
+// Specify if images are exported to PDF using a lossless compression format like PNG or compressed using the JPEG format.
+func (req *OfficeRequest) LosslessImageCompression() {
+	req.values[formFieldLosslessImageCompression] = strconv.FormatBool(true)
+}
+
+// Specify the quality of the JPG export. A higher value produces a higher-quality image and a larger file. Between 1 and 100.
+func (req *OfficeRequest) Quality(quality int) {
+	req.values[formFieldQuality] = strconv.Itoa(quality)
+}
+
+// Specify if the resolution of each image is reduced to the resolution specified by the form field maxImageResolution.
+func (req *OfficeRequest) ReduceImageResolution() {
+	req.values[formFieldReduceImageResolution] = strconv.FormatBool(true)
+}
+
+// If the form field reduceImageResolution is set to true, tell if all images will be reduced to the given value in DPI. Possible values are: 75, 150, 300, 600 and 1200.
+func (req *OfficeRequest) MaxImageResolution(maxImageResolution int) {
+	req.values[formFieldMaxImageResolution] = strconv.Itoa(maxImageResolution)
 }
 
 func (req *OfficeRequest) postURL() string {

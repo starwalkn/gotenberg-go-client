@@ -24,6 +24,9 @@ func TestHTML(t *testing.T) {
 	err = c.Store(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
@@ -40,6 +43,9 @@ func TestHTMLFromString(t *testing.T) {
 	err = c.Store(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
@@ -56,6 +62,9 @@ func TestHTMLFromBytes(t *testing.T) {
 	err = c.Store(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
@@ -73,6 +82,9 @@ func TestHTMLFromReader(t *testing.T) {
 	err = c.Store(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
@@ -109,6 +121,9 @@ func TestHTMLComplete(t *testing.T) {
 	err = c.Store(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
@@ -153,6 +168,46 @@ func TestHTMLScreenshot(t *testing.T) {
 	err = c.StoreScreenshot(req, dest)
 	assert.Nil(t, err)
 	assert.FileExists(t, dest)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}
+
+func TestHTMLPdfA(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	index, err := NewDocumentFromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	require.Nil(t, err)
+	req := NewHTMLRequest(index)
+	req.SetBasicAuth("foo", "bar")
+	req.PdfA(PdfA3b)
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	isPDFA, err := test.IsPDFA(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDFA)
+	err = os.RemoveAll(dirPath)
+	assert.Nil(t, err)
+}
+
+func TestHTMLPdfUA(t *testing.T) {
+	c := &Client{Hostname: "http://localhost:3000"}
+	index, err := NewDocumentFromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	require.Nil(t, err)
+	req := NewHTMLRequest(index)
+	req.SetBasicAuth("foo", "bar")
+	req.PdfUA()
+	dirPath, err := test.Rand()
+	require.Nil(t, err)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
+	assert.Nil(t, err)
+	assert.FileExists(t, dest)
+	isPDFUA, err := test.IsPDFUA(dest)
+	assert.Nil(t, err)
+	assert.True(t, isPDFUA)
 	err = os.RemoveAll(dirPath)
 	assert.Nil(t, err)
 }
