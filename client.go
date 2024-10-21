@@ -225,7 +225,7 @@ func writeNewFile(fpath string, in io.Reader) error {
 	if err != nil {
 		return fmt.Errorf("%s: creating new file: %v", fpath, err)
 	}
-	defer out.Close() // nolint: errcheck
+	defer out.Close() //nolint: errcheck
 	err = out.Chmod(0644)
 	if err != nil && runtime.GOOS != "windows" {
 		return fmt.Errorf("%s: changing file mode: %v", fpath, err)
@@ -245,13 +245,13 @@ func fileExists(name string) bool {
 func multipartForm(req Request) (*bytes.Buffer, string, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	defer writer.Close() // nolint: errcheck
+	defer writer.Close() //nolint: errcheck
 	for filename, document := range req.formFiles() {
 		in, err := document.Reader()
 		if err != nil {
 			return nil, "", fmt.Errorf("%s: creating reader: %v", filename, err)
 		}
-		defer in.Close() // nolint: errcheck
+		defer in.Close() //nolint: errcheck
 		part, err := writer.CreateFormFile("files", filename)
 		if err != nil {
 			return nil, "", fmt.Errorf("%s: creating form file: %v", filename, err)
