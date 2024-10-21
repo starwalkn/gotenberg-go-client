@@ -256,3 +256,13 @@ func (req *chromeRequest) Format(format ImageFormat) {
 func (req *chromeRequest) Metadata(jsonData []byte) {
 	req.values[formFieldMetadata] = string(jsonData)
 }
+
+// Convert the resulting PDF into the given PDF/A format.
+func (req *chromeRequest) PdfA(pdfa PdfAFormat) {
+	req.values[formFieldPdfa] = string(pdfa)
+}
+
+// Enable PDF for Universal Access for optimal accessibility.
+func (req *chromeRequest) PdfUA() {
+	req.values[formFieldPdfUa] = strconv.FormatBool(true)
+}
