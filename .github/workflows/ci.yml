@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
+
+      - name: Run make lint
+        run: make lint
+
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:20.10.7
+        options: --privileged  # Позволяет запускать контейнеры внутри runner'а
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      - name: Run make tests
+        run: make tests
