@@ -7,6 +7,7 @@ import (
 type PdfAFormat string
 
 const (
+	// Deprecated: Beginning with version 7.6, LibreOffice has discontinued support for PDF/A-1a
 	PdfA1b PdfAFormat = "PDF/A-1b"
 	PdfA2b PdfAFormat = "PDF/A-2b"
 	PdfA3b PdfAFormat = "PDF/A-3b"
