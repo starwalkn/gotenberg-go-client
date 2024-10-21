@@ -15,6 +15,11 @@ import (
 	"strconv"
 )
 
+var (
+	errWebhookNotAllowed = errors.New("cannot use Store method with a webhook")
+	errGenerationFailed  = errors.New("failed to generate the result PDF")
+)
+
 const (
 	resultFilename              string = "resultFilename"
 	waitTimeout                 string = "waitTimeout"
@@ -139,7 +144,7 @@ func (c *Client) Store(req Request, dest string) error {
 // The created HTTP request can be canceled by the passed context.
 func (c *Client) StoreContext(ctx context.Context, req Request, dest string) error {
 	if hasWebhook(req) {
-		return errors.New("cannot use Store method with a webhook")
+		return errWebhookNotAllowed
 	}
 
 	resp, err := c.PostContext(ctx, req)
@@ -149,7 +154,7 @@ func (c *Client) StoreContext(ctx context.Context, req Request, dest string) err
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("failed to generate the result PDF" + resp.Status)
+		return fmt.Errorf("%w: %s", errGenerationFailed, resp.Status)
 	}
 	return writeNewFile(dest, resp.Body)
 }

@@ -7,7 +7,7 @@ import (
 type PdfAFormat string
 
 const (
-	// Deprecated: Beginning with version 7.6, LibreOffice has discontinued support for PDF/A-1a
+	// Deprecated: Beginning with version 7.6, LibreOffice has discontinued support for PDF/A-1a.
 	PdfA1b PdfAFormat = "PDF/A-1b"
 	PdfA2b PdfAFormat = "PDF/A-2b"
 	PdfA3b PdfAFormat = "PDF/A-3b"
@@ -65,7 +65,7 @@ func (req *OfficeRequest) Metadata(jsonData []byte) {
 	req.values[formFieldMetadata] = string(jsonData)
 }
 
-// Specify whether multiple form fields exported are allowed to have the same field name.false
+// Specify whether multiple form fields exported are allowed to have the same field name.false.
 func (req *OfficeRequest) AllowDuplicateFieldNames() {
 	req.values[formFieldAllowDuplicateFieldNames] = strconv.FormatBool(true)
 }

@@ -90,7 +90,7 @@ func IsPDF(filePath string) (bool, error) {
 	return false, nil
 }
 
-// IsPDFA checks if the given PDF file is PDF/A compliant
+// IsPDFA checks if the given PDF file is PDF/A compliant.
 func IsPDFA(filePath string) (bool, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -109,7 +109,7 @@ func IsPDFA(filePath string) (bool, error) {
 	return false, nil
 }
 
-// IsPDFUA checks if the given PDF file is PDF/UA compliant
+// IsPDFUA checks if the given PDF file is PDF/UA compliant.
 func IsPDFUA(filePath string) (bool, error) {
 	file, err := os.Open(filePath)
 	if err != nil {

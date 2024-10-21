@@ -19,7 +19,7 @@ const (
 	formFieldScale                string = "scale"
 	formFieldSkipNetworkIdleEvent string = "skipNetworkIdleEvent"
 	formFieldSinglePage           string = "singlePage"
-	formFieldPreferCssPageSize    string = "preferCssPageSize"
+	formFieldPreferCSSPageSize    string = "preferCssPageSize"
 	formFieldPrintBackground      string = "printBackground"
 	formFieldOmitBackground       string = "omitBackground"
 	formFieldFormat               string = "format"
@@ -233,7 +233,7 @@ func (req *chromeRequest) SinglePage() {
 
 // Prefer page size as defined by CSS.
 func (req *chromeRequest) PreferCssPageSize() {
-	req.values[formFieldPreferCssPageSize] = strconv.FormatBool(true)
+	req.values[formFieldPreferCSSPageSize] = strconv.FormatBool(true)
 }
 
 // Print the background graphics.

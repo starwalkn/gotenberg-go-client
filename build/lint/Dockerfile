@@ -32,4 +32,4 @@ COPY go.sum .
 # Install module dependencies.
 RUN go mod download
 
-CMD [ "golangci-lint", "run" ,"--tests=false", "--enable-all", "--disable=dupl", "--disable=wsl", "--disable=nolintlint" ]
+CMD [ "golangci-lint", "run" ,"--tests=false", "--enable-all", "--disable=dupl", "--disable=wsl", "--disable=nolintlint", "--disable=var-naming" ]
