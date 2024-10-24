@@ -1,270 +1,146 @@
 package gotenberg
 
 import (
-	"bytes"
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
-	"strconv"
 )
 
-const (
-	resultFilename              string = "resultFilename"
-	waitTimeout                 string = "waitTimeout"
-	webhookURL                  string = "webhookURL"
-	webhookURLTimeout           string = "webhookURLTimeout"
-	webhookURLBaseHTTPHeaderKey string = "Gotenberg-Webhookurl-"
-	authorizationHeader         string = "Authorization"
+var (
+	errEmptyHostname     = errors.New("empty hostname")
+	errWebhookNotAllowed = errors.New("webhook is not allowed for request")
+	errGenerationFailed  = errors.New("resulting file could not be generated")
+	errSendRequestFailed = errors.New("request sending failed")
 )
 
-// Client facilitates interacting with
-// the Gotenberg API.
+// MainRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
+type MainRequester interface {
+	endpoint() string
+
+	baseRequester
+}
+
+// Client facilitates interacting with the Gotenberg API.
 type Client struct {
-	Hostname   string
-	HTTPClient *http.Client
+	hostname   string
+	httpClient *http.Client
 }
 
-// Request is a type for sending
-// form values and form files to
-// the Gotenberg API.
-type Request interface {
-	postURL() string
-	customHTTPHeaders() map[string]string
-	formValues() map[string]string
-	formFiles() map[string]Document
-}
-
-type Screenshoter interface {
-	Request
-	screenshotURL() string
-}
-
-type request struct {
-	httpHeaders map[string]string
-	values      map[string]string
-}
-
-func newRequest() *request {
-	return &request{
-		httpHeaders: make(map[string]string),
-		values:      make(map[string]string),
+func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
+	if httpClient == nil {
+		httpClient = http.DefaultClient
 	}
+
+	if hostname == "" {
+		return nil, errEmptyHostname
+	}
+
+	return &Client{
+		hostname:   hostname,
+		httpClient: httpClient,
+	}, nil
 }
 
-// ResultFilename sets resultFilename form field.
-func (req *request) ResultFilename(filename string) {
-	req.values[resultFilename] = filename
+// Post sends a request to the Gotenberg API and returns the response.
+func (c *Client) Post(req MainRequester) (*http.Response, error) {
+	return c.post(context.Background(), req)
 }
 
-// WaitTimeout sets waitTimeout form field.
-func (req *request) WaitTimeout(timeout float64) {
-	req.values[waitTimeout] = strconv.FormatFloat(timeout, 'f', 2, 64)
-}
+func (c *Client) post(ctx context.Context, r MainRequester) (*http.Response, error) {
+	c.ensureClient()
 
-// WebhookURL sets webhookURL form field.
-func (req *request) WebhookURL(url string) {
-	req.values[webhookURL] = url
-}
-
-// WebhookURLTimeout sets webhookURLTimeout form field.
-func (req *request) WebhookURLTimeout(timeout float64) {
-	req.values[webhookURLTimeout] = strconv.FormatFloat(timeout, 'f', 2, 64)
-}
-
-// AddWebhookURLHTTPHeader add a webhook custom HTTP header.
-func (req *request) AddWebhookURLHTTPHeader(key, value string) {
-	key = fmt.Sprintf("%s%s", webhookURLBaseHTTPHeaderKey, key)
-	req.httpHeaders[key] = value
-}
-
-func (req *request) customHTTPHeaders() map[string]string {
-	return req.httpHeaders
-}
-
-func (req *request) SetBasicAuth(username, password string) {
-	auth := username + ":" + password
-	req.httpHeaders[authorizationHeader] = "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
-}
-
-func (req *request) formValues() map[string]string {
-	return req.values
-}
-
-// Post sends a request to the Gotenberg API
-// and returns the response.
-func (c *Client) Post(req Request) (*http.Response, error) {
-	return c.PostContext(context.Background(), req)
-}
-
-// PostContext sends a request to the Gotenberg API
-// and returns the response.
-// The created HTTP request can be canceled by the passed context.
-func (c *Client) PostContext(ctx context.Context, req Request) (*http.Response, error) {
-	body, contentType, err := multipartForm(req)
+	req, err := c.createRequest(ctx, r, r.endpoint())
 	if err != nil {
 		return nil, err
 	}
-	if c.HTTPClient == nil {
-		c.HTTPClient = &http.Client{}
-	}
-	URL := fmt.Sprintf("%s%s", c.Hostname, req.postURL())
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, URL, body)
+
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errSendRequestFailed
 	}
-	httpReq.Header.Set("Content-Type", contentType)
-	for key, value := range req.customHTTPHeaders() {
-		httpReq.Header.Set(key, value)
-	}
-	resp, err := c.HTTPClient.Do(httpReq) /* #nosec */
-	if err != nil {
-		return nil, err
-	}
+
 	return resp, nil
 }
 
 // Store creates the resulting file to given destination.
-func (c *Client) Store(req Request, dest string) error {
-	return c.StoreContext(context.Background(), req, dest)
+func (c *Client) Store(req MainRequester, dest string) error {
+	return c.store(context.Background(), req, dest)
 }
 
-// StoreContext creates the resulting file to given destination.
-// The created HTTP request can be canceled by the passed context.
-func (c *Client) StoreContext(ctx context.Context, req Request, dest string) error {
+func (c *Client) store(ctx context.Context, req MainRequester, dest string) error {
 	if hasWebhook(req) {
-		return errors.New("cannot use Store method with a webhook")
+		return errWebhookNotAllowed
 	}
 
-	resp, err := c.PostContext(ctx, req)
+	resp, err := c.post(ctx, req)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("failed to generate the result PDF" + resp.Status)
+		return fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
 	}
+
 	return writeNewFile(dest, resp.Body)
-}
-
-func (c *Client) Screenshot(scr Screenshoter) (*http.Response, error) {
-	return c.ScreenshotContext(context.Background(), scr)
-}
-
-// ScreenshotContext sends a request to the Gotenberg API
-// and returns the response.
-// The created HTTP request can be canceled by the passed context.
-func (c *Client) ScreenshotContext(ctx context.Context, scr Screenshoter) (*http.Response, error) {
-	body, contentType, err := multipartForm(scr)
-	if err != nil {
-		return nil, err
-	}
-	if c.HTTPClient == nil {
-		c.HTTPClient = &http.Client{}
-	}
-	URL := fmt.Sprintf("%s%s", c.Hostname, scr.screenshotURL())
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, URL, body)
-	if err != nil {
-		return nil, err
-	}
-	httpReq.Header.Set("Content-Type", contentType)
-	for key, value := range scr.customHTTPHeaders() {
-		httpReq.Header.Set(key, value)
-	}
-	resp, err := c.HTTPClient.Do(httpReq) /* #nosec */
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-// StoreScreenshot creates the resulting file to given destination.
-func (c *Client) StoreScreenshot(req Screenshoter, dest string) error {
-	return c.StoreScreenshotContext(context.Background(), req, dest)
-}
-
-// StoreScreenshotContext creates the resulting file to given destination.
-// The created HTTP request can be canceled by the passed context.
-func (c *Client) StoreScreenshotContext(ctx context.Context, scr Screenshoter, dest string) error {
-	if hasWebhook(scr) {
-		return errors.New("cannot use StoreScreenshot method with a webhook")
-	}
-
-	resp, err := c.ScreenshotContext(ctx, scr)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return errors.New("failed to generate the result PDF" + resp.Status)
-	}
-	return writeNewFile(dest, resp.Body)
-}
-
-func hasWebhook(req Request) bool {
-	webhookURL, ok := req.formValues()[webhookURL]
-	if !ok {
-		return false
-	}
-	return webhookURL != ""
 }
 
 func writeNewFile(fpath string, in io.Reader) error {
-	if err := os.MkdirAll(filepath.Dir(fpath), 0755); err != nil {
-		return fmt.Errorf("%s: making directory for file: %v", fpath, err)
+	if err := os.MkdirAll(filepath.Dir(fpath), 0o755); err != nil {
+		return fmt.Errorf("making %s directory: %w", fpath, err)
 	}
+
 	out, err := os.Create(fpath)
 	if err != nil {
-		return fmt.Errorf("%s: creating new file: %v", fpath, err)
+		return fmt.Errorf("creating %s: %w", fpath, err)
 	}
-	defer out.Close() // nolint: errcheck
-	err = out.Chmod(0644)
-	if err != nil && runtime.GOOS != "windows" {
-		return fmt.Errorf("%s: changing file mode: %v", fpath, err)
+	defer func() {
+		if closeErr := out.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("closing %s: %w", fpath, closeErr)
+		}
+	}()
+
+	if err = out.Chmod(0o644); err != nil && runtime.GOOS != "windows" {
+		return fmt.Errorf("setting %s permissions: %w", fpath, err)
 	}
-	_, err = io.Copy(out, in)
-	if err != nil {
-		return fmt.Errorf("%s: writing file: %v", fpath, err)
+
+	if _, err = io.Copy(out, in); err != nil {
+		return fmt.Errorf("writing to %s: %w", fpath, err)
 	}
+
 	return nil
 }
 
-func fileExists(name string) bool {
-	_, err := os.Stat(name)
-	return !os.IsNotExist(err)
+func (c *Client) ensureClient() {
+	if c.httpClient == nil {
+		c.httpClient = &http.Client{}
+	}
 }
 
-func multipartForm(req Request) (*bytes.Buffer, string, error) {
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	defer writer.Close() // nolint: errcheck
-	for filename, document := range req.formFiles() {
-		in, err := document.Reader()
-		if err != nil {
-			return nil, "", fmt.Errorf("%s: creating reader: %v", filename, err)
-		}
-		defer in.Close() // nolint: errcheck
-		part, err := writer.CreateFormFile("files", filename)
-		if err != nil {
-			return nil, "", fmt.Errorf("%s: creating form file: %v", filename, err)
-		}
-		_, err = io.Copy(part, in)
-		if err != nil {
-			return nil, "", fmt.Errorf("%s: copying data: %v", filename, err)
-		}
+func (c *Client) createRequest(ctx context.Context, br baseRequester, endpoint string) (*http.Request, error) {
+	body, contentType, err := multipartForm(br)
+	if err != nil {
+		return nil, err
 	}
-	for name, value := range req.formValues() {
-		if err := writer.WriteField(name, value); err != nil {
-			return nil, "", fmt.Errorf("%s: writing form field: %v", name, err)
-		}
+
+	url := fmt.Sprintf("%s%s", c.hostname, endpoint)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
 	}
-	return body, writer.FormDataContentType(), nil
+
+	req.Header.Set("Content-Type", contentType)
+	for key, value := range br.customHeaders() {
+		req.Header.Set(string(key), value)
+	}
+
+	return req, nil
 }

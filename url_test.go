@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -13,79 +14,84 @@ import (
 )
 
 func TestURL(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
 	req := NewURLRequest("http://example.com")
-	req.SetBasicAuth("foo", "bar")
+	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(req, dest)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestURLComplete(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
+	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
-	req.SetBasicAuth("foo", "bar")
-	header, err := NewDocumentFromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
-	require.Nil(t, err)
+	req.UseBasicAuth("foo", "bar")
+	header, err := FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	require.NoError(t, err)
 	req.Header(header)
-	footer, err := NewDocumentFromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
-	require.Nil(t, err)
+	footer, err := FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	require.NoError(t, err)
 	req.Footer(footer)
-	req.ResultFilename("foo.pdf")
-	req.WaitTimeout(5)
+	req.OutputFilename("foo.pdf")
 	req.WaitDelay(1 * time.Second)
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
-	req.Landscape(false)
-	req.AddRemoteURLHTTPHeader("A-Header", "Foo")
 	dirPath, err := test.Rand()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(req, dest)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestURLPageRanges(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
+	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
-	req.SetBasicAuth("foo", "bar")
-	req.PageRanges("1-1")
+	req.UseBasicAuth("foo", "bar")
+	req.NativePageRanges("1-1")
 	resp, err := c.Post(req)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
 func TestURLWebhook(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+	test.WebhookServer()
+
+	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
-	req.SetBasicAuth("foo", "bar")
-	req.WebhookURL("https://google.com")
-	req.WebhookURLTimeout(5.0)
-	req.AddWebhookURLHTTPHeader("A-Header", "Foo")
+	req.UseBasicAuth("foo", "bar")
+	req.UseWebhook("https://localhost:8080/webhook", "https://localhost:8080/webhook")
 	resp, err := c.Post(req)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
 func TestURLScreenshot(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
+	require.NoError(t, err)
 	req := NewURLRequest("https://example.com")
-	req.SetBasicAuth("foo", "bar")
+	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	req.Format(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
 	err = c.StoreScreenshot(req, dest)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }

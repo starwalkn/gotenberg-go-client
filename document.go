@@ -2,14 +2,16 @@ package gotenberg
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 )
 
-// Document reprents a file which
-// will be send to the Gotenberg API.
+var errEmptyContent = errors.New("empty content passed")
+
+// Document represents a file which will be sent to the Gotenberg API.
 type Document interface {
 	Filename() string
 	Reader() (io.ReadCloser, error)
@@ -29,23 +31,24 @@ type documentFromPath struct {
 	*document
 }
 
-// NewDocumentFromPath creates a Document from
-// a file path.
-func NewDocumentFromPath(filename, fpath string) (Document, error) {
+// FromPath creates a Document from a file path.
+func FromPath(fname, fpath string) (Document, error) {
 	if !fileExists(fpath) {
-		return nil, fmt.Errorf("%s: file %s does not exist", fpath, filename)
+		return nil, fmt.Errorf("file %s does not exist in %s", fname, fpath)
 	}
+
 	return &documentFromPath{
-		fpath,
-		&document{filename},
+		fpath:    fpath,
+		document: &document{filename: fname},
 	}, nil
 }
 
 func (doc *documentFromPath) Reader() (io.ReadCloser, error) {
 	in, err := os.Open(doc.fpath)
 	if err != nil {
-		return nil, fmt.Errorf("%s: opening file: %v", doc.Filename(), err)
+		return nil, fmt.Errorf("opening file %s: %w", doc.Filename(), err)
 	}
+
 	return in, nil
 }
 
@@ -55,15 +58,15 @@ type documentFromString struct {
 	*document
 }
 
-// NewDocumentFromString creates a Document from
-// a string.
-func NewDocumentFromString(filename, data string) (Document, error) {
+// FromString creates a Document from a string.
+func FromString(fname, data string) (Document, error) {
 	if len(data) == 0 {
-		return nil, fmt.Errorf("%s: string is empty", filename)
+		return nil, fmt.Errorf("%s: %w", fname, errEmptyContent)
 	}
+
 	return &documentFromString{
-		data,
-		&document{filename},
+		data:     data,
+		document: &document{fname},
 	}, nil
 }
 
@@ -77,15 +80,15 @@ type documentFromBytes struct {
 	*document
 }
 
-// NewDocumentFromBytes creates a Document from
-// bytes.
-func NewDocumentFromBytes(filename string, data []byte) (Document, error) {
+// FromBytes creates a Document from bytes.
+func FromBytes(fname string, data []byte) (Document, error) {
 	if len(data) == 0 {
-		return nil, fmt.Errorf("%s: bytes are empty", filename)
+		return nil, fmt.Errorf("%s: %w", fname, errEmptyContent)
 	}
+
 	return &documentFromBytes{
-		data,
-		&document{filename},
+		data:     data,
+		document: &document{fname},
 	}, nil
 }
 
@@ -99,20 +102,26 @@ type documentFromReader struct {
 	*document
 }
 
-// NewDocumentFromReader creates a Document from
-// a reader.
-func NewDocumentFromReader(filename string, r io.Reader) (Document, error) {
+// FromReader creates a Document from a reader.
+func FromReader(fname string, r io.Reader) (Document, error) {
 	if r == nil {
-		return nil, fmt.Errorf("%s: reader is nil", filename)
+		return nil, fmt.Errorf("%s: %w", fname, errEmptyContent)
 	}
+
 	return &documentFromReader{
-		r,
-		&document{filename},
+		r:        r,
+		document: &document{fname},
 	}, nil
 }
 
 func (doc *documentFromReader) Reader() (io.ReadCloser, error) {
 	return io.NopCloser(doc.r), nil
+}
+
+func fileExists(name string) bool {
+	_, err := os.Stat(name)
+
+	return !os.IsNotExist(err)
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

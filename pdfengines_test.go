@@ -3,6 +3,7 @@ package gotenberg
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 
@@ -13,50 +14,53 @@ import (
 )
 
 func TestMerge(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
-	pdf1, err := NewDocumentFromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.Nil(t, err)
-	pdf2, err := NewDocumentFromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.Nil(t, err)
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
+	require.NoError(t, err)
+	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
+	pdf2, err := FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
 	req := NewMergeRequest(pdf1, pdf2)
-	req.SetBasicAuth("foo", "bar")
-	req.ResultFilename("foo.pdf")
-	req.WaitTimeout(5)
+	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
 	dirPath, err := test.Rand()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(req, dest)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestMergeWebhook(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
-	pdf1, err := NewDocumentFromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.Nil(t, err)
-	pdf2, err := NewDocumentFromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.Nil(t, err)
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+	test.WebhookServer()
+
+	require.NoError(t, err)
+	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
+	pdf2, err := FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
 	req := NewMergeRequest(pdf1, pdf2)
-	req.SetBasicAuth("foo", "bar")
-	req.WebhookURL("https://google.com")
-	req.WebhookURLTimeout(5.0)
-	req.AddWebhookURLHTTPHeader("A-Header", "Foo")
+	req.UseBasicAuth("foo", "bar")
+	req.UseWebhook("https://localhost:8080/webhook", "https://localhost:8080/webhook")
 	resp, err := c.Post(req)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
 func TestReadWriteMetadata(t *testing.T) {
-	c := &Client{Hostname: "http://localhost:3000"}
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+
+	require.NoError(t, err)
 	// WRITE
-	pdf1, err := NewDocumentFromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.Nil(t, err)
+	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
 	reqWrite := NewWriteMetadataRequest(pdf1)
-	reqWrite.SetBasicAuth("foo", "bar")
-	reqWrite.ResultFilename("foo.pdf")
-	reqWrite.WaitTimeout(5)
+	reqWrite.UseBasicAuth("foo", "bar")
+	reqWrite.OutputFilename("foo.pdf")
 
 	writeDataStruct := struct {
 		Author    string `json:"Author"`
@@ -67,36 +71,35 @@ func TestReadWriteMetadata(t *testing.T) {
 	}
 
 	writeData, err := json.Marshal(writeDataStruct)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	reqWrite.Metadata(writeData)
 
 	dirPath, err := test.Rand()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(reqWrite, dest)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
 	// READ
-	pdf2, err := NewDocumentFromPath("foo.pdf", dest)
-	require.Nil(t, err)
+	pdf2, err := FromPath("foo.pdf", dest)
+	require.NoError(t, err)
 	reqRead := NewReadMetadataRequest(pdf2)
-	reqRead.SetBasicAuth("foo", "bar")
-	reqRead.ResultFilename("foo.pdf")
-	reqRead.WaitTimeout(5)
+	reqRead.UseBasicAuth("foo", "bar")
+	reqRead.OutputFilename("foo.pdf")
 	respRead, err := c.Post(reqRead)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 200, respRead.StatusCode)
 
 	var readData exifData
 	err = json.NewDecoder(respRead.Body).Decode(&readData)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	expected := exifData{
 		FooPdf: writeDataStruct,
 	}
 	assert.Equal(t, expected, readData)
 	err = os.RemoveAll(dirPath)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }
 
 type exifData struct {

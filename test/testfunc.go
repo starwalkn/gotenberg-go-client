@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -22,52 +23,52 @@ func Rand() (string, error) {
 	randBytes := make([]byte, 16)
 	_, err := rand.Read(randBytes)
 	if err != nil {
-		return "", fmt.Errorf("creating random string: %v", err)
+		return "", fmt.Errorf("creating random string: %w", err)
 	}
+
 	return hex.EncodeToString(randBytes), nil
 }
 
-// HTMLTestFilePath returns the absolute file path
-// of a file in "html" folder in test/testdata.
+// HTMLTestFilePath returns the absolute file path of a file in "html" folder in test/testdata.
 func HTMLTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "html", filename)
 }
 
-// URLTestFilePath returns the absolute file path
-// of a file in "url" folder in test/testdata.
+// URLTestFilePath returns the absolute file path of a file in "url" folder in test/testdata.
 func URLTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "url", filename)
 }
 
-// MarkdownTestFilePath returns the absolute file path
-// of a file in "markdown" folder in test/testdata.
+// MarkdownTestFilePath returns the absolute file path of a file in "markdown" folder in test/testdata.
 func MarkdownTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "markdown", filename)
 }
 
-// OfficeTestFilePath returns the absolute file path
-// of a file in "office" folder in test/testdata.
+// OfficeTestFilePath returns the absolute file path of a file in "office" folder in test/testdata.
 func OfficeTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "office", filename)
 }
 
-// PDFTestFilePath returns the absolute file path
-// of a file in "pdf" folder in test/testdata.
+// PDFTestFilePath returns the absolute file path of a file in "pdf" folder in test/testdata.
 func PDFTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "pdf", filename)
 }
 
 func abs(t *testing.T, kind, filename string) string {
 	_, gofilename, _, ok := runtime.Caller(0)
-	require.Equal(t, ok, true, "got no caller information")
+	require.True(t, ok, "got no caller information")
+
 	if filename == "" {
-		path, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s", path.Dir(gofilename), kind))
-		require.Nil(t, err, `getting the absolute path of "%s"`, kind)
-		return path
+		fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s", path.Dir(gofilename), kind))
+		require.NoError(t, err, `getting the absolute path of "%s"`, kind)
+
+		return fpath
 	}
-	path, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s/%s", path.Dir(gofilename), kind, filename))
-	require.Nil(t, err, `getting the absolute path of "%s"`, filename)
-	return path
+
+	fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s/%s", path.Dir(gofilename), kind, filename))
+	require.NoError(t, err, `getting the absolute path of "%s"`, filename)
+
+	return fpath
 }
 
 // IsPDF checks if the given file is a PDF file by looking for the PDF header.
@@ -87,10 +88,11 @@ func IsPDF(filePath string) (bool, error) {
 	if bytes.Equal(buffer, []byte("%PDF-")) {
 		return true, nil
 	}
+
 	return false, nil
 }
 
-// IsPDFA checks if the given PDF file is PDF/A compliant
+// IsPDFA checks if the given PDF file is PDF/A compliant.
 func IsPDFA(filePath string) (bool, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -109,7 +111,7 @@ func IsPDFA(filePath string) (bool, error) {
 	return false, nil
 }
 
-// IsPDFUA checks if the given PDF file is PDF/UA compliant
+// IsPDFUA checks if the given PDF file is PDF/UA compliant.
 func IsPDFUA(filePath string) (bool, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -126,4 +128,19 @@ func IsPDFUA(filePath string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func webhookHandler(w http.ResponseWriter, r *http.Request) {
+	// Просто возвращаем статус 200 и сообщение
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Webhook received successfully!")
+}
+
+func WebhookServer() {
+	// Маршрут для вебхука
+	http.HandleFunc("/webhook", webhookHandler)
+
+	// Запуск сервера на порту 8080
+	fmt.Println("Server is listening on port 8080...")
+	http.ListenAndServe(":8080", nil)
 }

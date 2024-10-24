@@ -1,55 +1,48 @@
 package gotenberg
 
-import "fmt"
-
 const (
-	formFieldURL               string = "url"
-	remoteURLBaseHTTPHeaderKey string = "Gotenberg-Remoteurl-"
+	endpointURLConvert    = "/forms/chromium/convert/url"
+	endpointURLScreenshot = "/forms/chromium/screenshot/url"
 )
 
-// URLRequest facilitates remote URL conversion
-// with the Gotenberg API.
+// URLRequest facilitates remote URL conversion with the Gotenberg API.
 type URLRequest struct {
-	*chromeRequest
+	*chromiumRequest
 }
 
-// NewURLRequest create URLRequest.
 func NewURLRequest(url string) *URLRequest {
-	req := &URLRequest{newChromeRequest()}
-	req.values[formFieldURL] = url
+	req := &URLRequest{newChromiumRequest()}
+	req.fields[fieldURL] = url
+
 	return req
 }
 
-func (req *URLRequest) Metadata(jsonData []byte) {
-	req.values[formFieldMetadata] = string(jsonData)
+func (req *URLRequest) endpoint() string {
+	return endpointURLConvert
 }
 
-func (req *URLRequest) postURL() string {
-	return "/forms/chromium/convert/url"
+func (req *URLRequest) screenshotEndpoint() string {
+	return endpointURLScreenshot
 }
 
-func (req *URLRequest) screenshotURL() string {
-	return "/forms/chromium/screenshot/url"
-}
-
-// AddRemoteURLHTTPHeader add a remote URL custom HTTP header.
-func (req *URLRequest) AddRemoteURLHTTPHeader(key, value string) {
-	key = fmt.Sprintf("%s%s", remoteURLBaseHTTPHeaderKey, key)
-	req.httpHeaders[key] = value
-}
-
-func (req *URLRequest) formFiles() map[string]Document {
+func (req *URLRequest) formDocuments() map[string]Document {
 	files := make(map[string]Document)
+
 	if req.header != nil {
 		files["header.html"] = req.header
 	}
 	if req.footer != nil {
 		files["footer.html"] = req.footer
 	}
+
 	return files
+}
+
+func (req *URLRequest) Metadata(jsonData []byte) {
+	req.fields[fieldMetadata] = string(jsonData)
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = Request(new(URLRequest))
+	_ = MainRequester(new(URLRequest))
 )
