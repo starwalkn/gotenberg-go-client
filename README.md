@@ -14,7 +14,7 @@ $ go get -u github.com/runatal/gotenberg-go-client
 
 ### Create the client and prepare files
 
-```golang
+```go
 package main
 
 import (
