@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 type chromiumRequest struct {
-	header Document
-	footer Document
+	header document.Document
+	footer document.Document
 
 	*baseRequest
 }
@@ -130,12 +132,12 @@ func (req *chromiumRequest) NativePageRanges(ranges string) {
 }
 
 // Header adds a header to each page.
-func (req *chromiumRequest) Header(header Document) {
+func (req *chromiumRequest) Header(header document.Document) {
 	req.header = header
 }
 
 // Footer adds a footer to each page.
-func (req *chromiumRequest) Footer(footer Document) {
+func (req *chromiumRequest) Footer(footer document.Document) {
 	req.footer = footer
 }
 

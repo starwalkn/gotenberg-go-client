@@ -1,4 +1,4 @@
-package gotenberg
+package document
 
 import (
 	"bytes"

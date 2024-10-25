@@ -1,196 +1,204 @@
-<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+<p align="center">
+    <h1 align="center">Gotenberg Go Client</h1>
+    <p align="center">The Go client for interacting with a Gotenberg API. This project is a further development of the <a href="https://github.com/thecodingmachine/gotenberg-go-client">client from TheCodingMachine</a>, which does not support the new functionality since version 7 of Gotenberg.
+    </p>
+</p>
 
-- [Gotenberg Go Client](#gotenberg-go-client)
-   * [Install](#install)
-   * [Usage](#usage)
-      + [First steps](#first-steps)
-         - [Create the client](#create-the-client)
-         - [Prepare files](#prepare-files)
-      + [Generating PDF from HTML](#generating-pdf-from-html)
-      + [Read and write EXIF metadata](#read-and-write-exif-metadata)
-         - [Write](#write)
-         - [Read](#read)
-      + [Making screenshots](#making-screenshots)
-   * [Badges](#badges)
+---
 
-<!-- TOC end -->
+## Installation
 
-<!-- TOC --><a name="gotenberg-go-client"></a>
-# Gotenberg Go Client
-**🔥 Supports Gotenberg version 8 and higher! 🔥**
+> [!IMPORTANT]
+> Sometimes beta versions are released, which may contain both new functionality and changes incompatible with previous versions of the client. When installing beta versions, read the release notes carefully!
 
-A simple Go client for interacting with a Gotenberg API. This project is a further development of the client github.com/thecodingmachine/gotenberg-go-client, which does not support the functionality of version 8.
+To get the latest version of the client:
 
-<!-- TOC --><a name="install"></a>
-## Install
-
-```bash
-$ go get -u github.com/dcaraxes/gotenberg-go-client/v8
+```zsh
+$ go get github.com/dcaraxes/gotenberg-go-client@latest
 ```
 
-<!-- TOC --><a name="usage"></a>
-## Usage
+## Usage examples
 
-<!-- TOC --><a name="first-steps"></a>
-### First steps
+### Create a client and prepare the files
 
-<!-- TOC --><a name="create-the-client"></a>
-#### Create the client
-```golang
+```go
 package main
 
 import (
-	"net/http"
-	"time"
-
-	"github.com/dcaraxes/gotenberg-go-client/v8"
+    "os"
+	
+    "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
-    // Create the HTTP-client.
-    httpClient := &http.Client{
-		Timeout: 5*time.Second,
-    }
-    // Create the Gotenberg client
-    client := &gotenberg.Client{Hostname: "http://localhost:3000", HTTPClient: httpClient}
+    // Create the Gotenberg client.
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+
+    // There are several ways to create documents.
+    f1, err := document.FromPath("data.pdf", "/path/to/file")
+    f2, err := document.FromString("index.html", "<html>Foo</html>")
+    f3, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
+
+    r, err := os.Open("index.html")
+    f4, err := document.FromReader("index.html", r)
 }
 ```
 
-<!-- TOC --><a name="prepare-files"></a>
-#### Prepare files
-```golang
-// From a path.
-pdf, _ := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
+### Converting PDF to HTML
 
-// From a string.
-index, _ := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
+> [!TIP]
+> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
 
-// From a bytes.
-index, _ := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+```go
+package main
 
-// From io.Reader.
-r, err := os.Open("index.html")
-index, _ := gotenberg.NewDocumentFromReader("index.html", r)
-```
+import (
+    "net/http"
+    
+    "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
+)
 
-<!-- TOC --><a name="generating-pdf-from-html"></a>
-### Generating PDF from HTML
-```golang
-// Creates the Gotenberg documents from a files paths.
-index, _ := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
+func main() {
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-header, _ := gotenberg.NewDocumentFromPath("header.html", "/path/to/file")
-footer, _ := gotenberg.NewDocumentFromPath("footer.html", "/path/to/file")
-style, _ := gotenberg.NewDocumentFromPath("style.css", "/path/to/file")
-img, _ := gotenberg.NewDocumentFromPath("img.png", "/path/to/file")
+    // Creates the Gotenberg documents from a files paths.
+    index, err := document.FromPath("index.html", "/path/to/file")
+    style, err := document.FromPath("style.css", "/path/to/file")
+    img, err := document.FromPath("img.png", "/path/to/file")
 
-// Create the HTML request.
-req := gotenberg.NewHTMLRequest(index)
-// Setting up basic auth (if needed).
-req.SetBasicAuth("your_username", "your_password")
+    // Create the HTML request.
+    req := gotenberg.NewHTMLRequest(index)
 
-// Set the document parameters.
-req.Header(header)
-req.Footer(footer)
-req.Assets(style, img)
-req.Margins(gotenberg.NoMargins)
-req.Scale(0.75)
-req.PaperSize(gotenberg.A4)
-// Optional, you can change paper and margins size unit. For example:
-paperSize := gotenberg.PaperDimensions{
-    Height: 17,
-    Width: 11,
-    // IN - inches. Other available units are PT (Points), PX (Pixels), 
-    // MM (Millimeters), CM (Centimeters), PC (Picas).
-    Unit: gotenberg.IN,
+    // Setting up basic auth (if needed).
+    req.UseBasicAuth("username", "password")
+
+    // Set the document parameters to request (optional).
+    req.Assets(style, img)
+    req.Margins(gotenberg.NoMargins)
+    req.Scale(0.75)
+    req.PaperSize(gotenberg.A4)
+
+    // Skips the IDLE events for faster PDF conversion.
+    req.SkipNetworkIdleEvent()
+
+    // Store method allows you to store the resulting PDF in a particular destination.
+    client.Store(req, "path/to/store.pdf")
+
+    // If you wish to redirect the response directly to the browser, you may also use:
+    resp, err := client.Send(req)
 }
-req.PaperSize(paperSize)
 
-// Skips the IDLE events for faster PDF conversion.
-req.SkipNetworkIdleEvent()
-
-// Store method allows you to store the resulting PDF in a particular destination.
-client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
-
-// If you wish to redirect the response directly to the browser, you may also use:
-resp, _ := client.Post(req)
 ```
 
-<!-- TOC --><a name="read-and-write-exif-metadata"></a>
-### Read and write EXIF metadata
+### Working with metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
-<!-- TOC --><a name="write"></a>
-#### Write
-```golang
-// Prepare the files required for your conversion.
-pdfFile, err := NewDocumentFromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-req := gotenberg.NewWriteMetadataRequest(pdfFile)
-req.SetBasicAuth("your_username", "your_password")
-// Sets result file name.
-req.ResultFilename("foo.pdf")
+### Writing metadata:
 
-writeDataStruct := struct {
-    Author    string `json:"Author"`
-    Copyright string `json:"Copyright"`
-}{
-    Author:    "Author name",
-    Copyright: "Copyright",
-}
+> [!TIP]
+> You can write metadata to PDF for any request using the Metadata method.
 
-jsonMetadata, _ := json.Marshal(writeDataStruct)
-req.Metadata(jsonMetadata)
-_ = client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
+```go
+package main
 
-resp, _ := client.Post(req)
-```
+import (
+    "net/http"
 
-<!-- TOC --><a name="read"></a>
-#### Read
-```golang
-// Prepare the files required for your conversion.
-pdfFile, err := NewDocumentFromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-req := gotenberg.NewReadMetadataRequest(pdfFile)
-req.SetBasicAuth("your_username", "your_password")
-// Sets result filename
-req.ResultFilename("foo.pdf")
+    "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
+)
 
-// This response body contains JSON-formatted EXIF metadata.
-respRead, _ := client.Post(req)
+func main() {
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	
+    // Prepare the files required for your conversion.
+    doc, err := document.FromPath("filename.ext", "/path/to/file")
+    req := gotenberg.NewWriteMetadataRequest(doc)
 
-var readData = struct {
-    FooPdf struct {
+    // Sets result file name.
+    req.OutputFilename("foo.pdf")
+
+    data := struct {
         Author    string `json:"Author"`
         Copyright string `json:"Copyright"`
-    } `json:"foo.pdf"`
+    }{
+        Author:    "Author name",
+        Copyright: "Copyright",
+    }
+
+    md, err := json.Marshal(data)
+    req.Metadata(md)
+
+    resp, err := client.Send(req)
 }
-// Marshal metadata into a struct.
-_ = json.NewDecoder(respRead.Body).Decode(&readData)
 ```
 
-<!-- TOC --><a name="making-screenshots"></a>
-### Making screenshots
-Making screenshots only available for HTML, URL and Markdown requests.
-```golang
-index, _ := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
+### Reading metadata:
 
-// Create the HTML request.
-req := gotenberg.NewHTMLRequest(index)
-req.SetBasicAuth("your_username", "your_password")
-// Set image format.
-req.Format(gotenberg.JPEG) // PNG, JPEG and WebP available now
+```go
+package main
 
-// Store to path.
-client.StoreScreenshot(req, "path/you/want/the/pdf/to/be/stored.jpeg")
-// Or get response directly.
-resp, _ := client.Screenshot(req)
+import (
+    "encoding/json"
+    "net/http"
+
+    "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
+)
+
+func main() {
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+
+    // Prepare the files required for your conversion.
+    doc, err := document.FromPath("filename.ext", "/path/to/file")
+    req := gotenberg.NewReadMetadataRequest(doc)
+
+    resp, err := client.Send(req)
+
+    var data = struct {
+        FooPdf struct {
+            Author    string `json:"Author"`
+            Copyright string `json:"Copyright"`
+        } `json:"foo.pdf"`
+    }
+
+    // Decode metadata into a struct.
+    err = json.NewDecoder(resp.Body).Decode(&data)
+}
+
 ```
 
+### Creating screenshots
 
-For more complete usages, head to the [documentation](https://gotenberg.dev/).
+> [!NOTE]
+> Screenshot creation is only available for HTML, URL and Markdown requests.
 
-<!-- TOC --><a name="badges"></a>
-## Badges
+```go
+package main
 
-[![GoDoc](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8?status.svg)](https://godoc.org/github.com/dcaraxes/gotenberg-go-client/v8)
-[![Go Report Card](https://goreportcard.com/badge/github.com/dcaraxes/gotenberg-go-client/v8)](https://goreportcard.com/report/github.com/dcaraxes/gotenberg-go-client/v8)
+import (
+    "net/http"
+
+    "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
+)
+
+func main() {
+    c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+
+    index, err := document.FromPath("index.html", "/path/to/file")
+
+    // Create the HTML request and set the image format (optional).
+    req := gotenberg.NewHTMLRequest(index)
+    req.Format(gotenberg.JPEG)
+
+    resp, err := client.Screenshot(req)
+}
+
+```
+
+---
+
+**For more complete usages, head to the [documentation](https://gotenberg.dev/).**

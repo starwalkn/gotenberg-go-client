@@ -10,13 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8/test"
+	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/test"
 )
 
 func TestHTML(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -36,7 +37,7 @@ func TestHTML(t *testing.T) {
 func TestHTMLFromString(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromString("index.html", "<html>Foo</html>")
+	index, err := document.FromString("index.html", "<html>Foo</html>")
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -56,7 +57,7 @@ func TestHTMLFromString(t *testing.T) {
 func TestHTMLFromBytes(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromBytes("index.html", []byte("<html>Foo</html>"))
+	index, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -78,7 +79,7 @@ func TestHTMLFromReader(t *testing.T) {
 	require.NoError(t, err)
 	r, err := os.Open(test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
-	index, err := FromReader("index.html", r)
+	index, err := document.FromReader("index.html", r)
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -98,21 +99,21 @@ func TestHTMLFromReader(t *testing.T) {
 func TestHTMLComplete(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
-	header, err := FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
-	footer, err := FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
 	req.Footer(footer)
-	font, err := FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
+	font, err := document.FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
 	require.NoError(t, err)
-	img, err := FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
+	img, err := document.FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
 	require.NoError(t, err)
-	style, err := FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
+	style, err := document.FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
 	require.NoError(t, err)
 	req.Assets(font, img, style)
 	req.OutputFilename("foo.pdf")
@@ -136,12 +137,12 @@ func TestHTMLComplete(t *testing.T) {
 func TestHTMLPageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", nil)
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Post(req)
+	resp, err := c.Send(req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
@@ -149,7 +150,7 @@ func TestHTMLPageRanges(t *testing.T) {
 func TestHTMLScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -167,7 +168,7 @@ func TestHTMLScreenshot(t *testing.T) {
 func TestHTMLPdfA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")
@@ -188,7 +189,7 @@ func TestHTMLPdfA(t *testing.T) {
 func TestHTMLPdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	index, err := FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.UseBasicAuth("foo", "bar")

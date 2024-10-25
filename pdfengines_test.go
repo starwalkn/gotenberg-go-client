@@ -10,16 +10,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8/test"
+	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/test"
 )
 
 func TestMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
-	pdf2, err := FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	pdf2, err := document.FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 	req := NewMergeRequest(pdf1, pdf2)
 	req.UseBasicAuth("foo", "bar")
@@ -39,7 +40,7 @@ func TestReadWriteMetadata(t *testing.T) {
 
 	require.NoError(t, err)
 	// WRITE
-	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 	reqWrite := NewWriteMetadataRequest(pdf1)
 	reqWrite.UseBasicAuth("foo", "bar")
@@ -65,12 +66,12 @@ func TestReadWriteMetadata(t *testing.T) {
 	assert.FileExists(t, dest)
 
 	// READ
-	pdf2, err := FromPath("foo.pdf", dest)
+	pdf2, err := document.FromPath("foo.pdf", dest)
 	require.NoError(t, err)
 	reqRead := NewReadMetadataRequest(pdf2)
 	reqRead.UseBasicAuth("foo", "bar")
 	reqRead.OutputFilename("foo.pdf")
-	respRead, err := c.Post(reqRead)
+	respRead, err := c.Send(reqRead)
 	require.NoError(t, err)
 	assert.Equal(t, 200, respRead.StatusCode)
 

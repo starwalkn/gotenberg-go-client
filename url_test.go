@@ -10,7 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8/test"
+	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/test"
 )
 
 func TestURL(t *testing.T) {
@@ -34,10 +35,10 @@ func TestURLComplete(t *testing.T) {
 	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
-	header, err := FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
-	footer, err := FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
 	req.Footer(footer)
 	req.OutputFilename("foo.pdf")
@@ -61,7 +62,7 @@ func TestURLPageRanges(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Post(req)
+	resp, err := c.Send(req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }

@@ -1,5 +1,7 @@
 package gotenberg
 
+import "github.com/dcaraxes/gotenberg-go-client/document"
+
 const (
 	endpointURLConvert    = "/forms/chromium/convert/url"
 	endpointURLScreenshot = "/forms/chromium/screenshot/url"
@@ -25,8 +27,8 @@ func (req *URLRequest) screenshotEndpoint() string {
 	return endpointURLScreenshot
 }
 
-func (req *URLRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (req *URLRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 
 	if req.header != nil {
 		files["header.html"] = req.header

@@ -1,12 +1,14 @@
 package gotenberg
 
+import "github.com/dcaraxes/gotenberg-go-client/document"
+
 type WriteMetadataRequest struct {
-	pdfs []Document
+	pdfs []document.Document
 
 	*baseRequest
 }
 
-func NewWriteMetadataRequest(pdfs ...Document) *WriteMetadataRequest {
+func NewWriteMetadataRequest(pdfs ...document.Document) *WriteMetadataRequest {
 	return &WriteMetadataRequest{
 		pdfs:        pdfs,
 		baseRequest: newBaseRequest(),
@@ -17,8 +19,8 @@ func (wmd *WriteMetadataRequest) endpoint() string {
 	return "/forms/pdfengines/metadata/write"
 }
 
-func (wmd *WriteMetadataRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (wmd *WriteMetadataRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 
 	for _, pdf := range wmd.pdfs {
 		files[pdf.Filename()] = pdf

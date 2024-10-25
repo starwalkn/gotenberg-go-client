@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+
+	"github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func multipartForm(r baseRequester) (body *bytes.Buffer, contentType string, err error) {
@@ -38,7 +40,7 @@ func addFormFields(writer *multipart.Writer, formFields map[formField]string) er
 	return nil
 }
 
-func addDocuments(writer *multipart.Writer, documents map[string]Document) error {
+func addDocuments(writer *multipart.Writer, documents map[string]document.Document) error {
 	for fname, doc := range documents {
 		in, err := doc.Reader()
 		if err != nil {
