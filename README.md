@@ -12,7 +12,7 @@ $ go get -u github.com/runatal/gotenberg-go-client
 
 ## First steps
 
-### Create the client and prepare files
+### Create a client and prepare the files
 
 ```go
 package main
@@ -38,7 +38,7 @@ func main() {
 }
 ```
 
-### Generating PDF from HTML
+### Converting PDF to HTML
 
 > [!TIP]
 > Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
@@ -88,7 +88,8 @@ func main() {
 ### Working with metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
-#### Write
+#### Writing metadata
+
 > [!TIP]
 > You can write metadata to PDF for any request using the Metadata method.
 
@@ -120,15 +121,15 @@ func main() {
         Copyright: "Copyright",
     }
 
-    jsonMetadata, err := json.Marshal(data)
-    req.Metadata(jsonMetadata)
+    md, err := json.Marshal(data)
+    req.Metadata(md)
     err = client.Store(req, "path/to/store.pdf")
 
     resp, err := client.Send(req)
 }
 ```
 
-#### Read
+#### Reading metadata
 
 ```go
 package main
@@ -165,6 +166,7 @@ func main() {
 ```
 
 ### Creating screenshots
+
 > [!NOTE]
 > Screenshot creation is only available for html, url and markdown queries.
 
