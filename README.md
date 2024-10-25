@@ -24,13 +24,14 @@ import (
 )
 
 func main() {
-	// Create the Gotenberg client.
+    // Create the Gotenberg client.
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
     // There are several ways to create documentsю
     f1, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
     f2, err := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
     f3, err := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+
     r, err := os.Open("index.html")
     f4, err := gotenberg.NewDocumentFromReader("index.html", r)
 }
@@ -45,39 +46,39 @@ func main() {
 package main
 
 import (
-	"net/http"
+    "net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client"
 )
 
 func main() {
-	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-	// Creates the Gotenberg documents from a files paths.
-	index, err := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
-	style, err := gotenberg.NewDocumentFromPath("style.css", "/path/to/file")
-	img, err := gotenberg.NewDocumentFromPath("img.png", "/path/to/file")
+    // Creates the Gotenberg documents from a files paths.
+    index, err := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
+    style, err := gotenberg.NewDocumentFromPath("style.css", "/path/to/file")
+    img, err := gotenberg.NewDocumentFromPath("img.png", "/path/to/file")
 
-	// Create the HTML request.
-	req := gotenberg.NewHTMLRequest(index)
+    // Create the HTML request.
+    req := gotenberg.NewHTMLRequest(index)
 
-	// Setting up basic auth (if needed).
-	req.UseBasicAuth("username", "password")
+    // Setting up basic auth (if needed).
+    req.UseBasicAuth("username", "password")
 
-	// Set the document parameters to request (optional).
-	req.Assets(style, img)
-	req.Margins(gotenberg.NoMargins)
-	req.Scale(0.75)
-	req.PaperSize(gotenberg.A4)
+    // Set the document parameters to request (optional).
+    req.Assets(style, img)
+    req.Margins(gotenberg.NoMargins)
+    req.Scale(0.75)
+    req.PaperSize(gotenberg.A4)
 
-	// Skips the IDLE events for faster PDF conversion.
-	req.SkipNetworkIdleEvent()
+    // Skips the IDLE events for faster PDF conversion.
+    req.SkipNetworkIdleEvent()
 
-	// Store method allows you to store the resulting PDF in a particular destination.
-	client.Store(req, "path/to/store.pdf")
+    // Store method allows you to store the resulting PDF in a particular destination.
+    client.Store(req, "path/to/store.pdf")
 
-	// If you wish to redirect the response directly to the browser, you may also use:
-	resp, err := client.Post(req)
+    // If you wish to redirect the response directly to the browser, you may also use:
+    resp, err := client.Post(req)
 }
 
 ```
@@ -93,34 +94,34 @@ Reading metadata available only for PDF files, but you can write metadata to all
 package main
 
 import (
-	"net/http"
+    "net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client"
 )
 
 func main() {
-	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
-	// Prepare the files required for your conversion.
-	doc, err := NewDocumentFromPath("filename.ext", "/path/to/file")
-	req := gotenberg.NewWriteMetadataRequest(doc)
+    // Prepare the files required for your conversion.
+    doc, err := NewDocumentFromPath("filename.ext", "/path/to/file")
+    req := gotenberg.NewWriteMetadataRequest(doc)
 
-	// Sets result file name.
-	req.OutputFilename("foo.pdf")
+    // Sets result file name.
+    req.OutputFilename("foo.pdf")
 
-	data := struct {
-		Author    string `json:"Author"`
-		Copyright string `json:"Copyright"`
-	}{
-		Author:    "Author name",
-		Copyright: "Copyright",
-	}
+    data := struct {
+        Author    string `json:"Author"`
+        Copyright string `json:"Copyright"`
+    }{
+        Author:    "Author name",
+        Copyright: "Copyright",
+    }
 
-	jsonMetadata, err := json.Marshal(data)
-	req.Metadata(jsonMetadata)
-	err = client.Store(req, "path/to/store.pdf")
+    jsonMetadata, err := json.Marshal(data)
+    req.Metadata(jsonMetadata)
+    err = client.Store(req, "path/to/store.pdf")
 
-	resp, err := client.Post(req)
+    resp, err := client.Post(req)
 }
 ```
 
@@ -130,31 +131,31 @@ func main() {
 package main
 
 import (
-	"encoding/json"
-	"net/http"
+    "encoding/json"
+    "net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client"
 )
 
 func main() {
-	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-	// Prepare the files required for your conversion.
-	doc, err := gotenberg.NewDocumentFromPath("filename.ext", "/path/to/file")
-	req := gotenberg.NewReadMetadataRequest(doc)
+    // Prepare the files required for your conversion.
+    doc, err := gotenberg.NewDocumentFromPath("filename.ext", "/path/to/file")
+    req := gotenberg.NewReadMetadataRequest(doc)
 
-	// This response body contains JSON-formatted EXIF metadata.
-	resp, err := client.Post(req)
+    // This response body contains JSON-formatted EXIF metadata.
+    resp, err := client.Post(req)
 
-	var data = struct {
-		FooPdf struct {
-			Author    string `json:"Author"`
-			Copyright string `json:"Copyright"`
-		} `json:"foo.pdf"`
-	}
+    var data = struct {
+        FooPdf struct {
+            Author    string `json:"Author"`
+            Copyright string `json:"Copyright"`
+        } `json:"foo.pdf"`
+    }
 
-	// Marshal metadata into a struct.
-	err = json.NewDecoder(resp.Body).Decode(&data)
+    // Marshal metadata into a struct.
+    err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
 ```
@@ -166,26 +167,26 @@ Making screenshots only available for HTML, URL and Markdown requests.
 package main
 
 import (
-	"net/http"
+    "net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client"
 )
 
 func main() {
-	c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-	index, _ := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
+    index, err := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
 
-	// Create the HTML request.
-	req := gotenberg.NewHTMLRequest(index)
+    // Create the HTML request.
+    req := gotenberg.NewHTMLRequest(index)
 
-	// Set image format.
-	req.Format(gotenberg.JPEG)
+    // Set image format.
+    req.Format(gotenberg.JPEG)
 
-	// Store to path.
-	client.StoreScreenshot(req, "path/to/store.jpeg")
-	// Or get response directly.
-	resp, err := client.Screenshot(req)
+    // Store to path.
+    client.StoreScreenshot(req, "path/to/store.jpeg")
+    // Or get response directly.
+    resp, err := client.Screenshot(req)
 }
 
 ```
