@@ -85,7 +85,7 @@ func main() {
 
 ```
 
-### Read and write EXIF metadata
+### Working with metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
 #### Write
@@ -164,8 +164,9 @@ func main() {
 
 ```
 
-### Making screenshots
-Making screenshots only available for HTML, URL and Markdown requests.
+### Creating screenshots
+> [!NOTE]
+> Screenshot creation is only available for html, url and markdown queries.
 
 ```go
 package main
