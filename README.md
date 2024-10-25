@@ -10,15 +10,9 @@ newer.
 $ go get -u github.com/runatal/gotenberg-go-client
 ```
 
----
-
 ## First steps
 
----
-
 ### Create the client and prepare files
-
----
 
 ```golang
 package main
@@ -51,8 +45,6 @@ func main() {
 
 > [!TIP]
 > Head to the [documentation](https://gotenberg.dev/) to learn about all possibilities.
-
----
 
 ```golang
 package main
@@ -100,8 +92,6 @@ func main() {
 
 ### Read and write EXIF metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
-
----
 
 #### Write
 ```golang
@@ -183,8 +173,6 @@ func main() {
 
 ### Making screenshots
 Making screenshots only available for HTML, URL and Markdown requests.
-
----
 
 ```golang
 package main
