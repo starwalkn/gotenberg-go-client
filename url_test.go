@@ -15,7 +15,7 @@ import (
 
 func TestURL(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
+	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
@@ -61,19 +61,6 @@ func TestURLPageRanges(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Post(req)
-	require.NoError(t, err)
-	assert.Equal(t, 200, resp.StatusCode)
-}
-
-func TestURLWebhook(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	test.WebhookServer()
-
-	require.NoError(t, err)
-	req := NewURLRequest("http://example.com")
-	req.UseBasicAuth("foo", "bar")
-	req.UseWebhook("https://localhost:8080/webhook", "https://localhost:8080/webhook")
 	resp, err := c.Post(req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)

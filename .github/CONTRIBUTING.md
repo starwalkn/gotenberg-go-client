@@ -10,7 +10,7 @@ find below useful information about how to contribute to the Gotenberg project.
 1. Install and run the latest version of Docker
 2. Verify your Go version (>= 1.12)
 3. Fork this repository
-4. Clone it outside of your `GOPATH` (we're using Go modules)
+4. Clone it outside your `GOPATH` (we're using Go modules)
 
 ### Working with git
 
