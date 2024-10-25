@@ -25,7 +25,7 @@ import (
 
 func main() {
 	// Create the Gotenberg client.
-	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
 	pdf, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
 
