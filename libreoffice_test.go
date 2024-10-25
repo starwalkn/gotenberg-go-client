@@ -10,14 +10,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8/test"
+	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/test"
 )
 
 func TestOffice(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
@@ -42,7 +43,7 @@ func TestOfficePageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
@@ -56,7 +57,7 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
@@ -79,7 +80,7 @@ func TestOfficeCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
@@ -104,9 +105,9 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
 	require.NoError(t, err)
-	doc1, err := FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc1, doc2)
 	req.UseBasicAuth("foo", "bar")
@@ -144,9 +145,9 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 func TestOfficeMultipleWithMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	doc1, err := FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc1, doc2)
 	req.UseBasicAuth("foo", "bar")
@@ -168,7 +169,7 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 func TestOfficePdfA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
@@ -190,7 +191,7 @@ func TestOfficePdfA(t *testing.T) {
 func TestOfficePdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
-	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")

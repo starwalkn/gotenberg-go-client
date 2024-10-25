@@ -3,12 +3,14 @@ package gotenberg
 import (
 	"encoding/base64"
 	"net/http"
+
+	"github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 type baseRequester interface {
 	customHeaders() map[httpHeader]string
 	formFields() map[formField]string
-	formDocuments() map[string]Document
+	formDocuments() map[string]document.Document
 }
 
 type baseRequest struct {

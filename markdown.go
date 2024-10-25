@@ -1,5 +1,7 @@
 package gotenberg
 
+import "github.com/dcaraxes/gotenberg-go-client/document"
+
 const (
 	endpointMarkdownConvert    = "/forms/chromium/convert/markdown"
 	endpointMarkdownScreenshot = "/forms/chromium/screenshot/markdown"
@@ -7,15 +9,15 @@ const (
 
 // MarkdownRequest facilitates Markdown conversion with the Gotenberg API.
 type MarkdownRequest struct {
-	index     Document
-	markdowns []Document
-	assets    []Document
+	index     document.Document
+	markdowns []document.Document
+	assets    []document.Document
 
 	*chromiumRequest
 }
 
-func NewMarkdownRequest(index Document, markdowns ...Document) *MarkdownRequest {
-	return &MarkdownRequest{index, markdowns, []Document{}, newChromiumRequest()}
+func NewMarkdownRequest(index document.Document, markdowns ...document.Document) *MarkdownRequest {
+	return &MarkdownRequest{index, markdowns, []document.Document{}, newChromiumRequest()}
 }
 
 func (req *MarkdownRequest) endpoint() string {
@@ -26,8 +28,8 @@ func (req *MarkdownRequest) screenshotEndpoint() string {
 	return endpointMarkdownScreenshot
 }
 
-func (req *MarkdownRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (req *MarkdownRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 	files["index.html"] = req.index
 	for _, markdown := range req.markdowns {
 		files[markdown.Filename()] = markdown
@@ -46,7 +48,7 @@ func (req *MarkdownRequest) formDocuments() map[string]Document {
 }
 
 // Assets sets assets form files.
-func (req *MarkdownRequest) Assets(assets ...Document) {
+func (req *MarkdownRequest) Assets(assets ...document.Document) {
 	req.assets = assets
 }
 

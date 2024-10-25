@@ -2,18 +2,20 @@ package gotenberg
 
 import (
 	"strconv"
+
+	"github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 const endpointOfficeConvert = "/forms/libreoffice/convert"
 
 // OfficeRequest facilitates LibreOffice documents conversion with the Gotenberg API.
 type OfficeRequest struct {
-	docs []Document
+	docs []document.Document
 
 	*baseRequest
 }
 
-func NewOfficeRequest(docs ...Document) *OfficeRequest {
+func NewOfficeRequest(docs ...document.Document) *OfficeRequest {
 	return &OfficeRequest{
 		docs:        docs,
 		baseRequest: newBaseRequest(),
@@ -24,8 +26,8 @@ func (req *OfficeRequest) endpoint() string {
 	return endpointOfficeConvert
 }
 
-func (req *OfficeRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (req *OfficeRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 	for _, doc := range req.docs {
 		files[doc.Filename()] = doc
 	}

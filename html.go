@@ -1,5 +1,7 @@
 package gotenberg
 
+import "github.com/dcaraxes/gotenberg-go-client/document"
+
 const (
 	endpointHTMLConvert    = "/forms/chromium/convert/html"
 	endpointHTMLScreenshot = "/forms/chromium/screenshot/html"
@@ -7,14 +9,14 @@ const (
 
 // HTMLRequest facilitates HTML conversion with the Gotenberg API.
 type HTMLRequest struct {
-	index  Document
-	assets []Document
+	index  document.Document
+	assets []document.Document
 
 	*chromiumRequest
 }
 
-func NewHTMLRequest(index Document) *HTMLRequest {
-	return &HTMLRequest{index, []Document{}, newChromiumRequest()}
+func NewHTMLRequest(index document.Document) *HTMLRequest {
+	return &HTMLRequest{index, []document.Document{}, newChromiumRequest()}
 }
 
 func (req *HTMLRequest) endpoint() string {
@@ -25,8 +27,8 @@ func (req *HTMLRequest) screenshotEndpoint() string {
 	return endpointHTMLScreenshot
 }
 
-func (req *HTMLRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (req *HTMLRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 	files["index.html"] = req.index
 
 	if req.header != nil {
@@ -44,7 +46,7 @@ func (req *HTMLRequest) formDocuments() map[string]Document {
 }
 
 // Assets sets assets form files.
-func (req *HTMLRequest) Assets(assets ...Document) {
+func (req *HTMLRequest) Assets(assets ...document.Document) {
 	req.assets = assets
 }
 

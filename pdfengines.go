@@ -2,16 +2,18 @@ package gotenberg
 
 import (
 	"strconv"
+
+	"github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 // MergeRequest facilitates work with PDF files with the Gotenberg API.
 type MergeRequest struct {
-	pdfs []Document
+	pdfs []document.Document
 
 	*baseRequest
 }
 
-func NewMergeRequest(pdfs ...Document) *MergeRequest {
+func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
 	return &MergeRequest{pdfs, newBaseRequest()}
 }
 
@@ -19,8 +21,8 @@ func (req *MergeRequest) endpoint() string {
 	return "/forms/pdfengines/merge"
 }
 
-func (req *MergeRequest) formDocuments() map[string]Document {
-	files := make(map[string]Document)
+func (req *MergeRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 
 	for _, pdf := range req.pdfs {
 		files[pdf.Filename()] = pdf
