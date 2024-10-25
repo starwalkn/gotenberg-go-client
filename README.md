@@ -69,7 +69,7 @@ func main() {
 	// Setting up basic auth (if needed).
 	req.UseBasicAuth("username", "password")
 
-	// Set the document parameters (optional).
+	// Set the document parameters to request (optional).
 	req.Assets(style, img)
 	req.Margins(gotenberg.NoMargins)
 	req.Scale(0.75)
@@ -92,6 +92,9 @@ func main() {
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
 #### Write
+> [!TIP]
+> You can write metadata to PDF for any request using the Metadata method.
+
 ```golang
 package main
 
