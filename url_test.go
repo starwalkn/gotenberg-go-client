@@ -15,7 +15,7 @@ import (
 
 func TestURL(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
+	require.NoError(t, err)
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
