@@ -6,7 +6,7 @@ newer.
 
 ## Install
 
-```bash
+```zsh
 $ go get -u github.com/runatal/gotenberg-go-client
 ```
 
