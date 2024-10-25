@@ -10,6 +10,11 @@
 
 ## Installation
 
+> [!IMPORTANT]
+> Sometimes beta versions are released, which may contain both new functionality and changes incompatible with previous versions of the client. When installing beta versions, read the release notes carefully!
+
+To get the latest version of the client:
+
 ```zsh
 $ go get github.com/dcaraxes/gotenberg-go-client@latest
 ```
