@@ -62,7 +62,7 @@ func TestURLPageRanges(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Post(req)
+	resp, err := c.Send(req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }

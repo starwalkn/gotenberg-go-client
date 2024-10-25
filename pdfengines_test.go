@@ -71,7 +71,7 @@ func TestReadWriteMetadata(t *testing.T) {
 	reqRead := NewReadMetadataRequest(pdf2)
 	reqRead.UseBasicAuth("foo", "bar")
 	reqRead.OutputFilename("foo.pdf")
-	respRead, err := c.Post(reqRead)
+	respRead, err := c.Send(reqRead)
 	require.NoError(t, err)
 	assert.Equal(t, 200, respRead.StatusCode)
 

@@ -46,12 +46,12 @@ func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 	}, nil
 }
 
-// Post sends a request to the Gotenberg API and returns the response.
-func (c *Client) Post(req MainRequester) (*http.Response, error) {
-	return c.post(context.Background(), req)
+// Send sends a request to the Gotenberg API and returns the response.
+func (c *Client) Send(req MainRequester) (*http.Response, error) {
+	return c.send(context.Background(), req)
 }
 
-func (c *Client) post(ctx context.Context, r MainRequester) (*http.Response, error) {
+func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, error) {
 	c.ensureClient()
 
 	req, err := c.createRequest(ctx, r, r.endpoint())
@@ -77,7 +77,7 @@ func (c *Client) store(ctx context.Context, req MainRequester, dest string) erro
 		return errWebhookNotAllowed
 	}
 
-	resp, err := c.post(ctx, req)
+	resp, err := c.send(ctx, req)
 	if err != nil {
 		return err
 	}
