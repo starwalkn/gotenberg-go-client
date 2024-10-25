@@ -18,26 +18,26 @@ $ go get -u github.com/runatal/gotenberg-go-client
 package main
 
 import (
-	"os"
+    "os"
 	
-	"github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client"
 )
 
 func main() {
 	// Create the Gotenberg client.
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
-	
-	pdf, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
+    
+    pdf, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
 
-	// From a string.
-	index, err := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
+    // From a string.
+    index, err := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
 
-	// From a bytes.
-	index, err := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+    // From a bytes.
+    index, err := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
 
-	// From io.Reader.
-	r, err := os.Open("index.html")
-	index, err := gotenberg.NewDocumentFromReader("index.html", r)
+    // From io.Reader.
+    r, err := os.Open("index.html")
+    index, err := gotenberg.NewDocumentFromReader("index.html", r)
 }
 ```
 
