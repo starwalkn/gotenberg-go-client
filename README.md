@@ -28,7 +28,7 @@ func main() {
     // Create the Gotenberg client.
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    // There are several ways to create documentsю
+    // There are several ways to create documents.
     f1, err := document.FromPath("data.pdf", "/path/to/file")
     f2, err := document.FromString("index.html", "<html>Foo</html>")
     f3, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
@@ -80,7 +80,7 @@ func main() {
     client.Store(req, "path/to/store.pdf")
 
     // If you wish to redirect the response directly to the browser, you may also use:
-    resp, err := client.Post(req)
+    resp, err := client.Send(req)
 }
 
 ```
@@ -124,7 +124,7 @@ func main() {
     req.Metadata(jsonMetadata)
     err = client.Store(req, "path/to/store.pdf")
 
-    resp, err := client.Post(req)
+    resp, err := client.Send(req)
 }
 ```
 
@@ -149,7 +149,7 @@ func main() {
     req := gotenberg.NewReadMetadataRequest(doc)
 
     // This response body contains JSON-formatted EXIF metadata.
-    resp, err := client.Post(req)
+    resp, err := client.Send(req)
 
     var data = struct {
         FooPdf struct {
