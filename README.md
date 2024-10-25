@@ -21,6 +21,7 @@ import (
     "os"
 	
     "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
@@ -28,12 +29,12 @@ func main() {
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
     // There are several ways to create documentsю
-    f1, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
-    f2, err := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
-    f3, err := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
+    f1, err := document.FromPath("data.pdf", "/path/to/file")
+    f2, err := document.FromString("index.html", "<html>Foo</html>")
+    f3, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
 
     r, err := os.Open("index.html")
-    f4, err := gotenberg.NewDocumentFromReader("index.html", r)
+    f4, err := document.FromReader("index.html", r)
 }
 ```
 
@@ -47,17 +48,18 @@ package main
 
 import (
     "net/http"
-
+    
     "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
     // Creates the Gotenberg documents from a files paths.
-    index, err := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
-    style, err := gotenberg.NewDocumentFromPath("style.css", "/path/to/file")
-    img, err := gotenberg.NewDocumentFromPath("img.png", "/path/to/file")
+    index, err := document.FromPath("index.html", "/path/to/file")
+    style, err := document.FromPath("style.css", "/path/to/file")
+    img, err := document.FromPath("img.png", "/path/to/file")
 
     // Create the HTML request.
     req := gotenberg.NewHTMLRequest(index)
@@ -97,13 +99,14 @@ import (
     "net/http"
 
     "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
     // Prepare the files required for your conversion.
-    doc, err := NewDocumentFromPath("filename.ext", "/path/to/file")
+    doc, err := document.FromPath("filename.ext", "/path/to/file")
     req := gotenberg.NewWriteMetadataRequest(doc)
 
     // Sets result file name.
@@ -135,13 +138,14 @@ import (
     "net/http"
 
     "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
     // Prepare the files required for your conversion.
-    doc, err := gotenberg.NewDocumentFromPath("filename.ext", "/path/to/file")
+    doc, err := document.FromPath("filename.ext", "/path/to/file")
     req := gotenberg.NewReadMetadataRequest(doc)
 
     // This response body contains JSON-formatted EXIF metadata.
@@ -170,12 +174,13 @@ import (
     "net/http"
 
     "github.com/dcaraxes/gotenberg-go-client"
+    "github.com/dcaraxes/gotenberg-go-client/document"
 )
 
 func main() {
     c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    index, err := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
+    index, err := document.FromPath("index.html", "/path/to/file")
 
     // Create the HTML request.
     req := gotenberg.NewHTMLRequest(index)
