@@ -8,13 +8,13 @@
 
 ---
 
-## Install
+## Installation
 
 ```zsh
-$ go get -u github.com/dcaraxes/gotenberg-go-client
+$ go get github.com/dcaraxes/gotenberg-go-client@latest
 ```
 
-## First steps
+## Usage examples
 
 ### Create a client and prepare the files
 
