@@ -44,7 +44,7 @@ func main() {
 ### Generating PDF from HTML
 
 > [!TIP]
-> Head to the [documentation](https://gotenberg.dev/) to learn about all possibilities.
+> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
 
 ```golang
 package main
