@@ -1,4 +1,4 @@
-module github.com/dcaraxes/gotenberg-go-client/v8
+module github.com/dcaraxes/gotenberg-go-client
 
 go 1.23.2
 
