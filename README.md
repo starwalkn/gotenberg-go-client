@@ -17,9 +17,7 @@ To get the latest version of the client:
 $ go get github.com/dcaraxes/gotenberg-go-client@latest
 ```
 
-## Usage examples
-
-### Create a client and prepare the files
+## Preparing a documents
 
 ```go
 package main
@@ -45,7 +43,7 @@ func main() {
 }
 ```
 
-### Converting PDF to HTML
+## Converting PDF to HTML
 
 > [!TIP]
 > Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
@@ -92,7 +90,7 @@ func main() {
 
 ```
 
-### Working with metadata
+## Working with metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
 ### Writing metadata:
@@ -135,7 +133,7 @@ func main() {
 }
 ```
 
-### Reading metadata:
+## Reading metadata:
 
 ```go
 package main
@@ -170,7 +168,7 @@ func main() {
 
 ```
 
-### Creating screenshots
+## Creating screenshots
 
 > [!NOTE]
 > Screenshot creation is only available for HTML, URL and Markdown requests.
