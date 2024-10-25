@@ -7,7 +7,7 @@ newer.
 ## Install
 
 ```zsh
-$ go get -u github.com/runatal/gotenberg-go-client
+$ go get -u github.com/dcaraxes/gotenberg-go-client
 ```
 
 ## First steps
@@ -123,7 +123,6 @@ func main() {
 
     md, err := json.Marshal(data)
     req.Metadata(md)
-    err = client.Store(req, "path/to/store.pdf")
 
     resp, err := client.Send(req)
 }
@@ -149,7 +148,6 @@ func main() {
     doc, err := document.FromPath("filename.ext", "/path/to/file")
     req := gotenberg.NewReadMetadataRequest(doc)
 
-    // This response body contains JSON-formatted EXIF metadata.
     resp, err := client.Send(req)
 
     var data = struct {
@@ -159,7 +157,7 @@ func main() {
         } `json:"foo.pdf"`
     }
 
-    // Marshal metadata into a struct.
+    // Decode metadata into a struct.
     err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
@@ -168,7 +166,7 @@ func main() {
 ### Creating screenshots
 
 > [!NOTE]
-> Screenshot creation is only available for html, url and markdown queries.
+> Screenshot creation is only available for HTML, URL and Markdown requests.
 
 ```go
 package main
@@ -185,15 +183,10 @@ func main() {
 
     index, err := document.FromPath("index.html", "/path/to/file")
 
-    // Create the HTML request.
+    // Create the HTML request and set the image format (optional).
     req := gotenberg.NewHTMLRequest(index)
-
-    // Set image format.
     req.Format(gotenberg.JPEG)
 
-    // Store to path.
-    client.StoreScreenshot(req, "path/to/store.jpeg")
-    // Or get response directly.
     resp, err := client.Screenshot(req)
 }
 
