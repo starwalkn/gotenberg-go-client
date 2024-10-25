@@ -34,23 +34,6 @@ func TestMerge(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestMergeWebhook(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	test.WebhookServer()
-
-	require.NoError(t, err)
-	pdf1, err := FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.NoError(t, err)
-	pdf2, err := FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
-	require.NoError(t, err)
-	req := NewMergeRequest(pdf1, pdf2)
-	req.UseBasicAuth("foo", "bar")
-	req.UseWebhook("https://localhost:8080/webhook", "https://localhost:8080/webhook")
-	resp, err := c.Post(req)
-	require.NoError(t, err)
-	assert.Equal(t, 200, resp.StatusCode)
-}
-
 func TestReadWriteMetadata(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 

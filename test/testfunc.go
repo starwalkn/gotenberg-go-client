@@ -7,7 +7,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -128,19 +127,4 @@ func IsPDFUA(filePath string) (bool, error) {
 	}
 
 	return false, nil
-}
-
-func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	// Просто возвращаем статус 200 и сообщение
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Webhook received successfully!")
-}
-
-func WebhookServer() {
-	// Маршрут для вебхука
-	http.HandleFunc("/webhook", webhookHandler)
-
-	// Запуск сервера на порту 8080
-	fmt.Println("Server is listening on port 8080...")
-	http.ListenAndServe(":8080", nil)
 }

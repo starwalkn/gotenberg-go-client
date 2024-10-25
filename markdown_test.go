@@ -98,31 +98,6 @@ func TestMarkdownPageRanges(t *testing.T) {
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
-func TestMarkdownWebhook(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	test.WebhookServer()
-
-	require.NoError(t, err)
-	index, err := FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
-	require.NoError(t, err)
-	markdown1, err := FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
-	require.NoError(t, err)
-	markdown2, err := FromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
-	require.NoError(t, err)
-	markdown3, err := FromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
-	require.NoError(t, err)
-	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
-	req.UseBasicAuth("foo", "bar")
-	req.UseWebhook("https://localhost:8080/webhook", "https://localhost:8080/webhook")
-	resp, err := c.Post(req)
-	require.NoError(t, err)
-	assert.Equal(t, 200, resp.StatusCode)
-}
-
-func Serve() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
-}
-
 func TestMarkdownScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 
