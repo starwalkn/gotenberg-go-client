@@ -46,7 +46,7 @@ func main() {
 > [!TIP]
 > Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
 
-```golang
+```go
 package main
 
 import (
@@ -74,13 +74,12 @@ func main() {
 	req.Margins(gotenberg.NoMargins)
 	req.Scale(0.75)
 	req.PaperSize(gotenberg.A4)
-	// Optional, you can change paper and margins size unit. For example:
 
 	// Skips the IDLE events for faster PDF conversion.
 	req.SkipNetworkIdleEvent()
 
 	// Store method allows you to store the resulting PDF in a particular destination.
-	client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
+	client.Store(req, "path/to/store.pdf")
 
 	// If you wish to redirect the response directly to the browser, you may also use:
 	resp, err := client.Post(req)
@@ -95,7 +94,7 @@ Reading metadata available only for PDF files, but you can write metadata to all
 > [!TIP]
 > You can write metadata to PDF for any request using the Metadata method.
 
-```golang
+```go
 package main
 
 import (
@@ -108,13 +107,13 @@ func main() {
 	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
 	// Prepare the files required for your conversion.
-	pdfFile, err := NewDocumentFromPath("gotenberg1.pdf", "/path/to/file")
-	req := gotenberg.NewWriteMetadataRequest(pdfFile)
-	req.UseBasicAuth("username", "password")
+	doc, err := NewDocumentFromPath("filename.ext", "/path/to/file")
+	req := gotenberg.NewWriteMetadataRequest(doc)
+
 	// Sets result file name.
 	req.OutputFilename("foo.pdf")
 
-	writeDataStruct := struct {
+	data := struct {
 		Author    string `json:"Author"`
 		Copyright string `json:"Copyright"`
 	}{
@@ -122,9 +121,9 @@ func main() {
 		Copyright: "Copyright",
 	}
 
-	jsonMetadata, err := json.Marshal(writeDataStruct)
+	jsonMetadata, err := json.Marshal(data)
 	req.Metadata(jsonMetadata)
-	err = client.Store(req, "path/you/want/the/pdf/to/be/stored.pdf")
+	err = client.Store(req, "path/to/store.pdf")
 
 	resp, err := client.Post(req)
 }
@@ -132,7 +131,7 @@ func main() {
 
 #### Read
 
-```golang
+```go
 package main
 
 import (
@@ -146,16 +145,13 @@ func main() {
 	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
 	// Prepare the files required for your conversion.
-	pdfFile, err := gotenberg.NewDocumentFromPath("gotenberg1.pdf", "/path/to/file")
-	req := gotenberg.NewReadMetadataRequest(pdfFile)
-	req.UseBasicAuth("username", "password")
-	// Sets result filename
-	req.OutputFilename("foo.pdf")
+	doc, err := gotenberg.NewDocumentFromPath("filename.ext", "/path/to/file")
+	req := gotenberg.NewReadMetadataRequest(doc)
 
 	// This response body contains JSON-formatted EXIF metadata.
-	respRead, err := client.Post(req)
+	resp, err := client.Post(req)
 
-	var readData = struct {
+	var data = struct {
 		FooPdf struct {
 			Author    string `json:"Author"`
 			Copyright string `json:"Copyright"`
@@ -163,7 +159,7 @@ func main() {
 	}
 
 	// Marshal metadata into a struct.
-	err = json.NewDecoder(respRead.Body).Decode(&readData)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
 ```
@@ -171,7 +167,7 @@ func main() {
 ### Making screenshots
 Making screenshots only available for HTML, URL and Markdown requests.
 
-```golang
+```go
 package main
 
 import (
@@ -187,12 +183,12 @@ func main() {
 
 	// Create the HTML request.
 	req := gotenberg.NewHTMLRequest(index)
-	req.UseBasicAuth("username", "password")
+
 	// Set image format.
-	req.Format(gotenberg.JPEG) // PNG, JPEG and WebP available now
+	req.Format(gotenberg.JPEG)
 
 	// Store to path.
-	client.StoreScreenshot(req, "path/you/want/the/pdf/to/be/stored.jpeg")
+	client.StoreScreenshot(req, "path/to/store.jpeg")
 	// Or get response directly.
 	resp, err := client.Screenshot(req)
 }
