@@ -102,7 +102,6 @@ func TestOfficeCompression(t *testing.T) {
 
 func TestOfficeWebhook(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-	test.WebhookServer()
 
 	require.NoError(t, err)
 	doc, err := FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
