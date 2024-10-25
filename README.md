@@ -97,7 +97,7 @@ func main() {
 ### Working with metadata
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
-#### Writing metadata
+### Writing metadata:
 
 > [!TIP]
 > You can write metadata to PDF for any request using the Metadata method.
@@ -137,7 +137,7 @@ func main() {
 }
 ```
 
-#### Reading metadata
+### Reading metadata:
 
 ```go
 package main
