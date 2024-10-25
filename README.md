@@ -56,8 +56,6 @@ import (
 )
 
 func main() {
-	...
-
 	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
 	// Creates the Gotenberg documents from a files paths.
@@ -104,8 +102,6 @@ import (
 )
 
 func main() {
-	...
-
 	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 	
 	// Prepare the files required for your conversion.
@@ -144,8 +140,6 @@ import (
 )
 
 func main() {
-	...
-
 	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
 	// Prepare the files required for your conversion.
@@ -184,8 +178,6 @@ import (
 )
 
 func main() {
-	...
-
 	c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
 	index, _ := gotenberg.NewDocumentFromPath("index.html", "/path/to/file")
