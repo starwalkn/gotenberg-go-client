@@ -26,17 +26,15 @@ import (
 func main() {
 	// Create the Gotenberg client.
     client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
-    
+
+    // There are several ways to create documentsю
     pdf, err := gotenberg.NewDocumentFromPath("data.pdf", "/path/to/file")
 
-    // From a string.
     index, err := gotenberg.NewDocumentFromString("index.html", "<html>Foo</html>")
 
-    // From a bytes.
     index, err := gotenberg.NewDocumentFromBytes("index.html", []byte("<html>Foo</html>"))
-
-    // From io.Reader.
     r, err := os.Open("index.html")
+
     index, err := gotenberg.NewDocumentFromReader("index.html", r)
 }
 ```
