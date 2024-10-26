@@ -89,7 +89,6 @@ func main() {
     req.UseBasicAuth("username", "password")
 
     // Set the document parameters to request (optional).
-    req.Assets(style, img)
     req.Margins(gotenberg.NoMargins)
     req.Scale(0.75)
     req.PaperSize(gotenberg.A4)
