@@ -54,7 +54,7 @@ func main() {
 ## Converting HTML to PDF
 
 > [!TIP]
-> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
+> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters. For the PaperSize method, you can use predefined parameters such as gotenberg.A4, gotenberg.A3 and so on. The full list of predefined parameters can be found in gotenberg-go-client/types.go
 
 > [!IMPORTANT]
 > To use basic authorization, you must run Gotenberg with the --api-enable-basic-auth flag and have GOTENBERG_API_BASIC_AUTH_USERNAME and GOTENBERG_API_BASIC_AUTH_PASSWORD environment variables. 
