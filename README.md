@@ -43,10 +43,13 @@ func main() {
 }
 ```
 
-## Converting PDF to HTML
+## Converting HTML to PDF
 
 > [!TIP]
 > Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters.
+
+> [!IMPORTANT]
+> To use basic authorization, you must run Gotenberg with the --api-enable-basic-auth flag and have GOTENBERG_API_BASIC_AUTH_USERNAME and GOTENBERG_API_BASIC_AUTH_PASSWORD environment variables. 
 
 ```go
 package main
