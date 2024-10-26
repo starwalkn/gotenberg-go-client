@@ -8,7 +8,7 @@
 
 |Gotenberg version |Client version                                                                                             | 
 |:----------------:|:---------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|`8.6.0` **(actual)**                                                                                       |                            
+|`8.x` **(actual)**|`8.6.1` **(actual)**                                                                                       |                            
 |`7.x`             |`<= 8.5.0`                                                                                                 |
 |`6.x`             |<a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
@@ -89,7 +89,6 @@ func main() {
     req.UseBasicAuth("username", "password")
 
     // Set the document parameters to request (optional).
-    req.Assets(style, img)
     req.Margins(gotenberg.NoMargins)
     req.Scale(0.75)
     req.PaperSize(gotenberg.A4)
