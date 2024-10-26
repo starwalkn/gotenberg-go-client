@@ -6,11 +6,11 @@
 
 ---
 
-|   Gotenberg version     | Client stable   | Client beta   |         Status            | 
-|:-----------------------:|:---------------:|:-------------:|:-------------------------:|
-|  `8.x` **(current)**    |     8.5.0       |  >= 8.6.0     |   **full compilant**      |
-|         `7.x`           |   <= 8.5.0      |    None       | **non-full compilant**    |
-|         `6.x`           |     None        |    None       |   **full compilant**      |
+|   Gotenberg version     | Client stable   | 
+|:-----------------------:|:---------------:|
+|  `8.x` **(current)**    |    >= 8.6.0-beta|
+|         `7.x`           |   <= 8.5.0      |
+|         `6.x`           |     <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a>        |
 
 ---
 
