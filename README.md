@@ -6,7 +6,7 @@
 
 ---
 
-|   Gotenberg version     | Client stable                                                                                             | 
+|   Gotenberg version     | Client version                                                                                             | 
 |:-----------------------:|:---------------------------------------------------------------------------------------------------------:|
 |  `8.x` **(current)**    |`8.6.0-beta` **(beta-release)**, `8.5.0` **(non-full compilant)**                                          |                       |                         |                                                                                                           |
 |         `7.x`           | `8.5.0`                                                                                                   |
