@@ -16,8 +16,8 @@ import (
 
 func TestMarkdown(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
@@ -40,8 +40,8 @@ func TestMarkdown(t *testing.T) {
 
 func TestMarkdownComplete(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
@@ -81,8 +81,8 @@ func TestMarkdownComplete(t *testing.T) {
 
 func TestMarkdownPageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
@@ -101,8 +101,8 @@ func TestMarkdownPageRanges(t *testing.T) {
 
 func TestMarkdownScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))

@@ -16,8 +16,8 @@ import (
 
 func TestMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 	pdf2, err := document.FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
@@ -37,9 +37,9 @@ func TestMerge(t *testing.T) {
 
 func TestReadWriteMetadata(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
-	// WRITE
+
+	// Writing metadata.
 	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 	reqWrite := NewWriteMetadataRequest(pdf1)
@@ -65,7 +65,7 @@ func TestReadWriteMetadata(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	// READ
+	// Reading metadata.
 	pdf2, err := document.FromPath("foo.pdf", dest)
 	require.NoError(t, err)
 	reqRead := NewReadMetadataRequest(pdf2)

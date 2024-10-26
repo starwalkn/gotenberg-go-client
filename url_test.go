@@ -17,6 +17,7 @@ import (
 func TestURL(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
+
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
@@ -31,8 +32,8 @@ func TestURL(t *testing.T) {
 
 func TestURLComplete(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
@@ -57,8 +58,8 @@ func TestURLComplete(t *testing.T) {
 
 func TestURLPageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
@@ -69,8 +70,8 @@ func TestURLPageRanges(t *testing.T) {
 
 func TestURLScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	req := NewURLRequest("https://example.com")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()

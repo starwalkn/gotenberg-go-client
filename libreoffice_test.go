@@ -16,8 +16,8 @@ import (
 
 func TestOffice(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
@@ -41,8 +41,8 @@ func TestOffice(t *testing.T) {
 
 func TestOfficePageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
@@ -55,8 +55,8 @@ func TestOfficePageRanges(t *testing.T) {
 
 func TestOfficeLosslessCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
@@ -78,8 +78,8 @@ func TestOfficeLosslessCompression(t *testing.T) {
 
 func TestOfficeCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
@@ -103,8 +103,8 @@ func TestOfficeCompression(t *testing.T) {
 
 func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
-
 	require.NoError(t, err)
+
 	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -145,6 +145,7 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 func TestOfficeMultipleWithMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
+
 	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -169,6 +170,7 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 func TestOfficePdfA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
@@ -191,6 +193,7 @@ func TestOfficePdfA(t *testing.T) {
 func TestOfficePdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
+
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewOfficeRequest(doc)
