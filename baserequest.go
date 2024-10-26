@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"net/http"
 
 	"github.com/dcaraxes/gotenberg-go-client/document"
@@ -84,4 +85,31 @@ func ensureWebhookMethod(method string) string {
 	} else {
 		return http.MethodGet
 	}
+}
+
+// DownloadFrom sets the URLs to download files from.
+// This method accepts a JSON string e.g., [{"url":"http://localhost:80/","extraHttpHeaders":{"X-Foo":"Bar"}}]. For Go,
+// this is equivalent to map[string]map[string]string, which this method accepts.
+// URLs MUST return a Content-Disposition header with a filename parameter.
+func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
+	dfs := make([]downloadFrom, 0, len(downloads))
+
+	for url, headers := range downloads {
+		dfs = append(dfs, downloadFrom{
+			URL:              url,
+			ExtraHTTPHeaders: headers,
+		})
+	}
+
+	marshaled, err := json.Marshal(dfs)
+	if err != nil {
+		return
+	}
+
+	br.fields[fieldDownloadFrom] = string(marshaled)
+}
+
+type downloadFrom struct {
+	URL              string            `json:"url"`
+	ExtraHTTPHeaders map[string]string `json:"extraHttpHeaders"`
 }

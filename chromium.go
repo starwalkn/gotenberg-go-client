@@ -69,6 +69,7 @@ func (req *chromiumRequest) FailOnConsoleExceptions() {
 }
 
 // SkipNetworkIdleEvent specifies whether Chromium have to wait or not for its network to be idle.
+// Enabled by default in Gotenberg >= 8.11.0.
 func (req *chromiumRequest) SkipNetworkIdleEvent() {
 	req.fields[fieldChromiumSkipNetworkIdleEvent] = strconv.FormatBool(true)
 }

@@ -74,11 +74,16 @@ func main() {
 
     // Creates the Gotenberg documents from a files paths.
     index, err := document.FromPath("index.html", "/path/to/file")
-    style, err := document.FromPath("style.css", "/path/to/file")
-    img, err := document.FromPath("img.png", "/path/to/file")
 
     // Create the HTML request.
     req := gotenberg.NewHTMLRequest(index)
+
+    // Loading style and image from the specified urls. 
+    downloads := make(map[string]map[string]string)
+    downloads["http://my.style.css"] = nil
+    downloads["http://my.img.gif"] = map[string]string{"X-Header": "Foo"}
+
+    req.DownloadFrom(downloads)
 
     // Setting up basic auth (if needed).
     req.UseBasicAuth("username", "password")
