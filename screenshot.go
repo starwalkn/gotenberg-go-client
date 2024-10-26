@@ -12,8 +12,8 @@ type ScreenshotRequester interface {
 	baseRequester
 }
 
-func (c *Client) Screenshot(scr ScreenshotRequester) (*http.Response, error) {
-	return c.screenshot(context.Background(), scr)
+func (c *Client) Screenshot(ctx context.Context, scr ScreenshotRequester) (*http.Response, error) {
+	return c.screenshot(ctx, scr)
 }
 
 func (c *Client) screenshot(ctx context.Context, scr ScreenshotRequester) (*http.Response, error) {
@@ -32,8 +32,8 @@ func (c *Client) screenshot(ctx context.Context, scr ScreenshotRequester) (*http
 	return resp, nil
 }
 
-func (c *Client) StoreScreenshot(req ScreenshotRequester, dest string) error {
-	return c.storeScreenshot(context.Background(), req, dest)
+func (c *Client) StoreScreenshot(ctx context.Context, req ScreenshotRequester, dest string) error {
+	return c.storeScreenshot(ctx, req, dest)
 }
 
 func (c *Client) storeScreenshot(ctx context.Context, scr ScreenshotRequester, dest string) error {

@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"archive/zip"
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -26,7 +27,7 @@ func TestOffice(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
@@ -48,7 +49,7 @@ func TestOfficePageRanges(t *testing.T) {
 	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Send(req)
+	resp, err := c.Send(context.Background(), req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
@@ -66,7 +67,7 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
@@ -91,7 +92,7 @@ func TestOfficeCompression(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
@@ -115,7 +116,7 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.zip", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -157,7 +158,7 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
@@ -180,7 +181,7 @@ func TestOfficePdfA(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFA, err := test.IsPDFA(dest)
@@ -203,7 +204,7 @@ func TestOfficePdfUA(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFUA, err := test.IsPDFUA(dest)

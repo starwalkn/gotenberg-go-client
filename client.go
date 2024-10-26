@@ -47,8 +47,8 @@ func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 }
 
 // Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(req MainRequester) (*http.Response, error) {
-	return c.send(context.Background(), req)
+func (c *Client) Send(ctx context.Context, req MainRequester) (*http.Response, error) {
+	return c.send(ctx, req)
 }
 
 func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, error) {
@@ -68,8 +68,8 @@ func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, err
 }
 
 // Store creates the resulting file to given destination.
-func (c *Client) Store(req MainRequester, dest string) error {
-	return c.store(context.Background(), req, dest)
+func (c *Client) Store(ctx context.Context, req MainRequester, dest string) error {
+	return c.store(ctx, req, dest)
 }
 
 func (c *Client) store(ctx context.Context, req MainRequester, dest string) error {

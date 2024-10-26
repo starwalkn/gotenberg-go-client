@@ -1,6 +1,7 @@
 package gotenberg
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -28,7 +29,7 @@ func TestMerge(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
@@ -61,7 +62,7 @@ func TestReadWriteMetadata(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(reqWrite, dest)
+	err = c.Store(context.Background(), reqWrite, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -71,7 +72,7 @@ func TestReadWriteMetadata(t *testing.T) {
 	reqRead := NewReadMetadataRequest(pdf2)
 	reqRead.UseBasicAuth("foo", "bar")
 	reqRead.OutputFilename("foo.pdf")
-	respRead, err := c.Send(reqRead)
+	respRead, err := c.Send(context.Background(), reqRead)
 	require.NoError(t, err)
 	assert.Equal(t, 200, respRead.StatusCode)
 

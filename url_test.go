@@ -1,6 +1,7 @@
 package gotenberg
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ func TestURL(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
@@ -49,7 +50,7 @@ func TestURLComplete(t *testing.T) {
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
+	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
@@ -63,7 +64,7 @@ func TestURLPageRanges(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
-	resp, err := c.Send(req)
+	resp, err := c.Send(context.Background(), req)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
@@ -78,7 +79,7 @@ func TestURLScreenshot(t *testing.T) {
 	require.NoError(t, err)
 	req.Format(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(req, dest)
+	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	err = os.RemoveAll(dirPath)
