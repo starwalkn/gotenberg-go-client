@@ -29,7 +29,10 @@ WORKDIR /lint
 COPY go.mod .
 COPY go.sum .
 
+# Copy golangci-lint configuration file.
+COPY .golangci.yml .
+
 # Install module dependencies.
 RUN go mod download
 
-CMD [ "golangci-lint", "run" ,"--tests=false", "--enable-all", "--disable=dupl", "--disable=wsl" ]
+CMD [ "golangci-lint", "run"]

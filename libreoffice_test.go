@@ -1,11 +1,11 @@
 package gotenberg
 
 import (
+	"archive/zip"
 	"fmt"
 	"net/http"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -14,118 +14,15 @@ import (
 	"github.com/dcaraxes/gotenberg-go-client/test"
 )
 
-func TestHTML(t *testing.T) {
+func TestOffice(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewHTMLRequest(index)
+	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
-	require.NoError(t, err)
-	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestHTMLFromString(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	index, err := document.FromString("index.html", "<html>Foo</html>")
-	require.NoError(t, err)
-	req := NewHTMLRequest(index)
-	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
-	require.NoError(t, err)
-	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestHTMLFromBytes(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	index, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
-	require.NoError(t, err)
-	req := NewHTMLRequest(index)
-	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
-	require.NoError(t, err)
-	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestHTMLFromReader(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	r, err := os.Open(test.HTMLTestFilePath(t, "index.html"))
-	require.NoError(t, err)
-	index, err := document.FromReader("index.html", r)
-	require.NoError(t, err)
-	req := NewHTMLRequest(index)
-	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
-	require.NoError(t, err)
-	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestHTMLComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
-	require.NoError(t, err)
-	req := NewHTMLRequest(index)
-	req.UseBasicAuth("foo", "bar")
-	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
-	require.NoError(t, err)
-	req.Header(header)
-	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
-	require.NoError(t, err)
-	req.Footer(footer)
-	font, err := document.FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
-	require.NoError(t, err)
-	img, err := document.FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
-	require.NoError(t, err)
-	style, err := document.FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
-	require.NoError(t, err)
-	req.Assets(font, img, style)
 	req.OutputFilename("foo.pdf")
-	req.WaitDelay(1 * time.Second)
-	req.PaperSize(A4)
-	req.Margins(NormalMargins)
-	req.Scale(1.5)
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -135,17 +32,20 @@ func TestHTMLComplete(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
+	isPDFA, err := test.IsPDFA(dest)
+	require.NoError(t, err)
+	assert.False(t, isPDFA)
 	err = os.RemoveAll(dirPath)
 	require.NoError(t, err)
 }
 
-func TestHTMLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", nil)
+func TestOfficePageRanges(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewHTMLRequest(index)
+	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(req)
@@ -153,33 +53,129 @@ func TestHTMLPageRanges(t *testing.T) {
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
-func TestHTMLScreenshot(t *testing.T) {
+func TestOfficeLosslessCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewHTMLRequest(index)
+	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
+	req.LosslessImageCompression()
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
-	req.Format(JPEG)
-	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(req, dest)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
 	err = os.RemoveAll(dirPath)
 	require.NoError(t, err)
 }
 
-func TestHTMLPdfA(t *testing.T) {
+func TestOfficeCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewHTMLRequest(index)
+	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
+	req.Quality(1)
+	req.ReduceImageResolution()
+	req.MaxImageResolution(75)
+	dirPath, err := test.Rand()
+	require.NoError(t, err)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
+	err = os.RemoveAll(dirPath)
+	require.NoError(t, err)
+}
+
+func TestOfficeMultipleWithoutMerge(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+	require.NoError(t, err)
+
+	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+	req := NewOfficeRequest(doc1, doc2)
+	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.zip")
+	dirPath, err := test.Rand()
+	require.NoError(t, err)
+	dest := fmt.Sprintf("%s/foo.zip", dirPath)
+	err = c.Store(req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+
+	zipReader, err := zip.OpenReader(dest)
+	require.NoError(t, err)
+
+	expectedFiles := map[string]bool{
+		"document1.docx.pdf": false,
+		"document2.docx.pdf": false,
+	}
+
+	for _, file := range zipReader.File {
+		if _, ok := expectedFiles[file.Name]; ok {
+			expectedFiles[file.Name] = true
+		}
+	}
+
+	for fileName, found := range expectedFiles {
+		assert.True(t, found, "File %s not found in zip", fileName)
+	}
+	err = zipReader.Close()
+	require.NoError(t, err)
+	err = os.RemoveAll(dirPath)
+	require.NoError(t, err)
+}
+
+func TestOfficeMultipleWithMerge(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+	require.NoError(t, err)
+
+	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+	req := NewOfficeRequest(doc1, doc2)
+	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
+	req.Merge()
+	dirPath, err := test.Rand()
+	require.NoError(t, err)
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
+	err = os.RemoveAll(dirPath)
+	require.NoError(t, err)
+}
+
+func TestOfficePdfA(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", &http.Client{})
+	require.NoError(t, err)
+
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+	req := NewOfficeRequest(doc)
+	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
 	req.PdfA(PdfA3b)
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
@@ -194,14 +190,15 @@ func TestHTMLPdfA(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestHTMLPdfUA(t *testing.T) {
+func TestOfficePdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewHTMLRequest(index)
+	req := NewOfficeRequest(doc)
 	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
 	req.PdfUA()
 	dirPath, err := test.Rand()
 	require.NoError(t, err)

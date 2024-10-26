@@ -1,39 +1,35 @@
 package gotenberg
 
-// MarkdownRequest facilitates Markdown conversion
-// with the Gotenberg API.
+import "github.com/dcaraxes/gotenberg-go-client/document"
+
+const (
+	endpointMarkdownConvert    = "/forms/chromium/convert/markdown"
+	endpointMarkdownScreenshot = "/forms/chromium/screenshot/markdown"
+)
+
+// MarkdownRequest facilitates Markdown conversion with the Gotenberg API.
 type MarkdownRequest struct {
-	index     Document
-	markdowns []Document
-	assets    []Document
+	index     document.Document
+	markdowns []document.Document
+	assets    []document.Document
 
-	*chromeRequest
+	*chromiumRequest
 }
 
-// NewMarkdownRequest create MarkdownRequest.
-func NewMarkdownRequest(index Document, markdowns ...Document) *MarkdownRequest {
-	return &MarkdownRequest{index, markdowns, []Document{}, newChromeRequest()}
+func NewMarkdownRequest(index document.Document, markdowns ...document.Document) *MarkdownRequest {
+	return &MarkdownRequest{index, markdowns, []document.Document{}, newChromiumRequest()}
 }
 
-// Assets sets assets form files.
-func (req *MarkdownRequest) Assets(assets ...Document) {
-	req.assets = assets
+func (req *MarkdownRequest) endpoint() string {
+	return endpointMarkdownConvert
 }
 
-func (req *MarkdownRequest) Metadata(jsonData []byte) {
-	req.values[formFieldMetadata] = string(jsonData)
+func (req *MarkdownRequest) screenshotEndpoint() string {
+	return endpointMarkdownScreenshot
 }
 
-func (req *MarkdownRequest) postURL() string {
-	return "/forms/chromium/convert/markdown"
-}
-
-func (req *MarkdownRequest) screenshotURL() string {
-	return "/forms/chromium/screenshot/markdown"
-}
-
-func (req *MarkdownRequest) formFiles() map[string]Document {
-	files := make(map[string]Document)
+func (req *MarkdownRequest) formDocuments() map[string]document.Document {
+	files := make(map[string]document.Document)
 	files["index.html"] = req.index
 	for _, markdown := range req.markdowns {
 		files[markdown.Filename()] = markdown
@@ -47,10 +43,20 @@ func (req *MarkdownRequest) formFiles() map[string]Document {
 	for _, asset := range req.assets {
 		files[asset.Filename()] = asset
 	}
+
 	return files
+}
+
+// Assets sets assets form files.
+func (req *MarkdownRequest) Assets(assets ...document.Document) {
+	req.assets = assets
+}
+
+func (req *MarkdownRequest) Metadata(jsonData []byte) {
+	req.fields[fieldMetadata] = string(jsonData)
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = Request(new(MarkdownRequest))
+	_ = MainRequester(new(MarkdownRequest))
 )
