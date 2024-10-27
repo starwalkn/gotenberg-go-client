@@ -4,12 +4,6 @@ on:
   pull_request:
     branches:
       - master
-      - beta-*
-      - experimental
-  push:
-    branches:
-      - beta-*
-      - experimental
 
 jobs:
   lint:
