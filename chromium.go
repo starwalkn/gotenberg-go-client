@@ -41,7 +41,7 @@ func (req *chromiumRequest) EmulateScreenMediaType() {
 	req.fields[fieldChromiumEmulatedMediaType] = "screen"
 }
 
-// Cookies to store in the Chromium cookie jar (JSON format).
+// Cookies to store in the Chromium cookie jar (JSON array format).
 func (req *chromiumRequest) Cookies(cookies []byte) {
 	req.fields[fieldChromiumCookies] = string(cookies)
 }
@@ -156,8 +156,6 @@ func (req *chromiumRequest) PdfUA() {
 func (req *chromiumRequest) Metadata(jsonData []byte) {
 	req.fields[fieldMetadata] = string(jsonData)
 }
-
-// TODO: move the methods for screenshot requests to a separate file (mb the separate request).
 
 // ScreenshotWidth Width sets the device screen width in pixels.
 func (req *chromiumRequest) ScreenshotWidth(width float64) {

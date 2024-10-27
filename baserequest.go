@@ -41,6 +41,11 @@ func (br *baseRequest) OutputFilename(filename string) {
 	br.headers[headerOutputFilename] = filename
 }
 
+// Trace overrides the default UUID trace, or request ID, that identifies a request in Gotenberg's logs.
+func (br *baseRequest) Trace(trace string) {
+	br.headers[headerTrace] = trace
+}
+
 // UseBasicAuth sets the basic authentication credentials.
 func (br *baseRequest) UseBasicAuth(username, password string) {
 	auth := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
@@ -89,7 +94,8 @@ func ensureWebhookMethod(method string) string {
 
 // DownloadFrom sets the URLs to download files from.
 // This method accepts a JSON string e.g., [{"url":"http://localhost:80/","extraHttpHeaders":{"X-Foo":"Bar"}}]. For Go,
-// this is equivalent to map[string]map[string]string, which this method accepts.
+// this is equivalent to map[string]map[string]string, which this method accepts, but headers map can be nil.
+//
 // URLs MUST return a Content-Disposition header with a filename parameter.
 func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
 	dfs := make([]downloadFrom, 0, len(downloads))
