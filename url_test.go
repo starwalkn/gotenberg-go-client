@@ -20,6 +20,7 @@ func TestURL(t *testing.T) {
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
+	req.Trace("testURL")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
@@ -36,6 +37,7 @@ func TestURLComplete(t *testing.T) {
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
+	req.Trace("testURLComplete")
 	req.UseBasicAuth("foo", "bar")
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
@@ -62,6 +64,7 @@ func TestURLPageRanges(t *testing.T) {
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
+	req.Trace("testURLPageRanges")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
@@ -74,6 +77,7 @@ func TestURLScreenshot(t *testing.T) {
 	require.NoError(t, err)
 
 	req := NewURLRequest("https://example.com")
+	req.Trace("testURLScreenshot")
 	req.UseBasicAuth("foo", "bar")
 	dirPath, err := test.Rand()
 	require.NoError(t, err)

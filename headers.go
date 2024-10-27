@@ -3,11 +3,12 @@ package gotenberg
 type httpHeader string
 
 const (
-	headerOutputFilename = "Gotenberg-Output-Filename"
+	headerOutputFilename httpHeader = "Gotenberg-Output-Filename"
+	headerTrace          httpHeader = "Gotenberg-Trace"
 )
 
 const (
-	headerAuthorization = "Authorization"
+	headerAuthorization httpHeader = "Authorization"
 )
 
 const (
