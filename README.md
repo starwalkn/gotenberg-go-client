@@ -8,16 +8,13 @@
 
 |Gotenberg version |Client version                                                                                             | 
 |:----------------:|:---------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|`8.6.1` **(actual)**                                                                                       |                            
+|`8.x` **(actual)**|`8.6.2` **(actual)**                                                                                       |                            
 |`7.x`             |`<= 8.5.0`                                                                                                 |
 |`6.x`             |<a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
 ---
 
 ## Installation
-
-> [!IMPORTANT]
-> Sometimes beta versions are released, which may contain both new functionality and changes incompatible with previous versions of the client. When installing beta versions, read the release notes carefully!
 
 To get the latest version of the client:
 
