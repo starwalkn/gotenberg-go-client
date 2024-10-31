@@ -165,23 +165,23 @@ import (
 )
 
 func main() {
-	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-	// Prepare the files required for your conversion.
-	doc, err := document.FromPath("filename.ext", "/path/to/file")
-	req := gotenberg.NewReadMetadataRequest(doc)
+    // Prepare the files required for your conversion.
+    doc, err := document.FromPath("filename.ext", "/path/to/file")
+    req := gotenberg.NewReadMetadataRequest(doc)
 
-	resp, err := client.Send(context.Background(), req)
+    resp, err := client.Send(context.Background(), req)
 
-	var data = struct {
+    var data = struct {
             FooPdf struct {
                 Author    string `json:"Author"`
                 Copyright string `json:"Copyright"`
             } `json:"foo.pdf"`
         }
 
-	// Decode metadata into a struct.
-	err = json.NewDecoder(resp.Body).Decode(&data)
+    // Decode metadata into a struct.
+    err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
 ```
