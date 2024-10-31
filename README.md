@@ -1,16 +1,15 @@
 <p align="center">
     <h1 align="center">Gotenberg Go Client</h1>
     <p align="center">The Go client for interacting with a Gotenberg API. This project is a further development of the <a href="https://github.com/thecodingmachine/gotenberg-go-client">client from TheCodingMachine</a>, which does not support the new functionality since version 7 of Gotenberg.
-    </p>
 </p>
 
 ---
 
-|Gotenberg version |Client version                                                                                             | 
-|:----------------:|:---------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|`8.6.2` **(actual)**                                                                                       |                            
-|`7.x`             |`<= 8.5.0`                                                                                                 |
-|`6.x`             |<a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
+|Gotenberg version |                                               Client version                                               | 
+|:----------------:|:----------------------------------------------------------------------------------------------------------:|
+|`8.x` **(actual)**|                         `8.6.3` **(actual)**                                 <br/>                         |                            
+|`7.x`             |                                                 `<= 8.5.0`                                                 |
+|`6.x`             | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
 ---
 
@@ -19,7 +18,7 @@
 To get the latest version of the client:
 
 ```zsh
-$ go get github.com/dcaraxes/gotenberg-go-client@latest
+$ go get github.com/dcaraxes/gotenberg-go-client/v8@latest
 ```
 
 ## Preparing a documents
@@ -28,10 +27,11 @@ $ go get github.com/dcaraxes/gotenberg-go-client@latest
 package main
 
 import (
+	"net/http"
     "os"
 	
-    "github.com/dcaraxes/gotenberg-go-client"
-    "github.com/dcaraxes/gotenberg-go-client/document"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
+    "github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -51,7 +51,9 @@ func main() {
 ## Converting HTML to PDF
 
 > [!TIP]
-> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters. For the PaperSize method, you can use predefined parameters such as gotenberg.A4, gotenberg.A3 and so on. The full list of predefined parameters can be found in [types file](https://github.com/dcaraxes/gotenberg-go-client/blob/beta-8.6/types.go).
+> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters. For the PaperSize 
+> method, you can use predefined parameters such as gotenberg.A4, gotenberg.A3 and so on. The full list of 
+> predefined parameters can be found in [types file](https://github.com/dcaraxes/gotenberg-go-client/v8/blob/master/types.go).
 
 > [!IMPORTANT]
 > To use basic authorization, you must run Gotenberg with the --api-enable-basic-auth flag and have GOTENBERG_API_BASIC_AUTH_USERNAME and GOTENBERG_API_BASIC_AUTH_PASSWORD environment variables. 
@@ -60,10 +62,11 @@ func main() {
 package main
 
 import (
+	"context"
     "net/http"
     
-    "github.com/dcaraxes/gotenberg-go-client"
-    "github.com/dcaraxes/gotenberg-go-client/document"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
+    "github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -94,10 +97,10 @@ func main() {
     req.SkipNetworkIdleEvent()
 
     // Store method allows you to store the resulting PDF in a particular destination.
-    client.Store(req, "path/to/store.pdf")
+    err := client.Store(context.Background(), req, "path/to/store.pdf")
 
     // If you wish to redirect the response directly to the browser, you may also use:
-    resp, err := client.Send(req)
+    resp, err := client.Send(context.Background(), req)
 }
 
 ```
@@ -114,10 +117,12 @@ Reading metadata available only for PDF files, but you can write metadata to all
 package main
 
 import (
+	"context"
+	"encoding/json"
     "net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client"
-    "github.com/dcaraxes/gotenberg-go-client/document"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
+    "github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -141,7 +146,7 @@ func main() {
     md, err := json.Marshal(data)
     req.Metadata(md)
 
-    resp, err := client.Send(req)
+    resp, err := client.Send(context.Background(), req)
 }
 ```
 
@@ -151,31 +156,32 @@ func main() {
 package main
 
 import (
-    "encoding/json"
-    "net/http"
+	"context"
+	"encoding/json"
+	"net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client"
-    "github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/v8"
+	"github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    // Prepare the files required for your conversion.
-    doc, err := document.FromPath("filename.ext", "/path/to/file")
-    req := gotenberg.NewReadMetadataRequest(doc)
+	// Prepare the files required for your conversion.
+	doc, err := document.FromPath("filename.ext", "/path/to/file")
+	req := gotenberg.NewReadMetadataRequest(doc)
 
-    resp, err := client.Send(req)
+	resp, err := client.Send(context.Background(), req)
 
-    var data = struct {
-        FooPdf struct {
-            Author    string `json:"Author"`
-            Copyright string `json:"Copyright"`
-        } `json:"foo.pdf"`
-    }
+	var data = struct {
+		FooPdf struct {
+			Author    string `json:"Author"`
+			Copyright string `json:"Copyright"`
+		} `json:"foo.pdf"`
+	}
 
-    // Decode metadata into a struct.
-    err = json.NewDecoder(resp.Body).Decode(&data)
+	// Decode metadata into a struct.
+	err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
 ```
@@ -189,14 +195,15 @@ func main() {
 package main
 
 import (
+	"context"
     "net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client"
-    "github.com/dcaraxes/gotenberg-go-client/document"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
+    "github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    c, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
     index, err := document.FromPath("index.html", "/path/to/file")
 
@@ -204,7 +211,7 @@ func main() {
     req := gotenberg.NewHTMLRequest(index)
     req.Format(gotenberg.JPEG)
 
-    resp, err := client.Screenshot(req)
+    resp, err := client.Screenshot(context.Background(), req)
 }
 
 ```

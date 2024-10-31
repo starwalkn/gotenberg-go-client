@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 type baseRequester interface {

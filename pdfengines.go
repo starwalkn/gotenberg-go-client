@@ -3,7 +3,7 @@ package gotenberg
 import (
 	"strconv"
 
-	"github.com/dcaraxes/gotenberg-go-client/document"
+	"github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 // MergeRequest facilitates work with PDF files with the Gotenberg API.

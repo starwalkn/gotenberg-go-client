@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dcaraxes/gotenberg-go-client/document"
-	"github.com/dcaraxes/gotenberg-go-client/test"
+	"github.com/dcaraxes/gotenberg-go-client/v8/document"
+	"github.com/dcaraxes/gotenberg-go-client/v8/test"
 )
 
 func TestMerge(t *testing.T) {

@@ -3,7 +3,7 @@ GOTENBERG_VERSION=8.12.0
 GOTENBERG_LOG_LEVEL=ERROR
 VERSION=snapshot
 GOLANGCI_LINT_VERSION=1.61.0
-REPO=dcaraxes/gotenberg-go-client
+REPO=dcaraxes/gotenberg-go-client/v8
 
 # gofmt and goimports all go files.
 fmt:
