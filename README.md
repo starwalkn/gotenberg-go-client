@@ -27,7 +27,7 @@ $ go get github.com/dcaraxes/gotenberg-go-client/v8@latest
 package main
 
 import (
-	"net/http"
+    "net/http"
     "os"
 	
     "github.com/dcaraxes/gotenberg-go-client/v8"
@@ -62,7 +62,7 @@ func main() {
 package main
 
 import (
-	"context"
+    "context"
     "net/http"
     
     "github.com/dcaraxes/gotenberg-go-client/v8"
@@ -117,8 +117,8 @@ Reading metadata available only for PDF files, but you can write metadata to all
 package main
 
 import (
-	"context"
-	"encoding/json"
+    "context"
+    "encoding/json"
     "net/http"
 
     "github.com/dcaraxes/gotenberg-go-client/v8"
@@ -156,9 +156,9 @@ func main() {
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"net/http"
+    "context"
+    "encoding/json"
+    "net/http"
 
 	"github.com/dcaraxes/gotenberg-go-client/v8"
 	"github.com/dcaraxes/gotenberg-go-client/v8/document"
@@ -195,7 +195,7 @@ func main() {
 package main
 
 import (
-	"context"
+    "context"
     "net/http"
 
     "github.com/dcaraxes/gotenberg-go-client/v8"
