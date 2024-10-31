@@ -174,11 +174,11 @@ func main() {
 	resp, err := client.Send(context.Background(), req)
 
 	var data = struct {
-        FooPdf struct {
-            Author    string `json:"Author"`
-            Copyright string `json:"Copyright"`
-        } `json:"foo.pdf"`
-    }
+            FooPdf struct {
+                Author    string `json:"Author"`
+                Copyright string `json:"Copyright"`
+            } `json:"foo.pdf"`
+        }
 
 	// Decode metadata into a struct.
 	err = json.NewDecoder(resp.Body).Decode(&data)
