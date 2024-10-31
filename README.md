@@ -160,8 +160,8 @@ import (
     "encoding/json"
     "net/http"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8"
-	"github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/dcaraxes/gotenberg-go-client/v8"
+    "github.com/dcaraxes/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -174,11 +174,11 @@ func main() {
 	resp, err := client.Send(context.Background(), req)
 
 	var data = struct {
-		FooPdf struct {
-			Author    string `json:"Author"`
-			Copyright string `json:"Copyright"`
-		} `json:"foo.pdf"`
-	}
+        FooPdf struct {
+            Author    string `json:"Author"`
+            Copyright string `json:"Copyright"`
+        } `json:"foo.pdf"`
+    }
 
 	// Decode metadata into a struct.
 	err = json.NewDecoder(resp.Body).Decode(&data)
