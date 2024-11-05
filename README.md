@@ -18,7 +18,7 @@
 To get the latest version of the client:
 
 ```zsh
-$ go get github.com/dcaraxes/gotenberg-go-client/v8@latest
+$ go get github.com/runatal/gotenberg-go-client/v8@latest
 ```
 
 ## Preparing a documents
@@ -30,8 +30,8 @@ import (
     "net/http"
     "os"
 	
-    "github.com/dcaraxes/gotenberg-go-client/v8"
-    "github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/runatal/gotenberg-go-client/v8"
+    "github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -65,8 +65,8 @@ import (
     "context"
     "net/http"
     
-    "github.com/dcaraxes/gotenberg-go-client/v8"
-    "github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/runatal/gotenberg-go-client/v8"
+    "github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -121,8 +121,8 @@ import (
     "encoding/json"
     "net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client/v8"
-    "github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/runatal/gotenberg-go-client/v8"
+    "github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -160,8 +160,8 @@ import (
     "encoding/json"
     "net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client/v8"
-    "github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/runatal/gotenberg-go-client/v8"
+    "github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -198,8 +198,8 @@ import (
     "context"
     "net/http"
 
-    "github.com/dcaraxes/gotenberg-go-client/v8"
-    "github.com/dcaraxes/gotenberg-go-client/v8/document"
+    "github.com/runatal/gotenberg-go-client/v8"
+    "github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 func main() {
