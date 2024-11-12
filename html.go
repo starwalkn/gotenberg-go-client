@@ -1,6 +1,6 @@
 package gotenberg
 
-import "github.com/dcaraxes/gotenberg-go-client/v8/document"
+import "github.com/runatal/gotenberg-go-client/v8/document"
 
 const (
 	endpointHTMLConvert    = "/forms/chromium/convert/html"

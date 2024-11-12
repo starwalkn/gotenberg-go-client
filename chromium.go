@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dcaraxes/gotenberg-go-client/v8/document"
+	"github.com/runatal/gotenberg-go-client/v8/document"
 )
 
 type chromiumRequest struct {
