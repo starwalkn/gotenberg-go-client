@@ -15,15 +15,17 @@ const (
 
 // Chromium request configuration.
 const (
-	fieldChromiumWaitDelay               formField = "waitDelay"
-	fieldChromiumWaitForExpression       formField = "waitForExpression"
-	fieldChromiumEmulatedMediaType       formField = "emulatedMediaType"
-	fieldChromiumCookies                 formField = "cookies"
-	fieldChromiumUserAgent               formField = "userAgent"
-	fieldChromiumExtraHTTPHeaders        formField = "extraHttpHeaders"
-	fieldChromiumFailOnHTTPStatusCodes   formField = "failOnHttpStatusCodes"
-	fieldChromiumFailOnConsoleExceptions formField = "failOnConsoleExceptions"
-	fieldChromiumSkipNetworkIdleEvent    formField = "skipNetworkIdleEvent"
+	fieldChromiumWaitDelay                     formField = "waitDelay"
+	fieldChromiumWaitForExpression             formField = "waitForExpression"
+	fieldChromiumEmulatedMediaType             formField = "emulatedMediaType"
+	fieldChromiumCookies                       formField = "cookies"
+	fieldChromiumUserAgent                     formField = "userAgent"
+	fieldChromiumExtraHTTPHeaders              formField = "extraHttpHeaders"
+	fieldChromiumFailOnHTTPStatusCodes         formField = "failOnHttpStatusCodes"
+	fieldChromiumFailOnResourceHTTPStatusCodes formField = "failOnResourceHttpStatusCodes"
+	fieldChromiumFailOnConsoleExceptions       formField = "failOnConsoleExceptions"
+	fieldChromiumFailOnResourceLoadingFailed   formField = "failOnResourceLoadingFailed"
+	fieldChromiumSkipNetworkIdleEvent          formField = "skipNetworkIdleEvent"
 )
 
 // PDF page property.
