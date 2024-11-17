@@ -62,10 +62,22 @@ func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []byte) {
 	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(statusCodes)
 }
 
+// FailOnResourceHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
+// if the HTTP status code from at least one resource is not acceptable.
+func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []byte) {
+	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = string(statusCodes)
+}
+
 // FailOnConsoleExceptions forces Gotenberg to return a 409 Conflict response
 // if there are exceptions in the Chromium console.
 func (req *chromiumRequest) FailOnConsoleExceptions() {
 	req.fields[fieldChromiumFailOnConsoleExceptions] = strconv.FormatBool(true)
+}
+
+// FailOnResourceLoadingFailed forces Gotenberg to return a 409 Conflict if Chromium
+// fails to load at least one resource.
+func (req *chromiumRequest) FailOnResourceLoadingFailed() {
+	req.fields[fieldChromiumFailOnResourceLoadingFailed] = strconv.FormatBool(true)
 }
 
 // SkipNetworkIdleEvent specifies whether Chromium have to wait or not for its network to be idle.
