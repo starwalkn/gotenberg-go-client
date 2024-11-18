@@ -30,19 +30,20 @@ const (
 
 // PDF page property.
 const (
-	fieldChromiumPaperWidth        formField = "paperWidth"
-	fieldChromiumPaperHeight       formField = "paperHeight"
-	fieldChromiumMarginTop         formField = "marginTop"
-	fieldChromiumMarginBottom      formField = "marginBottom"
-	fieldChromiumMarginLeft        formField = "marginLeft"
-	fieldChromiumMarginRight       formField = "marginRight"
-	fieldChromiumLandscapeChrome   formField = "landscape"
-	fieldChromiumNativePageRanges  formField = "nativePageRanges"
-	fieldChromiumScale             formField = "scale"
-	fieldChromiumSinglePage        formField = "singlePage"
-	fieldChromiumPreferCSSPageSize formField = "preferCssPageSize"
-	fieldChromiumPrintBackground   formField = "printBackground"
-	fieldChromiumOmitBackground    formField = "omitBackground"
+	fieldChromiumPaperWidth              formField = "paperWidth"
+	fieldChromiumPaperHeight             formField = "paperHeight"
+	fieldChromiumMarginTop               formField = "marginTop"
+	fieldChromiumMarginBottom            formField = "marginBottom"
+	fieldChromiumMarginLeft              formField = "marginLeft"
+	fieldChromiumMarginRight             formField = "marginRight"
+	fieldChromiumLandscapeChrome         formField = "landscape"
+	fieldChromiumNativePageRanges        formField = "nativePageRanges"
+	fieldChromiumScale                   formField = "scale"
+	fieldChromiumSinglePage              formField = "singlePage"
+	fieldChromiumPreferCSSPageSize       formField = "preferCssPageSize"
+	fieldChromiumPrintBackground         formField = "printBackground"
+	fieldChromiumOmitBackground          formField = "omitBackground"
+	fieldChromiumGenerateDocumentOutline formField = "generateDocumentOutline"
 )
 
 // Screenshot property.

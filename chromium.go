@@ -144,6 +144,11 @@ func (req *chromiumRequest) NativePageRanges(ranges string) {
 	req.fields[fieldChromiumNativePageRanges] = ranges
 }
 
+// GenerateDocumentOutline embeds the document outline into the PDF.
+func (req *chromiumRequest) GenerateDocumentOutline() {
+	req.fields[fieldChromiumGenerateDocumentOutline] = strconv.FormatBool(true)
+}
+
 // Header adds a header to each page.
 func (req *chromiumRequest) Header(header document.Document) {
 	req.header = header
