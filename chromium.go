@@ -1,7 +1,9 @@
 package gotenberg
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -41,9 +43,16 @@ func (req *chromiumRequest) EmulateScreenMediaType() {
 	req.fields[fieldChromiumEmulatedMediaType] = "screen"
 }
 
-// Cookies to store in the Chromium cookie jar (JSON array format).
-func (req *chromiumRequest) Cookies(cookies []byte) {
-	req.fields[fieldChromiumCookies] = string(cookies)
+// Cookies to store in the Chromium cookie jar.
+func (req *chromiumRequest) Cookies(cookies []http.Cookie) error {
+	marshaledCookies, err := json.Marshal(cookies)
+	if err != nil {
+		return fmt.Errorf("marshal cookies to JSON: %w", err)
+	}
+
+	req.fields[fieldChromiumCookies] = string(marshaledCookies)
+
+	return nil
 }
 
 // UserAgent overrides the default User-Agent HTTP header.
@@ -52,20 +61,41 @@ func (req *chromiumRequest) UserAgent(ua string) {
 }
 
 // ExtraHTTPHeaders sets extra HTTP headers that Chromium will send when loading the HTML document.
-func (req *chromiumRequest) ExtraHTTPHeaders(headers []byte) {
-	req.fields[fieldChromiumExtraHTTPHeaders] = string(headers)
+func (req *chromiumRequest) ExtraHTTPHeaders(headers http.Header) error {
+	marshaledHeaders, err := json.Marshal(headers)
+	if err != nil {
+		return fmt.Errorf("marshal headers to JSON: %w", err)
+	}
+
+	req.fields[fieldChromiumExtraHTTPHeaders] = string(marshaledHeaders)
+
+	return nil
 }
 
 // FailOnHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from the main page is not acceptable.
-func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []byte) {
-	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(statusCodes)
+func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []int) error {
+	marshaledStatusCodes, err := json.Marshal(statusCodes)
+	if err != nil {
+		return fmt.Errorf("marshal HTTP status codes to JSON: %w", err)
+	}
+
+	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(marshaledStatusCodes)
+
+	return nil
 }
 
 // FailOnResourceHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from at least one resource is not acceptable.
-func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []byte) {
-	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = string(statusCodes)
+func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) error {
+	marshaledStatusCodes, err := json.Marshal(statusCodes)
+	if err != nil {
+		return fmt.Errorf("marshal HTTP status codes to JSON: %w", err)
+	}
+
+	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(marshaledStatusCodes)
+
+	return nil
 }
 
 // FailOnConsoleExceptions forces Gotenberg to return a 409 Conflict response

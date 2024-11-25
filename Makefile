@@ -1,5 +1,5 @@
 GOLANG_VERSION=1.23.2
-GOTENBERG_VERSION=8.12.0
+GOTENBERG_VERSION=8.14.1
 GOTENBERG_LOG_LEVEL=ERROR
 VERSION=snapshot
 GOLANGCI_LINT_VERSION=1.61.0
@@ -10,7 +10,7 @@ fmt:
 	go fmt ./...
 	go mod tidy
 
-# run all linters.
+# run linters.
 lint:
 	docker build --build-arg GOLANG_VERSION=$(GOLANG_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) -t $(REPO):lint -f build/lint/Dockerfile .
 	docker run --rm -t -v "$(PWD):/lint" $(REPO):lint

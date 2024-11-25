@@ -17,8 +17,6 @@ func (c *Client) Screenshot(ctx context.Context, scr ScreenshotRequester) (*http
 }
 
 func (c *Client) screenshot(ctx context.Context, scr ScreenshotRequester) (*http.Response, error) {
-	c.ensureClient()
-
 	req, err := c.createRequest(ctx, scr, scr.screenshotEndpoint())
 	if err != nil {
 		return nil, err
