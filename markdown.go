@@ -52,10 +52,6 @@ func (req *MarkdownRequest) Assets(assets ...document.Document) {
 	req.assets = assets
 }
 
-func (req *MarkdownRequest) Metadata(jsonData []byte) {
-	req.fields[fieldMetadata] = string(jsonData)
-}
-
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = MainRequester(new(MarkdownRequest))

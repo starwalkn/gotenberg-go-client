@@ -40,10 +40,6 @@ func (req *URLRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
-func (req *URLRequest) Metadata(jsonData []byte) {
-	req.fields[fieldMetadata] = string(jsonData)
-}
-
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = MainRequester(new(URLRequest))
