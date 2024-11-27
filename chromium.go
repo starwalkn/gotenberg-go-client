@@ -44,7 +44,13 @@ func (req *chromiumRequest) EmulateScreenMediaType() {
 }
 
 // Cookies to store in the Chromium cookie jar.
-func (req *chromiumRequest) Cookies(cookies []http.Cookie) error {
+func (req *chromiumRequest) Cookies(cookies []Cookie) error {
+	for _, cookie := range cookies {
+		if err := cookie.validate(); err != nil {
+			return fmt.Errorf("validate cookies: %w", err)
+		}
+	}
+
 	marshaledCookies, err := json.Marshal(cookies)
 	if err != nil {
 		return fmt.Errorf("marshal cookies to JSON: %w", err)
