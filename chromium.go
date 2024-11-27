@@ -3,7 +3,6 @@ package gotenberg
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -67,7 +66,7 @@ func (req *chromiumRequest) UserAgent(ua string) {
 }
 
 // ExtraHTTPHeaders sets extra HTTP headers that Chromium will send when loading the HTML document.
-func (req *chromiumRequest) ExtraHTTPHeaders(headers http.Header) error {
+func (req *chromiumRequest) ExtraHTTPHeaders(headers map[string]string) error {
 	marshaledHeaders, err := json.Marshal(headers)
 	if err != nil {
 		return fmt.Errorf("marshal headers to JSON: %w", err)

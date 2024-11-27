@@ -30,6 +30,13 @@ func TestMarkdown(t *testing.T) {
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdown")
 	req.UseBasicAuth("foo", "bar")
+
+	err = req.ExtraHTTPHeaders(map[string]string{
+		"X-Header":        "Value",
+		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
+	})
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -55,6 +62,13 @@ func TestMarkdownComplete(t *testing.T) {
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdownComplete")
 	req.UseBasicAuth("foo", "bar")
+
+	err = req.ExtraHTTPHeaders(map[string]string{
+		"X-Header":        "Value",
+		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
+	})
+	require.NoError(t, err)
+
 	header, err := document.FromPath("header.html", test.MarkdownTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
@@ -97,6 +111,13 @@ func TestMarkdownPageRanges(t *testing.T) {
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdownPageRanges")
 	req.UseBasicAuth("foo", "bar")
+
+	err = req.ExtraHTTPHeaders(map[string]string{
+		"X-Header":        "Value",
+		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
+	})
+	require.NoError(t, err)
+
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
 	require.NoError(t, err)
@@ -118,6 +139,13 @@ func TestMarkdownScreenshot(t *testing.T) {
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdownScreenshot")
 	req.UseBasicAuth("foo", "bar")
+
+	err = req.ExtraHTTPHeaders(map[string]string{
+		"X-Header":        "Value",
+		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
+	})
+	require.NoError(t, err)
+
 	require.NoError(t, err)
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
