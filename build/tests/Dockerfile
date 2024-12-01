@@ -55,4 +55,7 @@ COPY go.sum .
 # Install module dependencies.
 RUN go mod download
 
+RUN adduser --disabled-password --gecos '' testuser
+USER testuser
+
 ENTRYPOINT [ "build/tests/docker-entrypoint.sh" ]
