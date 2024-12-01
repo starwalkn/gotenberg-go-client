@@ -56,6 +56,7 @@ COPY go.sum .
 RUN go mod download
 
 RUN adduser --disabled-password --gecos '' testuser
+RUN chown -R testuser .
 USER testuser
 
 ENTRYPOINT [ "build/tests/docker-entrypoint.sh" ]
