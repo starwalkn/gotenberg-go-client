@@ -31,6 +31,7 @@ func (req *OfficeRequest) formDocuments() map[string]document.Document {
 	for _, doc := range req.docs {
 		files[doc.Filename()] = doc
 	}
+
 	return files
 }
 

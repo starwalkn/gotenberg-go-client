@@ -39,9 +39,6 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # | Last instructions of this build.
 # |
 
-ARG GOTENBERG_LOG_LEVEL
-
-ENV LOG_LEVEL=${GOTENBERG_LOG_LEVEL}
 ENV GOTENBERG_API_BASIC_AUTH_USERNAME=foo
 ENV GOTENBERG_API_BASIC_AUTH_PASSWORD=bar
 
@@ -54,5 +51,7 @@ COPY go.sum .
 
 # Install module dependencies.
 RUN go mod download
+
+USER gotenberg
 
 ENTRYPOINT [ "build/tests/docker-entrypoint.sh" ]

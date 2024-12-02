@@ -24,6 +24,11 @@ func TestHTML(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTML")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -46,6 +51,11 @@ func TestHTMLFromString(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLFromString")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -68,6 +78,11 @@ func TestHTMLFromBytes(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLFromBytes")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -92,6 +107,11 @@ func TestHTMLFromReader(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLFromReader")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
@@ -114,6 +134,11 @@ func TestHTMLComplete(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLComplete")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
@@ -154,6 +179,11 @@ func TestHTMLPageRanges(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPageRanges")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
 	require.NoError(t, err)
@@ -169,6 +199,11 @@ func TestHTMLScreenshot(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLScreenshot")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
 	req.Format(JPEG)
@@ -189,6 +224,11 @@ func TestHTMLPdfA(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPdfA")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	req.PdfA(PdfA3b)
 	dirPath, err := test.Rand()
 	require.NoError(t, err)
@@ -212,6 +252,11 @@ func TestHTMLPdfUA(t *testing.T) {
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPdfUA")
 	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
 	req.PdfUA()
 	dirPath, err := test.Rand()
 	require.NoError(t, err)

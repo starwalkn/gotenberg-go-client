@@ -3,6 +3,7 @@ package gotenberg
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/runatal/gotenberg-go-client/v8/document"
@@ -71,8 +72,15 @@ func (br *baseRequest) SetWebhookErrorMethod(method string) {
 
 // SetWebhookExtraHeaders sets the extra HTTP headers that Gotenberg will send alongside the
 // request to the webhook and error webhook.
-func (br *baseRequest) SetWebhookExtraHeaders(headers []byte) {
-	br.headers[headerWebhookExtraHeaders] = string(headers)
+func (br *baseRequest) SetWebhookExtraHeaders(headers map[string]string) error {
+	marshaledHeaders, err := json.Marshal(headers)
+	if err != nil {
+		return fmt.Errorf("marshal headers to JSON: %w", err)
+	}
+
+	br.headers[headerWebhookExtraHeaders] = string(marshaledHeaders)
+
+	return nil
 }
 
 func hasWebhook(req baseRequester) bool {

@@ -31,6 +31,7 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// NewClient creates a new gotenberg.Client. If http.Client is passed as nil, then http.DefaultClient is used.
 func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
@@ -52,8 +53,6 @@ func (c *Client) Send(ctx context.Context, req MainRequester) (*http.Response, e
 }
 
 func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, error) {
-	c.ensureClient()
-
 	req, err := c.createRequest(ctx, r, r.endpoint())
 	if err != nil {
 		return nil, err
@@ -116,12 +115,6 @@ func writeNewFile(fpath string, in io.Reader) error {
 	}
 
 	return nil
-}
-
-func (c *Client) ensureClient() {
-	if c.httpClient == nil {
-		c.httpClient = &http.Client{}
-	}
 }
 
 func (c *Client) createRequest(ctx context.Context, br baseRequester, endpoint string) (*http.Request, error) {
