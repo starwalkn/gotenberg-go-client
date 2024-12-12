@@ -98,7 +98,7 @@ func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) err
 		return fmt.Errorf("marshal HTTP status codes to JSON: %w", err)
 	}
 
-	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(marshaledStatusCodes)
+	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = string(marshaledStatusCodes)
 
 	return nil
 }
