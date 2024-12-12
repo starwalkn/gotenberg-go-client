@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +14,7 @@ import (
 	"github.com/runatal/gotenberg-go-client/v8/test"
 )
 
-func TestReadWriteMetadata(t *testing.T) {
+func TestWriteAndReadMetadata(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", &http.Client{})
 	require.NoError(t, err)
 
@@ -39,9 +38,8 @@ func TestReadWriteMetadata(t *testing.T) {
 	require.NoError(t, err)
 	reqWrite.Metadata(writeData)
 
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), reqWrite, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -64,8 +62,6 @@ func TestReadWriteMetadata(t *testing.T) {
 		FooPdf: writeDataStruct,
 	}
 	assert.Equal(t, expected, readData)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 type exifData struct {

@@ -18,8 +18,8 @@ var (
 	errSendRequestFailed = errors.New("request sending failed")
 )
 
-// MainRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
-type MainRequester interface {
+// MultipartRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
+type MultipartRequester interface {
 	endpoint() string
 
 	baseRequester
@@ -48,11 +48,11 @@ func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 }
 
 // Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(ctx context.Context, req MainRequester) (*http.Response, error) {
+func (c *Client) Send(ctx context.Context, req MultipartRequester) (*http.Response, error) {
 	return c.send(ctx, req)
 }
 
-func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, error) {
+func (c *Client) send(ctx context.Context, r MultipartRequester) (*http.Response, error) {
 	req, err := c.createRequest(ctx, r, r.endpoint())
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (c *Client) send(ctx context.Context, r MainRequester) (*http.Response, err
 }
 
 // Store creates the resulting file to given destination.
-func (c *Client) Store(ctx context.Context, req MainRequester, dest string) error {
+func (c *Client) Store(ctx context.Context, req MultipartRequester, dest string) error {
 	return c.store(ctx, req, dest)
 }
 
-func (c *Client) store(ctx context.Context, req MainRequester, dest string) error {
+func (c *Client) store(ctx context.Context, req MultipartRequester, dest string) error {
 	if hasWebhook(req) {
 		return errWebhookNotAllowed
 	}
@@ -88,10 +88,10 @@ func (c *Client) store(ctx context.Context, req MainRequester, dest string) erro
 		return fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
 	}
 
-	return writeNewFile(dest, resp.Body)
+	return c.writeNewFile(dest, resp.Body)
 }
 
-func writeNewFile(fpath string, in io.Reader) error {
+func (c *Client) writeNewFile(fpath string, in io.Reader) error {
 	if err := os.MkdirAll(filepath.Dir(fpath), 0o755); err != nil {
 		return fmt.Errorf("making %s directory: %w", fpath, err)
 	}

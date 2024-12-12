@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,12 +25,9 @@ func TestMerge(t *testing.T) {
 	req.Trace("testMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
@@ -37,38 +36,6 @@ func TestMarkdown(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestMarkdownComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
-	require.NoError(t, err)
-	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
-	require.NoError(t, err)
-	markdown2, err := document.FromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
-	require.NoError(t, err)
-	markdown3, err := document.FromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
-	require.NoError(t, err)
-	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
-	req.Trace("testMarkdownComplete")
-	req.UseBasicAuth("foo", "bar")
-
-	err = req.ExtraHTTPHeaders(map[string]string{
-		"X-Header":        "Value",
-		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
-	})
-	require.NoError(t, err)
-
 	header, err := document.FromPath("header.html", test.MarkdownTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
@@ -86,14 +53,11 @@ func TestMarkdownComplete(t *testing.T) {
 	req.WaitDelay(1 * time.Second)
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestMarkdownPageRanges(t *testing.T) {
@@ -147,13 +111,10 @@ func TestMarkdownScreenshot(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NoError(t, err)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	tempDir := t.TempDir()
 	req.Format(JPEG)
-	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+	dest := fmt.Sprintf("%s/foo.jpeg", tempDir)
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

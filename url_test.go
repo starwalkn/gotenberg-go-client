@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
@@ -22,23 +21,6 @@ func TestURL(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.Trace("testURL")
 	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
-	require.NoError(t, err)
-	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
-}
-
-func TestURLComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
-	require.NoError(t, err)
-
-	req := NewURLRequest("http://example.com")
-	req.Trace("testURLComplete")
-	req.UseBasicAuth("foo", "bar")
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
@@ -49,14 +31,11 @@ func TestURLComplete(t *testing.T) {
 	req.WaitDelay(1 * time.Second)
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestURLPageRanges(t *testing.T) {
@@ -79,13 +58,10 @@ func TestURLScreenshot(t *testing.T) {
 	req := NewURLRequest("https://example.com")
 	req.Trace("testURLScreenshot")
 	req.UseBasicAuth("foo", "bar")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	tempDir := t.TempDir()
 	req.Format(JPEG)
-	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+	dest := fmt.Sprintf("%s/foo.jpeg", tempDir)
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

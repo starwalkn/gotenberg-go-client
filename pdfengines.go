@@ -48,5 +48,5 @@ func (req *MergeRequest) Metadata(md []byte) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MainRequester(new(MergeRequest))
+	_ = MultipartRequester(new(MergeRequest))
 )

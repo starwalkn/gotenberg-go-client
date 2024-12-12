@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,13 +20,13 @@ func TestOffice(t *testing.T) {
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
+
 	req := NewOfficeRequest(doc)
 	req.Trace("testOffice")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -37,8 +36,6 @@ func TestOffice(t *testing.T) {
 	isPDFA, err := test.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.False(t, isPDFA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePageRanges(t *testing.T) {
@@ -67,17 +64,14 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.LosslessImageCompression()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeCompression(t *testing.T) {
@@ -93,17 +87,14 @@ func TestOfficeCompression(t *testing.T) {
 	req.Quality(1)
 	req.ReduceImageResolution()
 	req.MaxImageResolution(75)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeMultipleWithoutMerge(t *testing.T) {
@@ -118,9 +109,8 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	req.Trace("testOfficeMultipleWithoutMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.zip")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.zip", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.zip", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -144,8 +134,6 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	}
 	err = zipReader.Close()
 	require.NoError(t, err)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeMultipleWithMerge(t *testing.T) {
@@ -161,17 +149,14 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.Merge()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePdfA(t *testing.T) {
@@ -185,17 +170,14 @@ func TestOfficePdfA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfA(PdfA3b)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFA, err := test.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePdfUA(t *testing.T) {
@@ -209,15 +191,12 @@ func TestOfficePdfUA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfUA()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	tempDir := t.TempDir()
+	dest := fmt.Sprintf("%s/foo.pdf", tempDir)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFUA, err := test.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

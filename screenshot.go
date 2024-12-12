@@ -51,5 +51,5 @@ func (c *Client) storeScreenshot(ctx context.Context, scr ScreenshotRequester, d
 		return fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
 	}
 
-	return writeNewFile(dest, resp.Body)
+	return c.writeNewFile(dest, resp.Body)
 }
