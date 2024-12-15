@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
@@ -16,7 +15,7 @@ import (
 )
 
 func TestMarkdown(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
@@ -37,18 +36,15 @@ func TestMarkdown(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestMarkdownComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
@@ -86,18 +82,15 @@ func TestMarkdownComplete(t *testing.T) {
 	req.WaitDelay(1 * time.Second)
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestMarkdownPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
@@ -125,7 +118,7 @@ func TestMarkdownPageRanges(t *testing.T) {
 }
 
 func TestMarkdownScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
@@ -147,13 +140,10 @@ func TestMarkdownScreenshot(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NoError(t, err)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	req.Format(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

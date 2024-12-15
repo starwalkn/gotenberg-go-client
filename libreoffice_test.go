@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,7 +15,7 @@ import (
 )
 
 func TestOffice(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -25,8 +24,7 @@ func TestOffice(t *testing.T) {
 	req.Trace("testOffice")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -37,12 +35,10 @@ func TestOffice(t *testing.T) {
 	isPDFA, err := test.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.False(t, isPDFA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -57,7 +53,7 @@ func TestOfficePageRanges(t *testing.T) {
 }
 
 func TestOfficeLosslessCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -67,8 +63,7 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.LosslessImageCompression()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -76,12 +71,10 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -93,8 +86,7 @@ func TestOfficeCompression(t *testing.T) {
 	req.Quality(1)
 	req.ReduceImageResolution()
 	req.MaxImageResolution(75)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -102,12 +94,10 @@ func TestOfficeCompression(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeMultipleWithoutMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -118,8 +108,7 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	req.Trace("testOfficeMultipleWithoutMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.zip")
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.zip", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -144,12 +133,10 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	}
 	err = zipReader.Close()
 	require.NoError(t, err)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficeMultipleWithMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -161,8 +148,7 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.Merge()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -170,12 +156,10 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePdfA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -185,8 +169,7 @@ func TestOfficePdfA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfA(PdfA3b)
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -194,12 +177,10 @@ func TestOfficePdfA(t *testing.T) {
 	isPDFA, err := test.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 func TestOfficePdfUA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
@@ -209,8 +190,7 @@ func TestOfficePdfUA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfUA()
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
@@ -218,6 +198,4 @@ func TestOfficePdfUA(t *testing.T) {
 	isPDFUA, err := test.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }

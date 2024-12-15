@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,7 +15,7 @@ import (
 )
 
 func TestReadWriteMetadata(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", &http.Client{})
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	// Writing metadata.
@@ -39,8 +38,7 @@ func TestReadWriteMetadata(t *testing.T) {
 	require.NoError(t, err)
 	reqWrite.Metadata(writeData)
 
-	dirPath, err := test.Rand()
-	require.NoError(t, err)
+	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 	err = c.Store(context.Background(), reqWrite, dest)
 	require.NoError(t, err)
@@ -64,8 +62,6 @@ func TestReadWriteMetadata(t *testing.T) {
 		FooPdf: writeDataStruct,
 	}
 	assert.Equal(t, expected, readData)
-	err = os.RemoveAll(dirPath)
-	require.NoError(t, err)
 }
 
 type exifData struct {

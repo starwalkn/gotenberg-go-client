@@ -4,8 +4,6 @@ package test
 import (
 	"bufio"
 	"bytes"
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"path"
@@ -17,25 +15,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Rand returns a random string.
-func Rand() (string, error) {
-	randBytes := make([]byte, 16)
-	_, err := rand.Read(randBytes)
-	if err != nil {
-		return "", fmt.Errorf("creating random string: %w", err)
-	}
-
-	return hex.EncodeToString(randBytes), nil
-}
-
 // HTMLTestFilePath returns the absolute file path of a file in "html" folder in test/testdata.
 func HTMLTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "html", filename)
-}
-
-// URLTestFilePath returns the absolute file path of a file in "url" folder in test/testdata.
-func URLTestFilePath(t *testing.T, filename string) string {
-	return abs(t, "url", filename)
 }
 
 // MarkdownTestFilePath returns the absolute file path of a file in "markdown" folder in test/testdata.
@@ -59,13 +41,13 @@ func abs(t *testing.T, kind, filename string) string {
 
 	if filename == "" {
 		fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s", path.Dir(gofilename), kind))
-		require.NoError(t, err, `getting the absolute path of "%s"`, kind)
+		require.NoErrorf(t, err, `getting the absolute path of "%s"`, kind)
 
 		return fpath
 	}
 
 	fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s/%s", path.Dir(gofilename), kind, filename))
-	require.NoError(t, err, `getting the absolute path of "%s"`, filename)
+	require.NoErrorf(t, err, `getting the absolute path of "%s"`, filename)
 
 	return fpath
 }
