@@ -117,8 +117,8 @@ func (req *chromiumRequest) FailOnResourceLoadingFailed() {
 
 // SkipNetworkIdleEvent specifies whether Chromium have to wait or not for its network to be idle.
 // Enabled by default in Gotenberg >= 8.11.0.
-func (req *chromiumRequest) SkipNetworkIdleEvent() {
-	req.fields[fieldChromiumSkipNetworkIdleEvent] = strconv.FormatBool(true)
+func (req *chromiumRequest) SkipNetworkIdleEvent(val bool) {
+	req.fields[fieldChromiumSkipNetworkIdleEvent] = strconv.FormatBool(val)
 }
 
 // SinglePage defines whether to print the entire content in one single page.
