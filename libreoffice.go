@@ -179,5 +179,5 @@ func (req *OfficeRequest) Merge() {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(OfficeRequest))
+	_ = multipartRequester(new(OfficeRequest))
 )

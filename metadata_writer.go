@@ -35,5 +35,5 @@ func (wmd *WriteMetadataRequest) Metadata(md []byte) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(WriteMetadataRequest))
+	_ = multipartRequester(new(WriteMetadataRequest))
 )

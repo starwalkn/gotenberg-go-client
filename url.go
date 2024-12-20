@@ -42,5 +42,5 @@ func (req *URLRequest) formDocuments() map[string]document.Document {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(URLRequest))
+	_ = multipartRequester(new(URLRequest))
 )
