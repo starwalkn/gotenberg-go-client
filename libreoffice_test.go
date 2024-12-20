@@ -14,14 +14,14 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/test"
 )
 
-func TestOffice(t *testing.T) {
+func TestLibreOffice(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOffice")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOffice")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	dirPath := t.TempDir()
@@ -37,14 +37,14 @@ func TestOffice(t *testing.T) {
 	assert.False(t, isPDFA)
 }
 
-func TestOfficePageRanges(t *testing.T) {
+func TestLibreOfficePageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOfficePageRanges")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOfficePageRanges")
 	req.UseBasicAuth("foo", "bar")
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
@@ -52,14 +52,14 @@ func TestOfficePageRanges(t *testing.T) {
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
-func TestOfficeLosslessCompression(t *testing.T) {
+func TestLibreOfficeLosslessCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOfficeLosslessCompression")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOfficeLosslessCompression")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.LosslessImageCompression()
@@ -73,14 +73,14 @@ func TestOfficeLosslessCompression(t *testing.T) {
 	assert.True(t, isPDF)
 }
 
-func TestOfficeCompression(t *testing.T) {
+func TestLibreOfficeCompression(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOfficeCompression")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOfficeCompression")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.Quality(1)
@@ -96,16 +96,16 @@ func TestOfficeCompression(t *testing.T) {
 	assert.True(t, isPDF)
 }
 
-func TestOfficeMultipleWithoutMerge(t *testing.T) {
+func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc1, doc2)
-	req.Trace("testOfficeMultipleWithoutMerge")
+	req := NewLibreOfficeRequest(doc1, doc2)
+	req.Trace("testLibreOfficeMultipleWithoutMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.zip")
 	dirPath := t.TempDir()
@@ -135,16 +135,16 @@ func TestOfficeMultipleWithoutMerge(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestOfficeMultipleWithMerge(t *testing.T) {
+func TestLibreOfficeMultipleWithMerge(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc1, err := document.FromPath("document1.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := document.FromPath("document2.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc1, doc2)
-	req.Trace("testOfficeMultipleWithMerge")
+	req := NewLibreOfficeRequest(doc1, doc2)
+	req.Trace("testLibreOfficeMultipleWithMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.Merge()
@@ -158,14 +158,14 @@ func TestOfficeMultipleWithMerge(t *testing.T) {
 	assert.True(t, isPDF)
 }
 
-func TestOfficePdfA(t *testing.T) {
+func TestLibreOfficePdfA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOfficePdfA")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOfficePdfA")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfA(PdfA3b)
@@ -179,14 +179,14 @@ func TestOfficePdfA(t *testing.T) {
 	assert.True(t, isPDFA)
 }
 
-func TestOfficePdfUA(t *testing.T) {
+func TestLibreOfficePdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.OfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	req := NewOfficeRequest(doc)
-	req.Trace("testOfficePdfUA")
+	req := NewLibreOfficeRequest(doc)
+	req.Trace("testLibreOfficePdfUA")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfUA()
