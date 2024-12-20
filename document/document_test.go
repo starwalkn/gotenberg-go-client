@@ -57,12 +57,12 @@ func TestFromPath(t *testing.T) {
 		}(tmpFile.Name())
 
 		_ = tmpFile.Close()
-		if err = os.Chmod(tmpFile.Name(), 0000); err != nil {
+		if err = os.Chmod(tmpFile.Name(), 0o000); err != nil {
 			t.Fatalf("failed to change file permissions: %v", err)
 		}
 		defer func(name string, mode os.FileMode) {
 			_ = os.Chmod(name, mode)
-		}(tmpFile.Name(), 0600)
+		}(tmpFile.Name(), 0o600)
 
 		doc, err := FromPath(tmpFile.Name(), tmpFile.Name())
 		if err != nil {
