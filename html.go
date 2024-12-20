@@ -1,7 +1,7 @@
 package gotenberg
 
 import (
-	"github.com/runatal/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 const (

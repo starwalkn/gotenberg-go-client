@@ -2,7 +2,7 @@ GOLANG_VERSION=1.23.2
 GOTENBERG_VERSION=8.14.1
 GOLANGCI_LINT_VERSION=1.61.0
 
-REPO=runatal/gotenberg-go-client/v8
+REPO=starwalkn/gotenberg-go-client/v8
 
 # gofmt and goimports all go files.
 fmt:

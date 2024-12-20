@@ -1,6 +1,6 @@
 ARG GOLANG_VERSION
 
-FROM golang:${GOLANG_VERSION}-alpine
+FROM golang:${GOLANG_VERSION:-1.23.2}-alpine
 
 # |--------------------------------------------------------------------------
 # | GolangCI-Lint

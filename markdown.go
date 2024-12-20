@@ -1,6 +1,6 @@
 package gotenberg
 
-import "github.com/runatal/gotenberg-go-client/v8/document"
+import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
 const (
 	endpointMarkdownConvert    = "/forms/chromium/convert/markdown"

@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/runatal/gotenberg-go-client/v8/document"
-	"github.com/runatal/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/test"
 )
 
 func TestReadWriteMetadata(t *testing.T) {
