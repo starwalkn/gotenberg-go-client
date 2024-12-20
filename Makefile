@@ -4,9 +4,9 @@ GOLANGCI_LINT_VERSION=1.61.0
 
 REPO=starwalkn/gotenberg-go-client/v8
 
-# gofmt and goimports all go files.
+# gofumpt and goimports all go files.
 fmt:
-	go fmt ./...
+	gofumpt -l -w .
 	go mod tidy
 
 # run linters.
