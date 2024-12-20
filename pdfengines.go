@@ -6,6 +6,8 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
+const endpointMerge = "/forms/pdfengines/merge"
+
 // MergeRequest facilitates work with PDF files with the Gotenberg API.
 type MergeRequest struct {
 	pdfs []document.Document
@@ -18,7 +20,7 @@ func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
 }
 
 func (req *MergeRequest) endpoint() string {
-	return "/forms/pdfengines/merge"
+	return endpointMerge
 }
 
 func (req *MergeRequest) formDocuments() map[string]document.Document {

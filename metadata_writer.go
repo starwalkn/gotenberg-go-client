@@ -2,6 +2,8 @@ package gotenberg
 
 import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
+const endpointMetadataWrite = "/forms/pdfengines/metadata/write"
+
 type WriteMetadataRequest struct {
 	pdfs []document.Document
 
@@ -16,7 +18,7 @@ func NewWriteMetadataRequest(pdfs ...document.Document) *WriteMetadataRequest {
 }
 
 func (wmd *WriteMetadataRequest) endpoint() string {
-	return "/forms/pdfengines/metadata/write"
+	return endpointMetadataWrite
 }
 
 func (wmd *WriteMetadataRequest) formDocuments() map[string]document.Document {
