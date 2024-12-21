@@ -1,6 +1,8 @@
 package gotenberg
 
-import "github.com/runatal/gotenberg-go-client/v8/document"
+import "github.com/starwalkn/gotenberg-go-client/v8/document"
+
+const endpointMetadataRead = "/forms/pdfengines/metadata/read"
 
 type ReadMetadataRequest struct {
 	pdfs []document.Document
@@ -16,7 +18,7 @@ func NewReadMetadataRequest(pdfs ...document.Document) *ReadMetadataRequest {
 }
 
 func (rmd *ReadMetadataRequest) endpoint() string {
-	return "/forms/pdfengines/metadata/read"
+	return endpointMetadataRead
 }
 
 func (rmd *ReadMetadataRequest) formDocuments() map[string]document.Document {
@@ -31,5 +33,5 @@ func (rmd *ReadMetadataRequest) formDocuments() map[string]document.Document {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(ReadMetadataRequest))
+	_ = multipartRequester(new(ReadMetadataRequest))
 )

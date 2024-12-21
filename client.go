@@ -18,8 +18,8 @@ var (
 	errSendRequestFailed = errors.New("request sending failed")
 )
 
-// MultipartRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
-type MultipartRequester interface {
+// multipartRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
+type multipartRequester interface {
 	endpoint() string
 
 	baseRequester
@@ -48,11 +48,11 @@ func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 }
 
 // Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(ctx context.Context, req MultipartRequester) (*http.Response, error) {
+func (c *Client) Send(ctx context.Context, req multipartRequester) (*http.Response, error) {
 	return c.send(ctx, req)
 }
 
-func (c *Client) send(ctx context.Context, r MultipartRequester) (*http.Response, error) {
+func (c *Client) send(ctx context.Context, r multipartRequester) (*http.Response, error) {
 	req, err := c.createRequest(ctx, r, r.endpoint())
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (c *Client) send(ctx context.Context, r MultipartRequester) (*http.Response
 }
 
 // Store creates the resulting file to given destination.
-func (c *Client) Store(ctx context.Context, req MultipartRequester, dest string) error {
+func (c *Client) Store(ctx context.Context, req multipartRequester, dest string) error {
 	return c.store(ctx, req, dest)
 }
 
-func (c *Client) store(ctx context.Context, req MultipartRequester, dest string) error {
+func (c *Client) store(ctx context.Context, req multipartRequester, dest string) error {
 	if hasWebhook(req) {
 		return errWebhookNotAllowed
 	}
@@ -117,8 +117,8 @@ func writeNewFile(fpath string, in io.Reader) error {
 	return nil
 }
 
-func (c *Client) createRequest(ctx context.Context, br baseRequester, endpoint string) (*http.Request, error) {
-	body, contentType, err := multipartForm(br)
+func (c *Client) createRequest(ctx context.Context, mr multipartRequester, endpoint string) (*http.Request, error) {
+	body, contentType, err := multipartForm(mr)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func (c *Client) createRequest(ctx context.Context, br baseRequester, endpoint s
 	}
 
 	req.Header.Set("Content-Type", contentType)
-	for key, value := range br.customHeaders() {
+	for key, value := range mr.customHeaders() {
 		req.Header.Set(string(key), value)
 	}
 

@@ -7,7 +7,7 @@
 
 |Gotenberg version |                                               Client version                                               | 
 |:----------------:|:----------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|                         `8.7.3` **(actual)**                                 <br/>                         |                            
+|`8.x` **(actual)**|                         `8.7.4` **(actual)**                                 <br/>                         |                            
 |`7.x`             |                                                 `<= 8.5.0`                                                 |
 |`6.x`             | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
@@ -18,7 +18,7 @@
 To get the latest version of the client:
 
 ```zsh
-$ go get github.com/runatal/gotenberg-go-client/v8@latest
+$ go get github.com/starwalkn/gotenberg-go-client/v8@latest
 ```
 
 ## Preparing a documents
@@ -30,8 +30,8 @@ import (
     "net/http"
     "os"
 	
-    "github.com/runatal/gotenberg-go-client/v8"
-    "github.com/runatal/gotenberg-go-client/v8/document"
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -65,8 +65,8 @@ import (
     "context"
     "net/http"
     
-    "github.com/runatal/gotenberg-go-client/v8"
-    "github.com/runatal/gotenberg-go-client/v8/document"
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -121,8 +121,8 @@ import (
     "encoding/json"
     "net/http"
 
-    "github.com/runatal/gotenberg-go-client/v8"
-    "github.com/runatal/gotenberg-go-client/v8/document"
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -160,8 +160,8 @@ import (
     "encoding/json"
     "net/http"
 
-    "github.com/runatal/gotenberg-go-client/v8"
-    "github.com/runatal/gotenberg-go-client/v8/document"
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
@@ -198,8 +198,8 @@ import (
     "context"
     "net/http"
 
-    "github.com/runatal/gotenberg-go-client/v8"
-    "github.com/runatal/gotenberg-go-client/v8/document"
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {

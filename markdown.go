@@ -1,6 +1,6 @@
 package gotenberg
 
-import "github.com/runatal/gotenberg-go-client/v8/document"
+import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
 const (
 	endpointMarkdownConvert    = "/forms/chromium/convert/markdown"
@@ -54,5 +54,5 @@ func (req *MarkdownRequest) Assets(assets ...document.Document) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(MarkdownRequest))
+	_ = multipartRequester(new(MarkdownRequest))
 )

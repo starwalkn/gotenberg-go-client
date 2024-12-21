@@ -3,8 +3,10 @@ package gotenberg
 import (
 	"strconv"
 
-	"github.com/runatal/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
+
+const endpointMerge = "/forms/pdfengines/merge"
 
 // MergeRequest facilitates work with PDF files with the Gotenberg API.
 type MergeRequest struct {
@@ -18,7 +20,7 @@ func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
 }
 
 func (req *MergeRequest) endpoint() string {
-	return "/forms/pdfengines/merge"
+	return endpointMerge
 }
 
 func (req *MergeRequest) formDocuments() map[string]document.Document {
@@ -48,5 +50,5 @@ func (req *MergeRequest) Metadata(md []byte) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(MergeRequest))
+	_ = multipartRequester(new(MergeRequest))
 )

@@ -1,7 +1,7 @@
 package gotenberg
 
 import (
-	"github.com/runatal/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 const (
@@ -54,5 +54,5 @@ func (req *HTMLRequest) Assets(assets ...document.Document) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(HTMLRequest))
+	_ = multipartRequester(new(HTMLRequest))
 )

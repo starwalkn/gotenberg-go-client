@@ -1,6 +1,6 @@
 package gotenberg
 
-import "github.com/runatal/gotenberg-go-client/v8/document"
+import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
 const (
 	endpointURLConvert    = "/forms/chromium/convert/url"
@@ -42,5 +42,5 @@ func (req *URLRequest) formDocuments() map[string]document.Document {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(URLRequest))
+	_ = multipartRequester(new(URLRequest))
 )

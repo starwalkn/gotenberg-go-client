@@ -6,10 +6,10 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/runatal/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
-func multipartForm(r baseRequester) (body *bytes.Buffer, contentType string, err error) {
+func multipartForm(mr multipartRequester) (body *bytes.Buffer, contentType string, err error) {
 	body = &bytes.Buffer{}
 
 	writer := multipart.NewWriter(body)
@@ -19,11 +19,11 @@ func multipartForm(r baseRequester) (body *bytes.Buffer, contentType string, err
 		}
 	}()
 
-	if err = addDocuments(writer, r.formDocuments()); err != nil {
+	if err = addDocuments(writer, mr.formDocuments()); err != nil {
 		return nil, "", err
 	}
 
-	if err = addFormFields(writer, r.formFields()); err != nil {
+	if err = addFormFields(writer, mr.formFields()); err != nil {
 		return nil, "", err
 	}
 

@@ -1,9 +1,9 @@
 ARG GOLANG_VERSION
 ARG GOTENBERG_VERSION
 
-FROM golang:${GOLANG_VERSION}-alpine AS golang
+FROM golang:${GOLANG_VERSION:-1.23.2}-alpine AS golang
 
-FROM gotenberg/gotenberg:${GOTENBERG_VERSION}
+FROM gotenberg/gotenberg:${GOTENBERG_VERSION:-8.14.1}
 
 USER root
 
@@ -29,8 +29,8 @@ COPY --from=golang /usr/local/go /usr/local/go
 RUN export PATH="/usr/local/go/bin:$PATH" &&\
     go version
 
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 # |--------------------------------------------------------------------------
 # | Final touch
