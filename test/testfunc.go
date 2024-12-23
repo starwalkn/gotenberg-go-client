@@ -5,6 +5,7 @@ import (
 	"archive/zip"
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -134,7 +135,9 @@ func IsPDFsInArchive(t *testing.T, path string) (int, bool, error) {
 			return 0, false, err
 		}
 
-		isPDF, err := IsPDF(tempDir + file.Name)
+		var isPDF bool
+
+		isPDF, err = IsPDF(tempDir + file.Name)
 		if err != nil {
 			return 0, false, err
 		}
@@ -166,7 +169,7 @@ func extractFile(zipFile *zip.File, tempDir string) error {
 	}
 	defer dest.Close()
 
-	if _, err = io.Copy(dest, src); err != nil {
+	if _, err = io.Copy(dest, src); err != nil { //nolint:gosec // it is only for tests
 		return err
 	}
 
@@ -190,7 +193,11 @@ func GetPDFPageCount(filePath string) (int, error) {
 		line := scanner.Text()
 		matches := countRegex.FindStringSubmatch(line)
 		if len(matches) == 2 {
-			fmt.Sscanf(matches[1], "%d", &pageCount)
+			_, err = fmt.Sscanf(matches[1], "%d", &pageCount)
+			if err != nil {
+				return 0, err
+			}
+
 			break
 		}
 	}
@@ -200,7 +207,7 @@ func GetPDFPageCount(filePath string) (int, error) {
 	}
 
 	if pageCount == 0 {
-		return 0, fmt.Errorf("could not find page count")
+		return 0, errors.New("could not find page count")
 	}
 
 	return pageCount, nil
@@ -209,14 +216,14 @@ func GetPDFPageCount(filePath string) (int, error) {
 func IsValidJPEG(path string) (bool, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return false, fmt.Errorf("could not open file: %v", err)
+		return false, fmt.Errorf("could not open file: %w", err)
 	}
 	defer file.Close()
 
 	startSignature := []byte{0xFF, 0xD8}
 	buffer := make([]byte, 2)
-	if _, err := io.ReadFull(file, buffer); err != nil {
-		return false, fmt.Errorf("could not read file: %v", err)
+	if _, err = io.ReadFull(file, buffer); err != nil {
+		return false, fmt.Errorf("could not read file: %w", err)
 	}
 	if !bytes.Equal(buffer, startSignature) {
 		return false, nil
@@ -224,19 +231,19 @@ func IsValidJPEG(path string) (bool, error) {
 
 	fileInfo, err := file.Stat()
 	if err != nil {
-		return false, fmt.Errorf("could not get file info: %v", err)
+		return false, fmt.Errorf("could not get file info: %w", err)
 	}
 	fileSize := fileInfo.Size()
 	if fileSize < 4 {
 		return false, nil
 	}
 
-	if _, err := file.Seek(-2, io.SeekEnd); err != nil {
-		return false, fmt.Errorf("could not seek file: %v", err)
+	if _, err = file.Seek(-2, io.SeekEnd); err != nil {
+		return false, fmt.Errorf("could not seek file: %w", err)
 	}
 	endSignature := []byte{0xFF, 0xD9}
-	if _, err := io.ReadFull(file, buffer); err != nil {
-		return false, fmt.Errorf("could not read file: %v", err)
+	if _, err = io.ReadFull(file, buffer); err != nil {
+		return false, fmt.Errorf("could not read file: %w", err)
 	}
 	if !bytes.Equal(buffer, endSignature) {
 		return false, nil
