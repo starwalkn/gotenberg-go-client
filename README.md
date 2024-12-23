@@ -216,6 +216,65 @@ func main() {
 
 ```
 
+## PDF splitting
+These queries allow you to split a PDF file page by page or at a specified interval.
+
+### Split by pages
+
+> [!IMPORTANT]
+> When splitting a PDF file, it is important to note that specifying `req.Unify(true)` will return/save the PDF file, while `req.Unify(false)` will cause Gotenberg to return a ZIP archive with the files.
+
+```go
+package main
+
+import (
+    "context"
+    "net/http"
+
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
+)
+
+func main() {
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+
+    doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+
+    // Create the HTML request and set the image format (optional).
+    req := gotenberg.NewSplitPagesRequest(index)
+    req.Span("1-3")
+    req.Unify(false)
+
+    resp, err := client.Store(context.Background(), req)
+}
+```
+
+### Split by intervals
+
+```go
+package main
+
+import (
+    "context"
+    "net/http"
+
+    "github.com/starwalkn/gotenberg-go-client/v8"
+    "github.com/starwalkn/gotenberg-go-client/v8/document"
+)
+
+func main() {
+    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+
+    doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+
+    // Create the HTML request and set the image format (optional).
+    req := gotenberg.NewSplitIntervalsRequest(index)
+    req.Span(2)
+
+    resp, err := client.Store(context.Background(), req)
+}
+```
+
 ---
 
 **For more complete usages, head to the [documentation](https://gotenberg.dev/).**
