@@ -7,7 +7,7 @@
 
 |Gotenberg version |                                               Client version                                               | 
 |:----------------:|:----------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|                         `8.7.4` **(actual)**                                 <br/>                         |                            
+|`8.x` **(actual)**|                         `8.8.0` **(actual)**                                 <br/>                         |                            
 |`7.x`             |                                                 `<= 8.5.0`                                                 |
 |`6.x`             | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 

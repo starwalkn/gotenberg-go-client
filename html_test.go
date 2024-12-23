@@ -96,6 +96,10 @@ func TestHTMLScreenshot(t *testing.T) {
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+
+	isValidJPEG, err := test.IsValidJPEG(dest)
+	require.NoError(t, err)
+	assert.True(t, isValidJPEG)
 }
 
 func TestHTMLPdfA(t *testing.T) {

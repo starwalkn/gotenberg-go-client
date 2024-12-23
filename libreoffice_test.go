@@ -1,7 +1,6 @@
 package gotenberg
 
 import (
-	"archive/zip"
 	"context"
 	"fmt"
 	"net/http"
@@ -114,25 +113,10 @@ func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	zipReader, err := zip.OpenReader(dest)
+	count, isPDFs, err := test.IsPDFsInArchive(t, dest)
 	require.NoError(t, err)
-
-	expectedFiles := map[string]bool{
-		"document1.docx.pdf": false,
-		"document2.docx.pdf": false,
-	}
-
-	for _, file := range zipReader.File {
-		if _, ok := expectedFiles[file.Name]; ok {
-			expectedFiles[file.Name] = true
-		}
-	}
-
-	for fileName, found := range expectedFiles {
-		assert.True(t, found, "File %s not found in zip", fileName)
-	}
-	err = zipReader.Close()
-	require.NoError(t, err)
+	assert.Equal(t, 2, count)
+	assert.True(t, isPDFs)
 }
 
 func TestLibreOfficeMultipleWithMerge(t *testing.T) {
@@ -156,6 +140,10 @@ func TestLibreOfficeMultipleWithMerge(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
+
+	count, err := test.GetPDFPageCount(dest)
+	require.NoError(t, err)
+	assert.Equal(t, 4, count)
 }
 
 func TestLibreOfficePdfA(t *testing.T) {

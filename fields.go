@@ -90,3 +90,9 @@ const (
 	fieldMergePdfA  formField = "pdfa"
 	fieldMergePdfUA formField = "pdfua"
 )
+
+const (
+	fieldSplitMode  = "splitMode"
+	fieldSplitSpan  = "splitSpan"
+	fieldSplitUnify = "splitUnify"
+)
