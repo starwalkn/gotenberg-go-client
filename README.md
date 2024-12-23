@@ -240,8 +240,7 @@ func main() {
 
     doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
 
-    // Create the HTML request and set the image format (optional).
-    req := gotenberg.NewSplitPagesRequest(index)
+    req := gotenberg.NewSplitPagesRequest(doc)
     req.Span("1-3")
     req.Unify(false)
 
@@ -267,8 +266,7 @@ func main() {
 
     doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
 
-    // Create the HTML request and set the image format (optional).
-    req := gotenberg.NewSplitIntervalsRequest(index)
+    req := gotenberg.NewSplitIntervalsRequest(doc)
     req.Span(2)
 
     resp, err := client.Store(context.Background(), req)
