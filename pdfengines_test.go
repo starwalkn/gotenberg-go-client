@@ -30,4 +30,12 @@ func TestMerge(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
+
+	count, err := test.GetPDFPageCount(dest)
+	require.NoError(t, err)
+	assert.Equal(t, 6, count)
 }

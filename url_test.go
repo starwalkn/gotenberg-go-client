@@ -26,6 +26,10 @@ func TestURL(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
 }
 
 func TestURLComplete(t *testing.T) {
@@ -50,6 +54,10 @@ func TestURLComplete(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
 }
 
 func TestURLPageRanges(t *testing.T) {
@@ -78,4 +86,8 @@ func TestURLScreenshot(t *testing.T) {
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
+
+	isValidJPEG, err := test.IsValidJPEG(dest)
+	require.NoError(t, err)
+	assert.True(t, isValidJPEG)
 }
