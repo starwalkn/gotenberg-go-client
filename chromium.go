@@ -209,6 +209,19 @@ func (req *chromiumRequest) Metadata(jsonData []byte) {
 	req.fields[fieldMetadata] = string(jsonData)
 }
 
+// SplitIntervals splits the resulting PDF by interval.
+func (req *chromiumRequest) SplitIntervals(span int) {
+	req.fields[fieldSplitMode] = "intervals"
+	req.fields[fieldSplitSpan] = strconv.Itoa(span)
+}
+
+// SplitPages splits the resulting PDF by pages. Span should have the format “1-5”.
+func (req *chromiumRequest) SplitPages(span string, unify bool) {
+	req.fields[fieldSplitMode] = "pages"
+	req.fields[fieldSplitSpan] = span
+	req.fields[fieldSplitUnify] = strconv.FormatBool(unify)
+}
+
 // ScreenshotWidth Width sets the device screen width in pixels.
 func (req *chromiumRequest) ScreenshotWidth(width float64) {
 	req.fields[fieldScreenshotWidth] = fmt.Sprintf("%f", width)
