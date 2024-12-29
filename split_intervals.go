@@ -14,7 +14,7 @@ type SplitIntervalsRequest struct {
 
 func NewSplitIntervalsRequest(pdfs ...document.Document) *SplitIntervalsRequest {
 	br := newBaseRequest()
-	br.fields[fieldSplitMode] = "intervals"
+	br.fields[fieldSplitMode] = splitModeIntervals
 
 	return &SplitIntervalsRequest{
 		pdfs:        pdfs,
