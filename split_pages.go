@@ -14,7 +14,7 @@ type SplitPagesRequest struct {
 
 func NewSplitPagesRequest(pdfs ...document.Document) *SplitPagesRequest {
 	br := newBaseRequest()
-	br.fields[fieldSplitMode] = "pages"
+	br.fields[fieldSplitMode] = splitModePages
 
 	return &SplitPagesRequest{
 		pdfs:        pdfs,

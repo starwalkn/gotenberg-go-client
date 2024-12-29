@@ -96,3 +96,9 @@ const (
 	fieldSplitSpan  = "splitSpan"
 	fieldSplitUnify = "splitUnify"
 )
+
+// Split mode.
+const (
+	splitModePages     = "pages"
+	splitModeIntervals = "intervals"
+)

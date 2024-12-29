@@ -172,6 +172,19 @@ func (req *LibreOfficeRequest) Metadata(md []byte) {
 	req.fields[fieldMetadata] = string(md)
 }
 
+// SplitIntervals splits the resulting PDF by interval.
+func (req *LibreOfficeRequest) SplitIntervals(span int) {
+	req.fields[fieldSplitMode] = splitModeIntervals
+	req.fields[fieldSplitSpan] = strconv.Itoa(span)
+}
+
+// SplitPages splits the resulting PDF by pages. Span should have the format “1-5”.
+func (req *LibreOfficeRequest) SplitPages(span string, unify bool) {
+	req.fields[fieldSplitMode] = splitModePages
+	req.fields[fieldSplitSpan] = span
+	req.fields[fieldSplitUnify] = strconv.FormatBool(unify)
+}
+
 // Merge merges the resulting PDFs.
 func (req *LibreOfficeRequest) Merge() {
 	req.fields[fieldOfficeMerge] = strconv.FormatBool(true)
