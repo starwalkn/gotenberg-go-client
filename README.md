@@ -3,7 +3,9 @@
     <p align="center">The Go client for interacting with a Gotenberg API. This project is a further development of the <a href="https://github.com/thecodingmachine/gotenberg-go-client">client from TheCodingMachine</a>, which does not support the new functionality since version 7 of Gotenberg.
 </p>
 
----
+<div align="center">
+
+<b>Client Compatibility Table</b>
 
 |Gotenberg version |                                               Client version                                               | 
 |:----------------:|:----------------------------------------------------------------------------------------------------------:|
@@ -12,6 +14,7 @@
 |`6.x`             | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
 ---
+</div>
 
 ## Installation
 
