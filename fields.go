@@ -83,18 +83,21 @@ const (
 	fieldOfficeMerge                           formField = "merge"
 	fieldOfficePdfA                            formField = "pdfa"
 	fieldOfficePdfUa                           formField = "pdfua"
+	fieldOfficeFlatten                         formField = "flatten"
 )
 
 // Merge request property.
 const (
-	fieldMergePdfA  formField = "pdfa"
-	fieldMergePdfUA formField = "pdfua"
+	fieldMergePdfA    formField = "pdfa"
+	fieldMergePdfUA   formField = "pdfua"
+	fieldMergeFlatten formField = "flatten"
 )
 
 const (
-	fieldSplitMode  = "splitMode"
-	fieldSplitSpan  = "splitSpan"
-	fieldSplitUnify = "splitUnify"
+	fieldSplitMode    = "splitMode"
+	fieldSplitSpan    = "splitSpan"
+	fieldSplitUnify   = "splitUnify"
+	fieldSplitFlatten = "flatten"
 )
 
 // Split mode.

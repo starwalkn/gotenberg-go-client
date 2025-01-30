@@ -185,6 +185,11 @@ func (req *LibreOfficeRequest) SplitPages(span string, unify bool) {
 	req.fields[fieldSplitUnify] = strconv.FormatBool(unify)
 }
 
+// Flatten defines whether the resulting PDF should be flattened.
+func (req *LibreOfficeRequest) Flatten(val bool) {
+	req.fields[fieldOfficeFlatten] = strconv.FormatBool(val)
+}
+
 // Merge merges the resulting PDFs.
 func (req *LibreOfficeRequest) Merge() {
 	req.fields[fieldOfficeMerge] = strconv.FormatBool(true)

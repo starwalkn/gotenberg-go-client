@@ -44,3 +44,8 @@ func (req *SplitPagesRequest) SplitSpan(span string) {
 func (req *SplitPagesRequest) SplitUnify(val bool) {
 	req.fields[fieldSplitUnify] = strconv.FormatBool(val)
 }
+
+// Flatten defines whether the resulting PDF should be flattened.
+func (req *SplitPagesRequest) Flatten(val bool) {
+	req.fields[fieldSplitFlatten] = strconv.FormatBool(val)
+}
