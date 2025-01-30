@@ -40,3 +40,8 @@ func (req *SplitIntervalsRequest) formDocuments() map[string]document.Document {
 func (req *SplitIntervalsRequest) SplitSpan(span int) {
 	req.fields[fieldSplitSpan] = strconv.Itoa(span)
 }
+
+// Flatten defines whether the resulting PDF should be flattened.
+func (req *SplitIntervalsRequest) Flatten(val bool) {
+	req.fields[fieldSplitFlatten] = strconv.FormatBool(val)
+}

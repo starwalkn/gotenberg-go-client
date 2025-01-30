@@ -6,8 +6,6 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
-const endpointMerge = "/forms/pdfengines/merge"
-
 // MergeRequest facilitates work with PDF files with the Gotenberg API.
 type MergeRequest struct {
 	pdfs []document.Document
@@ -20,7 +18,7 @@ func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
 }
 
 func (req *MergeRequest) endpoint() string {
-	return endpointMerge
+	return "/forms/pdfengines/merge"
 }
 
 func (req *MergeRequest) formDocuments() map[string]document.Document {
@@ -46,6 +44,11 @@ func (req *MergeRequest) PdfUA() {
 // Metadata sets the metadata to write.
 func (req *MergeRequest) Metadata(md []byte) {
 	req.fields[fieldMetadata] = string(md)
+}
+
+// Flatten defines whether the resulting PDF should be flattened.
+func (req *MergeRequest) Flatten(val bool) {
+	req.fields[fieldMergeFlatten] = strconv.FormatBool(val)
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
