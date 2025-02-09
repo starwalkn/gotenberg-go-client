@@ -223,13 +223,13 @@ func (req *chromiumRequest) SplitPages(span string, unify bool) {
 }
 
 // ScreenshotWidth Width sets the device screen width in pixels.
-func (req *chromiumRequest) ScreenshotWidth(width float64) {
-	req.fields[fieldScreenshotWidth] = fmt.Sprintf("%f", width)
+func (req *chromiumRequest) ScreenshotWidth(width int) {
+	req.fields[fieldScreenshotWidth] = strconv.Itoa(width)
 }
 
 // ScreenshotHeight sets the device screen height in pixels.
-func (req *chromiumRequest) ScreenshotHeight(height float64) {
-	req.fields[fieldScreenshotHeight] = fmt.Sprintf("%f", height)
+func (req *chromiumRequest) ScreenshotHeight(height int) {
+	req.fields[fieldScreenshotHeight] = strconv.Itoa(height)
 }
 
 // ScreenshotClip defines whether to clip the screenshot according to the device dimensions.
