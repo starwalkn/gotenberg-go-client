@@ -195,6 +195,10 @@ func (req *LibreOfficeRequest) Merge() {
 	req.fields[fieldOfficeMerge] = strconv.FormatBool(true)
 }
 
+func (req *LibreOfficeRequest) UpdateIndexes(val bool) {
+	req.fields[fieldOfficeUpdateIndexes] = strconv.FormatBool(val)
+}
+
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = multipartRequester(new(LibreOfficeRequest))
