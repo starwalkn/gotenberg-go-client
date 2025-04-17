@@ -24,7 +24,7 @@ func (c *Client) screenshot(ctx context.Context, scr screenshotRequester) (*http
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, errSendRequestFailed
+		return nil, fmt.Errorf("%w: %w", errSendRequestFailed, err)
 	}
 
 	return resp, nil
