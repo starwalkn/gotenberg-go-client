@@ -1,9 +1,9 @@
 ARG GOLANG_VERSION
 ARG GOTENBERG_VERSION
 
-FROM golang:${GOLANG_VERSION:-1.23.2}-alpine AS golang
+FROM golang:${GOLANG_VERSION:-1.24.2}-alpine AS golang
 
-FROM gotenberg/gotenberg:${GOTENBERG_VERSION:-8.15.0}
+FROM gotenberg/gotenberg:${GOTENBERG_VERSION:-8.20.1}
 
 USER root
 
