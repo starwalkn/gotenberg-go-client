@@ -84,11 +84,7 @@ const (
 	fieldOfficePdfA                            formField = "pdfa"
 	fieldOfficePdfUa                           formField = "pdfua"
 	fieldOfficeFlatten                         formField = "flatten"
-<<<<<<< HEAD
-	fieldUpdateIndexes                         formField = "updateIndexes"
-=======
 	fieldOfficeUpdateIndexes                   formField = "updateIndexes"
->>>>>>> bfe0ac89788949b237e03c7deee0df63110bfcfc
 )
 
 // Merge request property.
