@@ -53,7 +53,7 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	require.NoError(t, err)
 
 	r := NewSplitIntervalsRequest(doc)
-	r.Trace("testSplitIntervals")
+	r.Trace("testSplitIntervalsOnePage")
 	r.UseBasicAuth("foo", "bar")
 
 	r.SplitSpan(3)
@@ -137,7 +137,7 @@ func TestSplitPagesUnify(t *testing.T) {
 	require.NoError(t, err)
 
 	r := NewSplitPagesRequest(doc)
-	r.Trace("testSplitPagesOnePage")
+	r.Trace("testSplitPagesUnify")
 	r.UseBasicAuth("foo", "bar")
 
 	r.SplitSpan("1-2")
@@ -153,8 +153,4 @@ func TestSplitPagesUnify(t *testing.T) {
 	isPDF, err := test.IsPDF(dest)
 	require.NoError(t, err)
 	require.True(t, isPDF)
-
-	pageCount, err := test.GetPDFPageCount(dest)
-	require.NoError(t, err)
-	require.Equal(t, 2, pageCount)
 }

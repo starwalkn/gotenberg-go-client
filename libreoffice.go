@@ -195,6 +195,12 @@ func (req *LibreOfficeRequest) Merge() {
 	req.fields[fieldOfficeMerge] = strconv.FormatBool(true)
 }
 
+// UpdateIndexes specifies whether to update the indexes before conversion, keeping in
+// mind that doing so might result in missing links in the final PDF.
+func (req *LibreOfficeRequest) UpdateIndexes(value bool) {
+	req.fields[fieldOfficeUpdateIndexes] = strconv.FormatBool(value)
+}
+
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = multipartRequester(new(LibreOfficeRequest))
