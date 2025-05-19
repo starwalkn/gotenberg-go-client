@@ -53,7 +53,7 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	require.NoError(t, err)
 
 	r := NewSplitIntervalsRequest(doc)
-	r.Trace("testSplitIntervals")
+	r.Trace("testSplitIntervalsOnePage")
 	r.UseBasicAuth("foo", "bar")
 
 	r.SplitSpan(3)
