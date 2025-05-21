@@ -203,5 +203,5 @@ func (req *LibreOfficeRequest) UpdateIndexes(value bool) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(LibreOfficeRequest))
+	_ = multipartRequest(new(LibreOfficeRequest))
 )

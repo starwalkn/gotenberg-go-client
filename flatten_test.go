@@ -27,7 +27,7 @@ func TestFlatten(t *testing.T) {
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 
-	err = c.Store(context.Background(), r, dest)
+	err = c.Save(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

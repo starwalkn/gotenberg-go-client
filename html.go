@@ -47,12 +47,12 @@ func (req *HTMLRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
-// Assets sets assets form files.
+// Assets set assets form files.
 func (req *HTMLRequest) Assets(assets ...document.Document) {
 	req.assets = assets
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(HTMLRequest))
+	_ = multipartRequest(new(HTMLRequest))
 )

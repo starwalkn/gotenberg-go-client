@@ -55,7 +55,7 @@ func TestMarkdown(t *testing.T) {
 	req.Margins(NormalMargins)
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -120,9 +120,9 @@ func TestMarkdownScreenshot(t *testing.T) {
 
 	require.NoError(t, err)
 	dirPath := t.TempDir()
-	req.Format(JPEG)
+	req.ScreenshotFormat(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(context.Background(), req, dest)
+	err = c.SaveScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

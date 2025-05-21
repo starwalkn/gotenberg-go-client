@@ -2,138 +2,92 @@ package gotenberg
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
-	"runtime"
 )
 
-var (
-	errEmptyHostname     = errors.New("empty hostname")
-	errWebhookNotAllowed = errors.New("webhook is not allowed for request")
-	errGenerationFailed  = errors.New("resulting file could not be generated")
-	errSendRequestFailed = errors.New("request sending failed")
-)
+type screenshotRequest interface {
+	screenshotEndpoint() string
 
-// multipartRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
-type multipartRequester interface {
+	multipartRequest
+}
+
+// multipartRequest is a type for sending form fields and form files (documents) to the Gotenberg API.
+type multipartRequest interface {
 	endpoint() string
 
 	baseRequester
 }
 
 // Client facilitates interacting with the Gotenberg API.
+// It manages the hostname and the underlying HTTP client for making requests.
 type Client struct {
-	hostname   string
-	httpClient *http.Client
+	hostname string
+	*http.Client
 }
 
-// NewClient creates a new gotenberg.Client. If http.Client is passed as nil, then http.DefaultClient is used.
+// NewClient creates a new gotenberg.Client.
+//
+// The 'hostname' parameter is the base URL of your Gotenberg API instance (e.g., "http://localhost:3000").
+// If 'httpClient' is passed as 'nil', then 'http.DefaultClient' will be used.
 func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
-	if httpClient == nil {
-		httpClient = http.DefaultClient
-	}
-
 	if hostname == "" {
-		return nil, errEmptyHostname
+		return nil, fmt.Errorf("hostname is empty")
 	}
 
-	return &Client{
-		hostname:   hostname,
-		httpClient: httpClient,
-	}, nil
+	client := &Client{hostname: hostname, Client: httpClient}
+
+	if httpClient == nil {
+		client.Client = http.DefaultClient
+	}
+
+	return client, nil
 }
 
-// Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(ctx context.Context, req multipartRequester) (*http.Response, error) {
+// Send sends a request to the Gotenberg API and returns the raw HTTP response.
+//
+// This is the public entry point for making requests to the Gotenberg service.
+// It wraps the internal send method, providing a clear and simple API for clients
+// that need to handle the *http.Response directly.
+func (c *Client) Send(ctx context.Context, req multipartRequest) (*http.Response, error) {
 	return c.send(ctx, req)
 }
 
-func (c *Client) send(ctx context.Context, r multipartRequester) (*http.Response, error) {
-	req, err := c.createRequest(ctx, r, r.endpoint())
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %w", errSendRequestFailed, err)
-	}
-
-	return resp, nil
-}
-
-// Store creates the resulting file to given destination.
-func (c *Client) Store(ctx context.Context, req multipartRequester, dest string) error {
-	return c.store(ctx, req, dest)
-}
-
-func (c *Client) store(ctx context.Context, req multipartRequester, dest string) error {
-	if hasWebhook(req) {
+// Save sends a request to the Gotenberg API and saves the resulting document
+// to the specified local file path.
+//
+// This method is suitable for operations where the Gotenberg output is a single file
+// (e.g., PDF, DOCX, etc.), and you want to store it directly on the local filesystem.
+// Webhooks are not allowed when using this method, as Gotenberg would
+// send the result elsewhere via the webhook mechanism instead of returning it.
+func (c *Client) Save(ctx context.Context, r multipartRequest, dest string) error {
+	if r.hasWebhook() {
 		return errWebhookNotAllowed
 	}
 
-	resp, err := c.send(ctx, req)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
-	}
-
-	return writeNewFile(dest, resp.Body)
+	return c.save(ctx, r, dest)
 }
 
-func writeNewFile(fpath string, in io.Reader) error {
-	if err := os.MkdirAll(filepath.Dir(fpath), 0o755); err != nil {
-		return fmt.Errorf("making %s directory: %w", fpath, err)
-	}
-
-	out, err := os.Create(fpath)
-	if err != nil {
-		return fmt.Errorf("creating %s: %w", fpath, err)
-	}
-	defer func() {
-		if closeErr := out.Close(); closeErr != nil && err == nil {
-			err = fmt.Errorf("closing %s: %w", fpath, closeErr)
-		}
-	}()
-
-	if err = out.Chmod(0o644); err != nil && runtime.GOOS != "windows" {
-		return fmt.Errorf("setting %s permissions: %w", fpath, err)
-	}
-
-	if _, err = io.Copy(out, in); err != nil {
-		return fmt.Errorf("writing to %s: %w", fpath, err)
-	}
-
-	return nil
+// Screenshot sends a screenshot request to the Gotenberg API and returns the raw HTTP response.
+//
+// This is the public entry point for capturing screenshots via the Gotenberg service.
+// It wraps the internal screenshot method, providing a clear and simple API for clients
+// that need to handle the *http.Response directly.
+func (c *Client) Screenshot(ctx context.Context, r screenshotRequest) (*http.Response, error) {
+	return c.screenshot(ctx, r)
 }
 
-func (c *Client) createRequest(ctx context.Context, mr multipartRequester, endpoint string) (*http.Request, error) {
-	body, contentType, err := multipartForm(mr)
-	if err != nil {
-		return nil, err
+// SaveScreenshot sends a screenshot request to the Gotenberg API and saves the resulting image
+// to the specified local file path.
+//
+// This method is suitable for operations where the Gotenberg output is a single image file
+// (e.g., PNG, JPEG) and you want to store it directly on the local filesystem.
+// Webhooks are not allowed when using this method, as Gotenberg would
+// send the result elsewhere via the webhook mechanism instead of returning it.
+func (c *Client) SaveScreenshot(ctx context.Context, r screenshotRequest, dest string) error {
+	if r.hasWebhook() {
+		return errWebhookNotAllowed
 	}
 
-	url := fmt.Sprintf("%s%s", c.hostname, endpoint)
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
-	if err != nil {
-		return nil, fmt.Errorf("creating request: %w", err)
-	}
-
-	req.Header.Set("Content-Type", contentType)
-	for key, value := range mr.customHeaders() {
-		req.Header.Set(string(key), value)
-	}
-
-	return req, nil
+	return c.saveScreenshot(ctx, r, dest)
 }

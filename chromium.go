@@ -252,7 +252,7 @@ func (req *chromiumRequest) ScreenshotOptimizeForSpeed() {
 	req.fields[fieldScreenshotOptimizeForSpeed] = strconv.FormatBool(true)
 }
 
-// Format sets the image compression format, either PNG, JPEG or WEBP. Default is PNG.
-func (req *chromiumRequest) Format(format ImageFormat) {
+// ScreenshotFormat sets the image compression format, either PNG, JPEG or WEBP. Default is PNG.
+func (req *chromiumRequest) ScreenshotFormat(format ImageFormat) {
 	req.fields[fieldScreenshotFormat] = string(format)
 }

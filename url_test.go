@@ -23,7 +23,7 @@ func TestURL(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -51,7 +51,7 @@ func TestURLComplete(t *testing.T) {
 	req.Margins(NormalMargins)
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -81,9 +81,9 @@ func TestURLScreenshot(t *testing.T) {
 	req.Trace("testURLScreenshot")
 	req.UseBasicAuth("foo", "bar")
 	dirPath := t.TempDir()
-	req.Format(JPEG)
+	req.ScreenshotFormat(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(context.Background(), req, dest)
+	err = c.SaveScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

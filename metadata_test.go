@@ -40,7 +40,7 @@ func TestReadWriteMetadata(t *testing.T) {
 
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), reqWrite, dest)
+	err = c.Save(context.Background(), reqWrite, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

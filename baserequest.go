@@ -10,6 +10,7 @@ import (
 )
 
 type baseRequester interface {
+	hasWebhook() bool
 	customHeaders() map[httpHeader]string
 	formFields() map[formField]string
 	formDocuments() map[string]document.Document
@@ -27,64 +28,64 @@ func newBaseRequest() *baseRequest {
 	}
 }
 
-func (br *baseRequest) customHeaders() map[httpHeader]string {
-	return br.headers
+func (r *baseRequest) customHeaders() map[httpHeader]string {
+	return r.headers
 }
 
-func (br *baseRequest) formFields() map[formField]string {
-	return br.fields
+func (r *baseRequest) formFields() map[formField]string {
+	return r.fields
 }
 
 // OutputFilename overrides the default UUID output filename.
 //
 // NOTE: Gotenberg adds the file extension automatically; you don't have to set it.
-func (br *baseRequest) OutputFilename(filename string) {
-	br.headers[headerOutputFilename] = filename
+func (r *baseRequest) OutputFilename(filename string) {
+	r.headers[headerOutputFilename] = filename
 }
 
 // Trace overrides the default UUID trace, or request ID, that identifies a request in Gotenberg's logs.
-func (br *baseRequest) Trace(trace string) {
-	br.headers[headerTrace] = trace
+func (r *baseRequest) Trace(trace string) {
+	r.headers[headerTrace] = trace
 }
 
 // UseBasicAuth sets the basic authentication credentials.
-func (br *baseRequest) UseBasicAuth(username, password string) {
+func (r *baseRequest) UseBasicAuth(username, password string) {
 	auth := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
-	br.headers[headerAuthorization] = "Basic " + auth
+	r.headers[headerAuthorization] = "Basic " + auth
 }
 
 // UseWebhook sets the callback and error callback that Gotenberg will use to send
 // respectively the output file and the error response.
-func (br *baseRequest) UseWebhook(hookURL string, errorURL string) {
-	br.headers[headerWebhookURL] = hookURL
-	br.headers[headerWebhookErrorURL] = errorURL
+func (r *baseRequest) UseWebhook(hookURL string, errorURL string) {
+	r.headers[headerWebhookURL] = hookURL
+	r.headers[headerWebhookErrorURL] = errorURL
 }
 
 // SetWebhookMethod Overrides the default HTTP method that Gotenberg will use to call the webhook.
-func (br *baseRequest) SetWebhookMethod(method string) {
-	br.headers[headerWebhookMethod] = ensureWebhookMethod(method)
+func (r *baseRequest) SetWebhookMethod(method string) {
+	r.headers[headerWebhookMethod] = ensureWebhookMethod(method)
 }
 
 // SetWebhookErrorMethod overrides the default HTTP method that Gotenberg will use to call the error webhook.
-func (br *baseRequest) SetWebhookErrorMethod(method string) {
-	br.headers[headerWebhookErrorMethod] = ensureWebhookMethod(method)
+func (r *baseRequest) SetWebhookErrorMethod(method string) {
+	r.headers[headerWebhookErrorMethod] = ensureWebhookMethod(method)
 }
 
 // SetWebhookExtraHeaders sets the extra HTTP headers that Gotenberg will send alongside the
 // request to the webhook and error webhook.
-func (br *baseRequest) SetWebhookExtraHeaders(headers map[string]string) error {
+func (r *baseRequest) SetWebhookExtraHeaders(headers map[string]string) error {
 	marshaledHeaders, err := json.Marshal(headers)
 	if err != nil {
 		return fmt.Errorf("marshal headers to JSON: %w", err)
 	}
 
-	br.headers[headerWebhookExtraHeaders] = string(marshaledHeaders)
+	r.headers[headerWebhookExtraHeaders] = string(marshaledHeaders)
 
 	return nil
 }
 
-func hasWebhook(req baseRequester) bool {
-	url, ok := req.customHeaders()[headerWebhookURL]
+func (r *baseRequest) hasWebhook() bool {
+	url, ok := r.headers[headerWebhookURL]
 	if !ok {
 		return false
 	}
@@ -105,7 +106,7 @@ func ensureWebhookMethod(method string) string {
 // this is equivalent to map[string]map[string]string, which this method accepts, but headers map can be nil.
 //
 // URLs MUST return a Content-Disposition header with a filename parameter.
-func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
+func (r *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
 	dfs := make([]downloadFrom, 0, len(downloads))
 
 	for url, headers := range downloads {
@@ -120,7 +121,7 @@ func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
 		return
 	}
 
-	br.fields[fieldDownloadFrom] = string(marshaled)
+	r.fields[fieldDownloadFrom] = string(marshaled)
 }
 
 type downloadFrom struct {

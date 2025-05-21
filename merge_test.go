@@ -27,7 +27,7 @@ func TestMerge(t *testing.T) {
 	req.OutputFilename("foo.pdf")
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
