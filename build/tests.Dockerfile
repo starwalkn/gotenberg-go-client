@@ -54,4 +54,4 @@ RUN go mod download
 
 USER gotenberg
 
-ENTRYPOINT [ "build/tests/docker-entrypoint.sh" ]
+ENTRYPOINT [ "build/tests-entrypoint.sh" ]
