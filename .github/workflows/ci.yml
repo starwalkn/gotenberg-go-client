@@ -42,7 +42,7 @@ jobs:
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-{{ hashFiles('**/go.sum') }}
-          restore_keys: |
+          restore-keys: |
             ${{ runner.os }}-go-
 
       - name: Set up Docker Buildx
