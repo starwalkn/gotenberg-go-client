@@ -222,6 +222,11 @@ func (req *chromiumRequest) SplitPages(span string, unify bool) {
 	req.fields[fieldSplitUnify] = strconv.FormatBool(unify)
 }
 
+// GenerateTaggedPDF generates tagged (accessible) PDF.
+func (req *chromiumRequest) GenerateTaggedPDF(val bool) {
+	req.fields[fieldChromiumGenerateTaggedPDF] = strconv.FormatBool(val)
+}
+
 // ScreenshotWidth Width sets the device screen width in pixels.
 func (req *chromiumRequest) ScreenshotWidth(width int) {
 	req.fields[fieldScreenshotWidth] = strconv.Itoa(width)

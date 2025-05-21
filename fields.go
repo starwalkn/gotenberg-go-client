@@ -26,6 +26,7 @@ const (
 	fieldChromiumFailOnConsoleExceptions       formField = "failOnConsoleExceptions"
 	fieldChromiumFailOnResourceLoadingFailed   formField = "failOnResourceLoadingFailed"
 	fieldChromiumSkipNetworkIdleEvent          formField = "skipNetworkIdleEvent"
+	fieldChromiumGenerateTaggedPDF             formField = "generateTaggedPdf"
 )
 
 // PDF page property.
