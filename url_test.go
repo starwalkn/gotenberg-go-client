@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestURL(t *testing.T) {
@@ -27,7 +27,7 @@ func TestURL(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }
@@ -39,10 +39,10 @@ func TestURLComplete(t *testing.T) {
 	req := NewURLRequest("http://example.com")
 	req.Trace("testURLComplete")
 	req.UseBasicAuth("foo", "bar")
-	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	header, err := document.FromPath("header.html", testutil.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
-	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	footer, err := document.FromPath("footer.html", testutil.HTMLTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
 	req.Footer(footer)
 	req.OutputFilename("foo.pdf")
@@ -55,7 +55,7 @@ func TestURLComplete(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }
@@ -87,7 +87,7 @@ func TestURLScreenshot(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isValidJPEG, err := test.IsValidJPEG(dest)
+	isValidJPEG, err := testutil.IsValidJPEG(dest)
 	require.NoError(t, err)
 	assert.True(t, isValidJPEG)
 }

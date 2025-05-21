@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestSplitIntervals(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewSplitIntervalsRequest(doc)
@@ -38,7 +38,7 @@ func TestSplitIntervals(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	count, isPDFs, err := test.IsPDFsInArchive(t, dest)
+	count, isPDFs, err := testutil.IsPDFsInArchive(t, dest)
 	require.NoError(t, err)
 
 	require.Equal(t, expectedCount, count)
@@ -49,7 +49,7 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewSplitIntervalsRequest(doc)
@@ -65,7 +65,7 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	require.True(t, isPDF)
 }
@@ -74,7 +74,7 @@ func TestSplitPages(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewSplitPagesRequest(doc)
@@ -96,7 +96,7 @@ func TestSplitPages(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	count, isPDFs, err := test.IsPDFsInArchive(t, dest)
+	count, isPDFs, err := testutil.IsPDFsInArchive(t, dest)
 	require.NoError(t, err)
 
 	require.Equal(t, expectedCount, count)
@@ -107,7 +107,7 @@ func TestSplitPagesOnePage(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewSplitPagesRequest(doc)
@@ -124,7 +124,7 @@ func TestSplitPagesOnePage(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	require.True(t, isPDF)
 }
@@ -133,7 +133,7 @@ func TestSplitPagesUnify(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewSplitPagesRequest(doc)
@@ -150,7 +150,7 @@ func TestSplitPagesUnify(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	require.True(t, isPDF)
 }

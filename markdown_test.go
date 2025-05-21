@@ -11,20 +11,20 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestMarkdown(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
-	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
+	markdown1, err := document.FromPath("paragraph1.md", testutil.MarkdownTestFilePath(t, "paragraph1.md"))
 	require.NoError(t, err)
-	markdown2, err := document.FromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
+	markdown2, err := document.FromPath("paragraph2.md", testutil.MarkdownTestFilePath(t, "paragraph2.md"))
 	require.NoError(t, err)
-	markdown3, err := document.FromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
+	markdown3, err := document.FromPath("paragraph3.md", testutil.MarkdownTestFilePath(t, "paragraph3.md"))
 	require.NoError(t, err)
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdown")
@@ -36,17 +36,17 @@ func TestMarkdown(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	header, err := document.FromPath("header.html", test.MarkdownTestFilePath(t, "header.html"))
+	header, err := document.FromPath("header.html", testutil.MarkdownTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
-	footer, err := document.FromPath("footer.html", test.MarkdownTestFilePath(t, "footer.html"))
+	footer, err := document.FromPath("footer.html", testutil.MarkdownTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
 	req.Footer(footer)
-	font, err := document.FromPath("font.woff", test.MarkdownTestFilePath(t, "font.woff"))
+	font, err := document.FromPath("font.woff", testutil.MarkdownTestFilePath(t, "font.woff"))
 	require.NoError(t, err)
-	img, err := document.FromPath("img.gif", test.MarkdownTestFilePath(t, "img.gif"))
+	img, err := document.FromPath("img.gif", testutil.MarkdownTestFilePath(t, "img.gif"))
 	require.NoError(t, err)
-	style, err := document.FromPath("style.css", test.MarkdownTestFilePath(t, "style.css"))
+	style, err := document.FromPath("style.css", testutil.MarkdownTestFilePath(t, "style.css"))
 	require.NoError(t, err)
 	req.Assets(font, img, style)
 	req.OutputFilename("foo.pdf")
@@ -59,11 +59,11 @@ func TestMarkdown(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 
-	count, err := test.GetPDFPageCount(dest)
+	count, err := testutil.GetPDFPageCount(dest)
 	require.NoError(t, err)
 	assert.Equal(t, 2, count)
 }
@@ -72,13 +72,13 @@ func TestMarkdownPageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
-	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
+	markdown1, err := document.FromPath("paragraph1.md", testutil.MarkdownTestFilePath(t, "paragraph1.md"))
 	require.NoError(t, err)
-	markdown2, err := document.FromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
+	markdown2, err := document.FromPath("paragraph2.md", testutil.MarkdownTestFilePath(t, "paragraph2.md"))
 	require.NoError(t, err)
-	markdown3, err := document.FromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
+	markdown3, err := document.FromPath("paragraph3.md", testutil.MarkdownTestFilePath(t, "paragraph3.md"))
 	require.NoError(t, err)
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdownPageRanges")
@@ -100,13 +100,13 @@ func TestMarkdownScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
-	markdown1, err := document.FromPath("paragraph1.md", test.MarkdownTestFilePath(t, "paragraph1.md"))
+	markdown1, err := document.FromPath("paragraph1.md", testutil.MarkdownTestFilePath(t, "paragraph1.md"))
 	require.NoError(t, err)
-	markdown2, err := document.FromPath("paragraph2.md", test.MarkdownTestFilePath(t, "paragraph2.md"))
+	markdown2, err := document.FromPath("paragraph2.md", testutil.MarkdownTestFilePath(t, "paragraph2.md"))
 	require.NoError(t, err)
-	markdown3, err := document.FromPath("paragraph3.md", test.MarkdownTestFilePath(t, "paragraph3.md"))
+	markdown3, err := document.FromPath("paragraph3.md", testutil.MarkdownTestFilePath(t, "paragraph3.md"))
 	require.NoError(t, err)
 	req := NewMarkdownRequest(index, markdown1, markdown2, markdown3)
 	req.Trace("testMarkdownScreenshot")
@@ -126,7 +126,7 @@ func TestMarkdownScreenshot(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isValidJPEG, err := test.IsValidJPEG(dest)
+	isValidJPEG, err := testutil.IsValidJPEG(dest)
 	require.NoError(t, err)
 	assert.True(t, isValidJPEG)
 }

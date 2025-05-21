@@ -1,5 +1,5 @@
-// Package test contains useful functions used across tests.
-package test
+// Package testutil contains useful functions used across tests.
+package testutil
 
 import (
 	"archive/zip"
@@ -19,22 +19,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// HTMLTestFilePath returns the absolute file path of a file in "html" folder in test/testdata.
+// HTMLTestFilePath returns the absolute file path of a file in "html" folder in testutil/data.
 func HTMLTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "html", filename)
 }
 
-// MarkdownTestFilePath returns the absolute file path of a file in "markdown" folder in test/testdata.
+// MarkdownTestFilePath returns the absolute file path of a file in "markdown" folder in testutil/data.
 func MarkdownTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "markdown", filename)
 }
 
-// LibreOfficeTestFilePath returns the absolute file path of a file in "libreoffice" folder in test/testdata.
+// LibreOfficeTestFilePath returns the absolute file path of a file in "libreoffice" folder in testutil/data.
 func LibreOfficeTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "libreoffice", filename)
 }
 
-// PDFTestFilePath returns the absolute file path of a file in "pdf" folder in test/testdata.
+// PDFTestFilePath returns the absolute file path of a file in "pdf" folder in testutil/data.
 func PDFTestFilePath(t *testing.T, filename string) string {
 	return abs(t, "pdf", filename)
 }
@@ -44,13 +44,13 @@ func abs(t *testing.T, kind, filename string) string {
 	require.True(t, ok, "got no caller information")
 
 	if filename == "" {
-		fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s", path.Dir(gofilename), kind))
+		fpath, err := filepath.Abs(fmt.Sprintf("%s/data/%s", path.Dir(gofilename), kind))
 		require.NoErrorf(t, err, `getting the absolute path of "%s"`, kind)
 
 		return fpath
 	}
 
-	fpath, err := filepath.Abs(fmt.Sprintf("%s/testdata/%s/%s", path.Dir(gofilename), kind, filename))
+	fpath, err := filepath.Abs(fmt.Sprintf("%s/data/%s/%s", path.Dir(gofilename), kind, filename))
 	require.NoErrorf(t, err, `getting the absolute path of "%s"`, filename)
 
 	return fpath

@@ -11,14 +11,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestHTML(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.Trace("testHTML")
@@ -28,17 +28,17 @@ func TestHTML(t *testing.T) {
 	err = req.Cookies(cks)
 	require.NoError(t, err)
 
-	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	header, err := document.FromPath("header.html", testutil.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
 	req.Header(header)
-	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	footer, err := document.FromPath("footer.html", testutil.HTMLTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
 	req.Footer(footer)
-	font, err := document.FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
+	font, err := document.FromPath("font.woff", testutil.HTMLTestFilePath(t, "font.woff"))
 	require.NoError(t, err)
-	img, err := document.FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
+	img, err := document.FromPath("img.gif", testutil.HTMLTestFilePath(t, "img.gif"))
 	require.NoError(t, err)
-	style, err := document.FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
+	style, err := document.FromPath("style.css", testutil.HTMLTestFilePath(t, "style.css"))
 	require.NoError(t, err)
 	req.Assets(font, img, style)
 	req.OutputFilename("foo.pdf")
@@ -51,7 +51,7 @@ func TestHTML(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }
@@ -60,7 +60,7 @@ func TestHTMLPageRanges(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", nil)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPageRanges")
@@ -80,7 +80,7 @@ func TestHTMLScreenshot(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLScreenshot")
@@ -97,7 +97,7 @@ func TestHTMLScreenshot(t *testing.T) {
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isValidJPEG, err := test.IsValidJPEG(dest)
+	isValidJPEG, err := testutil.IsValidJPEG(dest)
 	require.NoError(t, err)
 	assert.True(t, isValidJPEG)
 }
@@ -106,7 +106,7 @@ func TestHTMLPdfA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPdfA")
@@ -122,7 +122,7 @@ func TestHTMLPdfA(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDFA, err := test.IsPDFA(dest)
+	isPDFA, err := testutil.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFA)
 }
@@ -131,7 +131,7 @@ func TestHTMLPdfUA(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
 	req := NewHTMLRequest(index)
 	req.Trace("testHTMLPdfUA")
@@ -147,7 +147,7 @@ func TestHTMLPdfUA(t *testing.T) {
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDFUA, err := test.IsPDFUA(dest)
+	isPDFUA, err := testutil.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
 }
