@@ -7,37 +7,17 @@ FROM gotenberg/gotenberg:${GOTENBERG_VERSION:-8.20.1}
 
 USER root
 
-# |--------------------------------------------------------------------------
-# | Common libraries
-# |--------------------------------------------------------------------------
-# |
-# | Libraries used in the build process of this image.
-# |
-RUN apt-get update \
-  && apt-get install -y build-essential \
-  && apt-get install manpages-dev
-
-# |--------------------------------------------------------------------------
-# | Golang
-# |--------------------------------------------------------------------------
-# |
-# | Installs Golang.
-# |
-
-COPY --from=golang /usr/local/go /usr/local/go
-
-RUN export PATH="/usr/local/go/bin:$PATH" &&\
-    go version
-
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
-# |--------------------------------------------------------------------------
-# | Final touch
-# |--------------------------------------------------------------------------
-# |
-# | Last instructions of this build.
-# |
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends build-essential \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY --from=golang /usr/local/go /usr/local/go
+
+RUN go version
 
 ENV GOTENBERG_API_BASIC_AUTH_USERNAME=foo
 ENV GOTENBERG_API_BASIC_AUTH_PASSWORD=bar
