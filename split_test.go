@@ -20,7 +20,9 @@ func TestSplitIntervals(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitIntervalsRequest(doc)
+	r, err := NewSplitRequest(SplitModeIntervals, doc)
+	require.NoError(t, err)
+
 	r.Trace("testSplitIntervals")
 	r.UseBasicAuth("foo", "bar")
 
@@ -29,7 +31,7 @@ func TestSplitIntervals(t *testing.T) {
 		expectedCount = 3
 	)
 
-	r.SplitSpan(span)
+	r.SpanIntervals(span)
 	r.OutputFilename("splitted.zip")
 
 	dirPath := t.TempDir()
@@ -52,11 +54,13 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitIntervalsRequest(doc)
+	r, err := NewSplitRequest(SplitModeIntervals, doc)
+	require.NoError(t, err)
+
 	r.Trace("testSplitIntervalsOnePage")
 	r.UseBasicAuth("foo", "bar")
 
-	r.SplitSpan(3)
+	r.SpanIntervals(3)
 	r.OutputFilename("splitted.pdf")
 
 	dirPath := t.TempDir()
@@ -77,7 +81,9 @@ func TestSplitPages(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
+	r, err := NewSplitRequest(SplitModePages, doc)
+	require.NoError(t, err)
+
 	r.Trace("testSplitPages")
 	r.UseBasicAuth("foo", "bar")
 
@@ -86,7 +92,7 @@ func TestSplitPages(t *testing.T) {
 		expectedCount = 2
 	)
 
-	r.SplitSpan(span)
+	r.SpanPages(span)
 	r.SplitUnify(false)
 	r.OutputFilename("splitted.zip")
 
@@ -110,11 +116,13 @@ func TestSplitPagesOnePage(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
+	r, err := NewSplitRequest(SplitModePages, doc)
+	require.NoError(t, err)
+
 	r.Trace("testSplitPagesOnePage")
 	r.UseBasicAuth("foo", "bar")
 
-	r.SplitSpan("1-1")
+	r.SpanPages("1-1")
 	r.SplitUnify(false)
 	r.OutputFilename("splitted.pdf")
 
@@ -136,11 +144,13 @@ func TestSplitPagesUnify(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
+	r, err := NewSplitRequest(SplitModePages, doc)
+	require.NoError(t, err)
+
 	r.Trace("testSplitPagesUnify")
 	r.UseBasicAuth("foo", "bar")
 
-	r.SplitSpan("1-2")
+	r.SpanPages("1-2")
 	r.SplitUnify(true)
 	r.OutputFilename("splitted.pdf")
 
@@ -153,4 +163,12 @@ func TestSplitPagesUnify(t *testing.T) {
 	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	require.True(t, isPDF)
+}
+
+func TestSplitIncorrectMode(t *testing.T) {
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
+	require.NoError(t, err)
+
+	_, err = NewSplitRequest("IncorrectMode", doc)
+	require.Error(t, err)
 }

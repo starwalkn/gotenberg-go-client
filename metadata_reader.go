@@ -25,7 +25,7 @@ func (rmd *ReadMetadataRequest) formDocuments() map[string]document.Document {
 	files := make(map[string]document.Document)
 
 	for _, pdf := range rmd.pdfs {
-		files[pdf.Filename()] = pdf
+		files[pdf.Name()] = pdf
 	}
 
 	return files

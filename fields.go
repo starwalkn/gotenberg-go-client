@@ -104,6 +104,6 @@ const (
 
 // Split mode.
 const (
-	splitModePages     = "pages"
-	splitModeIntervals = "intervals"
+	SplitModePages     = "pages"
+	SplitModeIntervals = "intervals"
 )

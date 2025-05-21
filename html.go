@@ -41,7 +41,7 @@ func (req *HTMLRequest) formDocuments() map[string]document.Document {
 	}
 
 	for _, asset := range req.assets {
-		files[asset.Filename()] = asset
+		files[asset.Name()] = asset
 	}
 
 	return files
