@@ -3,26 +3,26 @@ package gotenberg
 import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
 type FlattenRequest struct {
-	pdfs []document.Document
+	docs []document.Document
 
 	*baseRequest
 }
 
-func NewFlattenRequest(pdfs ...document.Document) *FlattenRequest {
+func NewFlattenRequest(docs ...document.Document) *FlattenRequest {
 	return &FlattenRequest{
-		pdfs:        pdfs,
+		docs:        docs,
 		baseRequest: newBaseRequest(),
 	}
 }
 
-func (req *FlattenRequest) endpoint() string {
+func (r *FlattenRequest) endpoint() string {
 	return "/forms/pdfengines/flatten"
 }
 
-func (req *FlattenRequest) formDocuments() map[string]document.Document {
+func (r *FlattenRequest) formDocuments() map[string]document.Document {
 	files := make(map[string]document.Document)
 
-	for _, pdf := range req.pdfs {
+	for _, pdf := range r.docs {
 		files[pdf.Name()] = pdf
 	}
 

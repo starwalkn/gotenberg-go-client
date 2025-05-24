@@ -20,36 +20,36 @@ func NewMarkdownRequest(index document.Document, markdowns ...document.Document)
 	return &MarkdownRequest{index, markdowns, []document.Document{}, newChromiumRequest()}
 }
 
-func (req *MarkdownRequest) endpoint() string {
+func (r *MarkdownRequest) endpoint() string {
 	return endpointMarkdownConvert
 }
 
-func (req *MarkdownRequest) screenshotEndpoint() string {
+func (r *MarkdownRequest) screenshotEndpoint() string {
 	return endpointMarkdownScreenshot
 }
 
-func (req *MarkdownRequest) formDocuments() map[string]document.Document {
-	files := make(map[string]document.Document)
-	files["index.html"] = req.index
-	for _, markdown := range req.markdowns {
-		files[markdown.Name()] = markdown
+func (r *MarkdownRequest) formDocuments() map[string]document.Document {
+	docs := make(map[string]document.Document)
+	docs["index.html"] = r.index
+	for _, markdown := range r.markdowns {
+		docs[markdown.Name()] = markdown
 	}
-	if req.header != nil {
-		files["header.html"] = req.header
+	if r.header != nil {
+		docs["header.html"] = r.header
 	}
-	if req.footer != nil {
-		files["footer.html"] = req.footer
+	if r.footer != nil {
+		docs["footer.html"] = r.footer
 	}
-	for _, asset := range req.assets {
-		files[asset.Name()] = asset
+	for _, asset := range r.assets {
+		docs[asset.Name()] = asset
 	}
 
-	return files
+	return docs
 }
 
 // Assets sets assets form files.
-func (req *MarkdownRequest) Assets(assets ...document.Document) {
-	req.assets = assets
+func (r *MarkdownRequest) Assets(assets ...document.Document) {
+	r.assets = assets
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

@@ -18,8 +18,8 @@ type SplitRequest struct {
 //
 // The "mode" parameter defines how the PDF documents will be split.
 // It must be either "pages" or "intervals".
-// For convenience, you can use the package constants "gotenberg.SplitModePages"
-// or "gotenberg.SplitModeIntervals".
+// For convenience, you can use the package constants gotenberg.SplitModePages
+// or gotenberg.SplitModeIntervals.
 // An error will be returned if an invalid mode string is provided.
 //
 // The "docs" parameter is a slice of PDF documents to be split.
@@ -38,14 +38,14 @@ func NewSplitRequest(mode string, docs ...document.Document) (*SplitRequest, err
 	}, nil
 }
 
-func (req *SplitRequest) endpoint() string {
+func (r *SplitRequest) endpoint() string {
 	return "/forms/pdfengines/split"
 }
 
-func (req *SplitRequest) formDocuments() map[string]document.Document {
+func (r *SplitRequest) formDocuments() map[string]document.Document {
 	files := make(map[string]document.Document)
 
-	for _, doc := range req.docs {
+	for _, doc := range r.docs {
 		files[doc.Name()] = doc
 	}
 
@@ -60,12 +60,12 @@ func (req *SplitRequest) formDocuments() map[string]document.Document {
 //
 // If this method is called with "intervals" mode,
 // the form field will be ignored, as the "span" value for pages mode is not relevant for "intervals" mode.
-func (req *SplitRequest) SpanPages(span string) {
-	if req.mode != SplitModePages {
+func (r *SplitRequest) SpanPages(span string) {
+	if r.mode != SplitModePages {
 		return
 	}
 
-	req.fields[fieldSplitSpan] = span
+	r.fields[fieldSplitSpan] = span
 }
 
 // SpanIntervals sets the span for the "intervals" split mode.
@@ -76,19 +76,19 @@ func (req *SplitRequest) SpanPages(span string) {
 //
 // If this method is called with "pages" mode,
 // the form field will be ignored, as the integer "span" value for intervals mode is not relevant for "pages" mode.
-func (req *SplitRequest) SpanIntervals(span int) {
-	if req.mode != SplitModeIntervals {
+func (r *SplitRequest) SpanIntervals(span int) {
+	if r.mode != SplitModeIntervals {
 		return
 	}
 
-	req.fields[fieldSplitSpan] = strconv.Itoa(span)
+	r.fields[fieldSplitSpan] = strconv.Itoa(span)
 }
 
-func (req *SplitRequest) SplitUnify(val bool) {
-	req.fields[fieldSplitUnify] = strconv.FormatBool(val)
+func (r *SplitRequest) SplitUnify(val bool) {
+	r.fields[fieldSplitUnify] = strconv.FormatBool(val)
 }
 
 // Flatten defines whether the resulting PDF should be flattened.
-func (req *SplitRequest) Flatten(val bool) {
-	req.fields[fieldSplitFlatten] = strconv.FormatBool(val)
+func (r *SplitRequest) Flatten(val bool) {
+	r.fields[fieldSplitFlatten] = strconv.FormatBool(val)
 }

@@ -13,31 +13,31 @@ type URLRequest struct {
 }
 
 func NewURLRequest(url string) *URLRequest {
-	req := &URLRequest{newChromiumRequest()}
+	req := &URLRequest{chromiumRequest: newChromiumRequest()}
 	req.fields[fieldURL] = url
 
 	return req
 }
 
-func (req *URLRequest) endpoint() string {
+func (r *URLRequest) endpoint() string {
 	return endpointURLConvert
 }
 
-func (req *URLRequest) screenshotEndpoint() string {
+func (r *URLRequest) screenshotEndpoint() string {
 	return endpointURLScreenshot
 }
 
-func (req *URLRequest) formDocuments() map[string]document.Document {
-	files := make(map[string]document.Document)
+func (r *URLRequest) formDocuments() map[string]document.Document {
+	docs := make(map[string]document.Document)
 
-	if req.header != nil {
-		files["header.html"] = req.header
+	if r.header != nil {
+		docs["header.html"] = r.header
 	}
-	if req.footer != nil {
-		files["footer.html"] = req.footer
+	if r.footer != nil {
+		docs["footer.html"] = r.footer
 	}
 
-	return files
+	return docs
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
