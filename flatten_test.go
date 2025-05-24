@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestFlatten(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	doc, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
 	r := NewFlattenRequest(doc)
@@ -27,11 +27,11 @@ func TestFlatten(t *testing.T) {
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
 
-	err = c.Store(context.Background(), r, dest)
+	err = c.Save(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }

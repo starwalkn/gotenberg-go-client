@@ -11,15 +11,15 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestReadWriteMetadata(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	// Writing metadata.
-	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
+	pdf1, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 	reqWrite := NewWriteMetadataRequest(pdf1)
 	reqWrite.Trace("testWriteMetadata")
@@ -40,7 +40,7 @@ func TestReadWriteMetadata(t *testing.T) {
 
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), reqWrite, dest)
+	err = c.Save(context.Background(), reqWrite, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

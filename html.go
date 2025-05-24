@@ -18,41 +18,44 @@ type HTMLRequest struct {
 }
 
 func NewHTMLRequest(index document.Document) *HTMLRequest {
-	return &HTMLRequest{index, []document.Document{}, newChromiumRequest()}
+	return &HTMLRequest{
+		index:           index,
+		assets:          []document.Document{},
+		chromiumRequest: newChromiumRequest()}
 }
 
-func (req *HTMLRequest) endpoint() string {
+func (r *HTMLRequest) endpoint() string {
 	return endpointHTMLConvert
 }
 
-func (req *HTMLRequest) screenshotEndpoint() string {
+func (r *HTMLRequest) screenshotEndpoint() string {
 	return endpointHTMLScreenshot
 }
 
-func (req *HTMLRequest) formDocuments() map[string]document.Document {
+func (r *HTMLRequest) formDocuments() map[string]document.Document {
 	files := make(map[string]document.Document)
-	files["index.html"] = req.index
+	files["index.html"] = r.index
 
-	if req.header != nil {
-		files["header.html"] = req.header
+	if r.header != nil {
+		files["header.html"] = r.header
 	}
-	if req.footer != nil {
-		files["footer.html"] = req.footer
+	if r.footer != nil {
+		files["footer.html"] = r.footer
 	}
 
-	for _, asset := range req.assets {
-		files[asset.Filename()] = asset
+	for _, asset := range r.assets {
+		files[asset.Name()] = asset
 	}
 
 	return files
 }
 
-// Assets sets assets form files.
-func (req *HTMLRequest) Assets(assets ...document.Document) {
-	req.assets = assets
+// Assets set assets form files.
+func (r *HTMLRequest) Assets(assets ...document.Document) {
+	r.assets = assets
 }
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(HTMLRequest))
+	_ = multipartRequest(new(HTMLRequest))
 )

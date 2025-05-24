@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v8/testutil"
 )
 
 func TestLibreOffice(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOffice")
@@ -25,22 +25,22 @@ func TestLibreOffice(t *testing.T) {
 	req.OutputFilename("foo.pdf")
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
-	isPDFA, err := test.IsPDFA(dest)
+	isPDFA, err := testutil.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.False(t, isPDFA)
 }
 
 func TestLibreOfficePageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOfficePageRanges")
@@ -52,10 +52,10 @@ func TestLibreOfficePageRanges(t *testing.T) {
 }
 
 func TestLibreOfficeLosslessCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOfficeLosslessCompression")
@@ -64,19 +64,19 @@ func TestLibreOfficeLosslessCompression(t *testing.T) {
 	req.LosslessImageCompression()
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }
 
 func TestLibreOfficeCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOfficeCompression")
@@ -87,21 +87,21 @@ func TestLibreOfficeCompression(t *testing.T) {
 	req.MaxImageResolution(75)
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 }
 
 func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := document.FromPath("document2.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc1, doc2)
 	req.Trace("testLibreOfficeMultipleWithoutMerge")
@@ -109,23 +109,23 @@ func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
 	req.OutputFilename("foo.zip")
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.zip", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	count, isPDFs, err := test.IsPDFsInArchive(t, dest)
+	count, isPDFs, err := testutil.IsPDFsInArchive(t, dest)
 	require.NoError(t, err)
 	assert.Equal(t, 2, count)
 	assert.True(t, isPDFs)
 }
 
 func TestLibreOfficeMultipleWithMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc1, err := document.FromPath("document1.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
-	doc2, err := document.FromPath("document2.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc2, err := document.FromPath("document2.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc1, doc2)
 	req.Trace("testLibreOfficeMultipleWithMerge")
@@ -134,23 +134,23 @@ func TestLibreOfficeMultipleWithMerge(t *testing.T) {
 	req.Merge()
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDF, err := test.IsPDF(dest)
+	isPDF, err := testutil.IsPDF(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDF)
 
-	count, err := test.GetPDFPageCount(dest)
+	count, err := testutil.GetPDFPageCount(dest)
 	require.NoError(t, err)
 	assert.Equal(t, 4, count)
 }
 
 func TestLibreOfficePdfA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOfficePdfA")
@@ -159,19 +159,19 @@ func TestLibreOfficePdfA(t *testing.T) {
 	req.PdfA(PdfA3b)
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDFA, err := test.IsPDFA(dest)
+	isPDFA, err := testutil.IsPDFA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFA)
 }
 
 func TestLibreOfficePdfUA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
-	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	doc, err := document.FromPath("document.docx", testutil.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
 	req := NewLibreOfficeRequest(doc)
 	req.Trace("testLibreOfficePdfUA")
@@ -180,10 +180,10 @@ func TestLibreOfficePdfUA(t *testing.T) {
 	req.PdfUA()
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err = c.Save(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
-	isPDFUA, err := test.IsPDFUA(dest)
+	isPDFUA, err := testutil.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
 }

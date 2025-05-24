@@ -13,7 +13,7 @@ var errEmptyContent = errors.New("empty content passed")
 
 // Document represents a file which will be sent to the Gotenberg API.
 type Document interface {
-	Filename() string
+	Name() string
 	Reader() (io.ReadCloser, error)
 }
 
@@ -21,7 +21,7 @@ type document struct {
 	filename string
 }
 
-func (doc *document) Filename() string {
+func (doc *document) Name() string {
 	return doc.filename
 }
 
@@ -46,7 +46,7 @@ func FromPath(fname, fpath string) (Document, error) {
 func (doc *documentFromPath) Reader() (io.ReadCloser, error) {
 	in, err := os.Open(doc.fpath)
 	if err != nil {
-		return nil, fmt.Errorf("opening file %s: %w", doc.Filename(), err)
+		return nil, fmt.Errorf("opening file %s: %w", doc.Name(), err)
 	}
 
 	return in, nil

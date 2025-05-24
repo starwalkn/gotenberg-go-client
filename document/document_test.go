@@ -23,8 +23,8 @@ func TestFromPath(t *testing.T) {
 			t.Fatalf("FromPath failed for existing file: %v", err)
 		}
 
-		if doc.Filename() != tmpFile.Name() {
-			t.Errorf("expected filename %s, got %s", tmpFile.Name(), doc.Filename())
+		if doc.Name() != tmpFile.Name() {
+			t.Errorf("expected filename %s, got %s", tmpFile.Name(), doc.Name())
 		}
 
 		reader, err := doc.Reader()
@@ -86,8 +86,8 @@ func TestFromString(t *testing.T) {
 			t.Fatalf("FromString failed for non-empty string: %v", err)
 		}
 
-		if doc.Filename() != filename {
-			t.Errorf("expected filename %s, got %s", filename, doc.Filename())
+		if doc.Name() != filename {
+			t.Errorf("expected filename %s, got %s", filename, doc.Name())
 		}
 
 		reader, err := doc.Reader()
@@ -128,8 +128,8 @@ func TestFromBytes(t *testing.T) {
 			t.Fatalf("FromBytes failed for non-empty bytes: %v", err)
 		}
 
-		if doc.Filename() != filename {
-			t.Errorf("expected filename %s, got %s", filename, doc.Filename())
+		if doc.Name() != filename {
+			t.Errorf("expected filename %s, got %s", filename, doc.Name())
 		}
 
 		reader, err := doc.Reader()
@@ -172,8 +172,8 @@ func TestFromReader(t *testing.T) {
 			t.Fatalf("FromReader failed for valid reader: %v", err)
 		}
 
-		if doc.Filename() != filename {
-			t.Errorf("expected filename %s, got %s", filename, doc.Filename())
+		if doc.Name() != filename {
+			t.Errorf("expected filename %s, got %s", filename, doc.Name())
 		}
 
 		readCloser, err := doc.Reader()
