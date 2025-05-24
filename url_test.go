@@ -15,7 +15,7 @@ import (
 )
 
 func TestURL(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
@@ -33,7 +33,7 @@ func TestURL(t *testing.T) {
 }
 
 func TestURLComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
@@ -61,7 +61,7 @@ func TestURLComplete(t *testing.T) {
 }
 
 func TestURLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	req := NewURLRequest("http://example.com")
@@ -74,7 +74,7 @@ func TestURLPageRanges(t *testing.T) {
 }
 
 func TestURLScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	req := NewURLRequest("https://example.com")

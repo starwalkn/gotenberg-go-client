@@ -14,7 +14,7 @@ import (
 )
 
 func TestMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	pdf1, err := document.FromPath("gotenberg1.pdf", testutil.PDFTestFilePath(t, "gotenberg.pdf"))

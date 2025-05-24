@@ -15,7 +15,7 @@ import (
 )
 
 func TestHTML(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
@@ -57,7 +57,7 @@ func TestHTML(t *testing.T) {
 }
 
 func TestHTMLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", nil)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
@@ -77,7 +77,7 @@ func TestHTMLPageRanges(t *testing.T) {
 }
 
 func TestHTMLScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
@@ -103,7 +103,7 @@ func TestHTMLScreenshot(t *testing.T) {
 }
 
 func TestHTMLPdfA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
@@ -128,7 +128,7 @@ func TestHTMLPdfA(t *testing.T) {
 }
 
 func TestHTMLPdfUA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))

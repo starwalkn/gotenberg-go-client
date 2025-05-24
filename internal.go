@@ -51,6 +51,11 @@ func (c *Client) save(ctx context.Context, req multipartRequest, dest string) er
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			c.logger.Printf("save: failed to close response body: %s", closeErr.Error())
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
@@ -79,7 +84,9 @@ func (c *Client) saveScreenshot(ctx context.Context, scr screenshotRequest, dest
 		return err
 	}
 	defer func() {
-		_ = resp.Body.Close()
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			c.logger.Printf("saveScreenshot: failed to close response body: %s", closeErr.Error())
+		}
 	}()
 
 	if resp.StatusCode != http.StatusOK {
@@ -97,18 +104,17 @@ func (c *Client) saveScreenshot(ctx context.Context, scr screenshotRequest, dest
 // Webhooks are not allowed when using this method.
 //
 // This method is not intended for direct external use; public method Stream should be used instead.
-func (c *Client) stream(ctx context.Context, req multipartRequest) (io.ReadCloser, error) {
+func (c *Client) stream(ctx context.Context, req multipartRequest) (io.ReadCloser, error) { //nolint:unused
 	resp, err := c.send(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to send request for streaming: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		defer func() {
-			if closeErr := resp.Body.Close(); closeErr != nil {
-				// log.Printf("Warning: failed to close response body on non-200 status: %v", closeErr)
-			}
-		}()
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			c.logger.Printf("stream: failed to close response body: %s", closeErr.Error())
+		}
+
 		return nil, fmt.Errorf("%w: %d", errGenerationFailed, resp.StatusCode)
 	}
 
@@ -120,7 +126,7 @@ func (c *Client) stream(ctx context.Context, req multipartRequest) (io.ReadClose
 //
 // This is an internal helper function used for saving streamed or generated content to disk.
 // It handles directory creation, file creation, permissions, and ensures proper closing of the file.
-func copyReaderToFile(fpath string, in io.Reader) error { // Named return for deferred error handling
+func copyReaderToFile(fpath string, in io.Reader) error {
 	if err := os.MkdirAll(filepath.Dir(fpath), 0o755); err != nil {
 		return fmt.Errorf("making %s directory: %w", fpath, err)
 	}
@@ -151,7 +157,7 @@ func copyReaderToFile(fpath string, in io.Reader) error { // Named return for de
 // sets the appropriate content type, and adds any custom headers.
 // This is an internal helper method used by send.
 func (c *Client) createRequest(ctx context.Context, mr multipartRequest, endpoint string) (r *http.Request, err error) {
-	body, contentType, err := multipartForm(mr)
+	body, contentType, err := c.multipartForm(mr)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +177,7 @@ func (c *Client) createRequest(ctx context.Context, mr multipartRequest, endpoin
 	return req, nil
 }
 
-func multipartForm(mr multipartRequest) (body *bytes.Buffer, contentType string, err error) {
+func (c *Client) multipartForm(mr multipartRequest) (body *bytes.Buffer, contentType string, err error) {
 	body = &bytes.Buffer{}
 
 	writer := multipart.NewWriter(body)
@@ -181,18 +187,18 @@ func multipartForm(mr multipartRequest) (body *bytes.Buffer, contentType string,
 		}
 	}()
 
-	if err = addDocuments(writer, mr.formDocuments()); err != nil {
+	if err = c.addDocuments(writer, mr.formDocuments()); err != nil {
 		return nil, "", err
 	}
 
-	if err = addFormFields(writer, mr.formFields()); err != nil {
+	if err = c.addFormFields(writer, mr.formFields()); err != nil {
 		return nil, "", err
 	}
 
 	return body, writer.FormDataContentType(), nil
 }
 
-func addFormFields(writer *multipart.Writer, formFields map[formField]string) error {
+func (c *Client) addFormFields(writer *multipart.Writer, formFields map[formField]string) error {
 	for name, value := range formFields {
 		if err := writer.WriteField(string(name), value); err != nil {
 			return fmt.Errorf("writing %s form field: %w", name, err)
@@ -202,21 +208,32 @@ func addFormFields(writer *multipart.Writer, formFields map[formField]string) er
 	return nil
 }
 
-func addDocuments(writer *multipart.Writer, documents map[string]document.Document) error {
+func (c *Client) addDocuments(writer *multipart.Writer, documents map[string]document.Document) error {
 	for fname, doc := range documents {
 		in, err := doc.Reader()
 		if err != nil {
 			return fmt.Errorf("getting %s reader: %w", fname, err)
 		}
-		defer in.Close()
 
 		part, err := writer.CreateFormFile("files", fname)
 		if err != nil {
+			if closeErr := in.Close(); closeErr != nil {
+				c.logger.Printf("addDocuments: failed to close reader body: %s", closeErr.Error())
+			}
+
 			return fmt.Errorf("creating %s form file: %w", fname, err)
 		}
 
 		if _, err = io.Copy(part, in); err != nil {
+			if closeErr := in.Close(); closeErr != nil {
+				c.logger.Printf("addDocuments: failed to close reader body: %s", closeErr.Error())
+			}
+
 			return fmt.Errorf("copying %s data: %w", fname, err)
+		}
+
+		if closeErr := in.Close(); closeErr != nil {
+			c.logger.Printf("addDocuments: failed to close reader body: %s", closeErr.Error())
 		}
 	}
 

@@ -2,7 +2,8 @@ package gotenberg
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"io"
 	"net/http"
 )
 
@@ -24,21 +25,28 @@ type multipartRequest interface {
 type Client struct {
 	hostname string
 	*http.Client
+	logger Logger
 }
 
 // NewClient creates a new gotenberg.Client.
 //
 // The 'hostname' parameter is the base URL of your Gotenberg API instance (e.g., "http://localhost:3000").
 // If 'httpClient' is passed as 'nil', then 'http.DefaultClient' will be used.
-func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
+func NewClient(hostname string, httpClient *http.Client, logger Logger) (*Client, error) {
 	if hostname == "" {
-		return nil, fmt.Errorf("hostname is empty")
+		return nil, errors.New("hostname is empty")
 	}
 
 	client := &Client{hostname: hostname, Client: httpClient}
 
 	if httpClient == nil {
 		client.Client = http.DefaultClient
+	}
+
+	if logger == nil {
+		client.logger = NopLogger{}
+	} else {
+		client.logger = logger
 	}
 
 	return client, nil
@@ -90,4 +98,23 @@ func (c *Client) SaveScreenshot(ctx context.Context, r screenshotRequest, dest s
 	}
 
 	return c.saveScreenshot(ctx, r, dest)
+}
+
+// Stream sends a request to the Gotenberg API and returns the raw HTTP response body
+// as an io.ReadCloser.
+//
+// This method provides direct access to the response stream, allowing for
+// efficient processing of large documents without saving them to disk first
+// (e.g., streaming to a client, uploading to cloud storage).
+// The caller is responsible for reading from and closing the io.ReadCloser
+// to prevent resource leaks.
+//
+// Webhooks are not allowed when using this method, as the output would be
+// handled by Gotenberg's webhook mechanism instead of streamed back to the client.
+func (c *Client) Stream(ctx context.Context, r multipartRequest) (io.ReadCloser, error) {
+	if r.hasWebhook() {
+		return nil, errWebhookNotAllowed
+	}
+
+	return c.stream(ctx, r)
 }

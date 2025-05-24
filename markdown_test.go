@@ -15,7 +15,7 @@ import (
 )
 
 func TestMarkdown(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))
@@ -69,7 +69,7 @@ func TestMarkdown(t *testing.T) {
 }
 
 func TestMarkdownPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))
@@ -97,7 +97,7 @@ func TestMarkdownPageRanges(t *testing.T) {
 }
 
 func TestMarkdownScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	index, err := document.FromPath("index.html", testutil.MarkdownTestFilePath(t, "index.html"))

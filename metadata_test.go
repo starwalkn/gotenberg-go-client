@@ -15,7 +15,7 @@ import (
 )
 
 func TestReadWriteMetadata(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
 	require.NoError(t, err)
 
 	// Writing metadata.

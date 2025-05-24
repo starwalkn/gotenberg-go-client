@@ -8,8 +8,6 @@ const (
 	sameSiteNone   = "None"
 )
 
-var errRequiredCookieFieldEmpty = errors.New("required cookie field empty")
-
 type Cookie struct {
 	Name     string `json:"name"`
 	Value    string `json:"value"`
@@ -22,7 +20,7 @@ type Cookie struct {
 
 func (c *Cookie) validate() error {
 	if c.Name == "" || c.Value == "" || c.Domain == "" {
-		return errRequiredCookieFieldEmpty
+		return errors.New("required cookie field is empty")
 	}
 
 	if c.SameSite != sameSiteStrict && c.SameSite != sameSiteLax && c.SameSite != sameSiteNone {
