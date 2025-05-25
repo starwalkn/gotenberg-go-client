@@ -2,7 +2,9 @@ package gotenberg
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -150,4 +152,56 @@ func TestHTMLPdfUA(t *testing.T) {
 	isPDFUA, err := testutil.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
+}
+
+func TestHTMLStream(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", http.DefaultClient, nil)
+	require.NoError(t, err)
+
+	index, err := document.FromPath("index.html", testutil.HTMLTestFilePath(t, "index.html"))
+	require.NoError(t, err)
+	req := NewHTMLRequest(index)
+	req.Trace("testHTMLStream")
+	req.UseBasicAuth("foo", "bar")
+
+	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
+	err = req.Cookies(cks)
+	require.NoError(t, err)
+
+	header, err := document.FromPath("header.html", testutil.HTMLTestFilePath(t, "header.html"))
+	require.NoError(t, err)
+	req.Header(header)
+
+	footer, err := document.FromPath("footer.html", testutil.HTMLTestFilePath(t, "footer.html"))
+	require.NoError(t, err)
+	req.Footer(footer)
+
+	font, err := document.FromPath("font.woff", testutil.HTMLTestFilePath(t, "font.woff"))
+	require.NoError(t, err)
+	img, err := document.FromPath("img.gif", testutil.HTMLTestFilePath(t, "img.gif"))
+	require.NoError(t, err)
+	style, err := document.FromPath("style.css", testutil.HTMLTestFilePath(t, "style.css"))
+	require.NoError(t, err)
+	req.Assets(font, img, style)
+
+	req.OutputFilename("foo.pdf")
+	req.WaitDelay(1 * time.Second)
+	req.PaperSize(A4)
+	req.Margins(NormalMargins)
+	req.Scale(1.5)
+
+	body, err := c.Stream(context.Background(), req)
+	require.NoError(t, err)
+	defer body.Close()
+	require.NotNil(t, body)
+
+	pdfHeader := make([]byte, 5) // %PDF-
+	n, err := body.Read(pdfHeader)
+	if err != nil && !errors.Is(err, io.EOF) {
+		t.Fatalf("stream error: %s", err.Error())
+	}
+
+	if n < 5 || string(pdfHeader) != "%PDF-" {
+		t.Fatalf("expected PDF header %%PDF-, got %s", string(pdfHeader))
+	}
 }

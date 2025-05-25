@@ -9,6 +9,20 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
+type httpHeader string
+
+const (
+	headerOutputFilename httpHeader = "Gotenberg-Output-Filename"
+	headerTrace          httpHeader = "Gotenberg-Trace"
+	headerAuthorization  httpHeader = "Authorization"
+
+	headerWebhookURL          httpHeader = "Gotenberg-Webhook-Url"
+	headerWebhookErrorURL     httpHeader = "Gotenberg-Webhook-Error-Url"
+	headerWebhookMethod       httpHeader = "Gotenberg-Webhook-Method"
+	headerWebhookErrorMethod  httpHeader = "Gotenberg-Webhook-Error-Method"
+	headerWebhookExtraHeaders httpHeader = "Gotenberg-Webhook-Extra-Http-Headers"
+)
+
 type baseRequester interface {
 	hasWebhook() bool
 	customHeaders() map[httpHeader]string
