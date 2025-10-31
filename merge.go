@@ -53,5 +53,5 @@ func (req *MergeRequest) Flatten(val bool) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(MergeRequest))
+	_ = MultipartRequester(new(MergeRequest))
 )

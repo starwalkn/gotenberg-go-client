@@ -33,5 +33,5 @@ func (rmd *ReadMetadataRequest) formDocuments() map[string]document.Document {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(ReadMetadataRequest))
+	_ = MultipartRequester(new(ReadMetadataRequest))
 )

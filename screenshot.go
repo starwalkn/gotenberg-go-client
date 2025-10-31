@@ -9,7 +9,7 @@ import (
 type screenshotRequester interface {
 	screenshotEndpoint() string
 
-	multipartRequester
+	MultipartRequester
 }
 
 func (c *Client) Screenshot(ctx context.Context, scr screenshotRequester) (*http.Response, error) {

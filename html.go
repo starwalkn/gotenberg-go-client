@@ -54,5 +54,5 @@ func (req *HTMLRequest) Assets(assets ...document.Document) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(HTMLRequest))
+	_ = MultipartRequester(new(HTMLRequest))
 )
