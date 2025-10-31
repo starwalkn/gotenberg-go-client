@@ -9,7 +9,7 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
-func multipartForm(mr multipartRequester) (body *bytes.Buffer, contentType string, err error) {
+func multipartForm(mr MultipartRequester) (body *bytes.Buffer, contentType string, err error) {
 	body = &bytes.Buffer{}
 
 	writer := multipart.NewWriter(body)

@@ -54,5 +54,5 @@ func (req *MarkdownRequest) Assets(assets ...document.Document) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = multipartRequester(new(MarkdownRequest))
+	_ = MultipartRequester(new(MarkdownRequest))
 )

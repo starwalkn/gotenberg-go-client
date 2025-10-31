@@ -95,11 +95,12 @@ const (
 	fieldMergeFlatten formField = "flatten"
 )
 
+// Split request property.
 const (
-	fieldSplitMode    = "splitMode"
-	fieldSplitSpan    = "splitSpan"
-	fieldSplitUnify   = "splitUnify"
-	fieldSplitFlatten = "flatten"
+	fieldSplitMode    formField = "splitMode"
+	fieldSplitSpan    formField = "splitSpan"
+	fieldSplitUnify   formField = "splitUnify"
+	fieldSplitFlatten formField = "flatten"
 )
 
 // Split mode.
