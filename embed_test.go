@@ -17,19 +17,15 @@ func TestEmbed(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
-	var docs []document.Document
-
 	doc1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
-	docs = append(docs, doc1)
-
-	var embeds []document.Document
+	docs := []document.Document{doc1}
 
 	doc2, err := document.FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg_bis.pdf"))
 	require.NoError(t, err)
-	embeds = append(embeds, doc2)
+	embeds := []document.Document{doc2}
 
-	r := NewEmbedRequest([]document.Document{doc1}, embeds)
+	r := NewEmbedRequest(docs, embeds)
 	r.Trace("testEmbed")
 	r.UseBasicAuth("foo", "bar")
 
