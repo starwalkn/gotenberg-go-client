@@ -11,8 +11,7 @@ fmt:
 
 # run linters.
 lint:
-	docker build --build-arg GOLANG_VERSION=$(GOLANG_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) -t $(REPO):lint -f build/lint/Dockerfile .
-	docker run --rm -t -v "$(PWD):/lint" $(REPO):lint
+	golangci-lint run
 
 # run all tests.
 tests:
