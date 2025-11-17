@@ -15,5 +15,5 @@ lint:
 
 # run all tests.
 tests:
-	docker build --build-arg GOLANG_VERSION=$(GOLANG_VERSION) --build-arg GOTENBERG_VERSION=$(GOTENBERG_VERSION) -t $(REPO):tests -f build/tests/Dockerfile .
+	docker build --build-arg GOLANG_VERSION=$(GOLANG_VERSION) --build-arg GOTENBERG_VERSION=$(GOTENBERG_VERSION) -t $(REPO):tests -f build/Dockerfile .
 	docker run --rm -t -v "$(PWD):/tests" $(REPO):tests
