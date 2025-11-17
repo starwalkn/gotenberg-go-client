@@ -13,24 +13,28 @@ import (
 	"github.com/starwalkn/gotenberg-go-client/v8/test"
 )
 
-func TestFlatten(t *testing.T) {
+func TestEncrypt(t *testing.T) {
 	c, err := NewClient("http://localhost:3000", http.DefaultClient)
 	require.NoError(t, err)
 
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewFlattenRequest(doc)
-	r.Trace("testFlatten")
+	const (
+		userPassword  = "abc"
+		ownerPassword = "def"
+	)
+
+	r := NewEncryptRequest(userPassword, ownerPassword, doc)
+	r.Trace("testEncrypt")
 	r.UseBasicAuth("foo", "bar")
 
 	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
-
 	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	isPDF, err := test.IsPDF(dest)
+	hasPassword, err := test.HasPassword(dest)
 	require.NoError(t, err)
-	assert.True(t, isPDF)
+	assert.True(t, hasPassword)
 }

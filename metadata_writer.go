@@ -58,5 +58,5 @@ func (wmd *WriteMetadataRequest) Encrypt(userPassword, ownerPassword string) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(WriteMetadataRequest))
+	_ = MultipartRequest(new(WriteMetadataRequest))
 )

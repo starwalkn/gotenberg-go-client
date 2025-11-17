@@ -224,5 +224,5 @@ func (req *LibreOfficeRequest) Encrypt(userPassword, ownerPassword string) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(LibreOfficeRequest))
+	_ = MultipartRequest(new(LibreOfficeRequest))
 )

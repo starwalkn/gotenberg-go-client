@@ -274,3 +274,27 @@ func HasEmbeds(path string) (bool, error) {
 
 	return false, nil
 }
+
+func HasPassword(path string) (bool, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return false, fmt.Errorf("could not read file: %w", err)
+	}
+
+	encryptRe := regexp.MustCompile(`/Encrypt\b`)
+	if !encryptRe.Match(data) {
+		return false, nil
+	}
+
+	uRe := regexp.MustCompile(`/U\s*<([^>]+)>`)
+
+	u := uRe.FindSubmatch(data)
+
+	if u != nil && len(u[1]) > 0 {
+		if string(u[1]) != "00000000000000000000000000000000" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

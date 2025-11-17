@@ -4,12 +4,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
-type baseRequester interface {
+type Request interface {
 	customHeaders() map[httpHeader]string
 	formFields() map[formField]string
 	formDocuments() map[string]document.Document
@@ -63,12 +62,12 @@ func (br *baseRequest) UseWebhook(hookURL string, errorURL string) {
 
 // SetWebhookMethod Overrides the default HTTP method that Gotenberg will use to call the webhook.
 func (br *baseRequest) SetWebhookMethod(method string) {
-	br.headers[headerWebhookMethod] = ensureWebhookMethod(method)
+	br.headers[headerWebhookMethod] = method
 }
 
 // SetWebhookErrorMethod overrides the default HTTP method that Gotenberg will use to call the error webhook.
 func (br *baseRequest) SetWebhookErrorMethod(method string) {
-	br.headers[headerWebhookErrorMethod] = ensureWebhookMethod(method)
+	br.headers[headerWebhookErrorMethod] = method
 }
 
 // SetWebhookExtraHeaders sets the extra HTTP headers that Gotenberg will send alongside the
@@ -84,21 +83,13 @@ func (br *baseRequest) SetWebhookExtraHeaders(headers map[string]string) error {
 	return nil
 }
 
-func hasWebhook(req baseRequester) bool {
+func hasWebhook(req Request) bool {
 	url, ok := req.customHeaders()[headerWebhookURL]
 	if !ok {
 		return false
 	}
 
 	return url != ""
-}
-
-func ensureWebhookMethod(method string) string {
-	if method == http.MethodPut || method == http.MethodPost || method == http.MethodPatch {
-		return method
-	} else {
-		return http.MethodGet
-	}
 }
 
 // DownloadFrom sets the URLs to download files from.

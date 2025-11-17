@@ -6,17 +6,17 @@ import (
 	"net/http"
 )
 
-type screenshotRequester interface {
+type ScreenshotRequest interface {
 	screenshotEndpoint() string
 
-	MultipartRequester
+	MultipartRequest
 }
 
-func (c *Client) Screenshot(ctx context.Context, scr screenshotRequester) (*http.Response, error) {
+func (c *Client) Screenshot(ctx context.Context, scr ScreenshotRequest) (*http.Response, error) {
 	return c.screenshot(ctx, scr)
 }
 
-func (c *Client) screenshot(ctx context.Context, scr screenshotRequester) (*http.Response, error) {
+func (c *Client) screenshot(ctx context.Context, scr ScreenshotRequest) (*http.Response, error) {
 	req, err := c.createRequest(ctx, scr, scr.screenshotEndpoint())
 	if err != nil {
 		return nil, err
@@ -30,11 +30,11 @@ func (c *Client) screenshot(ctx context.Context, scr screenshotRequester) (*http
 	return resp, nil
 }
 
-func (c *Client) StoreScreenshot(ctx context.Context, req screenshotRequester, dest string) error {
-	return c.storeScreenshot(ctx, req, dest)
+func (c *Client) StoreScreenshot(ctx context.Context, scr ScreenshotRequest, dest string) error {
+	return c.storeScreenshot(ctx, scr, dest)
 }
 
-func (c *Client) storeScreenshot(ctx context.Context, scr screenshotRequester, dest string) error {
+func (c *Client) storeScreenshot(ctx context.Context, scr ScreenshotRequest, dest string) error {
 	if hasWebhook(scr) {
 		return errWebhookNotAllowed
 	}

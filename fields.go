@@ -4,6 +4,7 @@ type formField string
 
 // Common property.
 const (
+	fieldFiles         formField = "files"
 	fieldMetadata      formField = "metadata"
 	fieldDownloadFrom  formField = "downloadFrom"
 	fieldUserPassword  formField = "userPassword"

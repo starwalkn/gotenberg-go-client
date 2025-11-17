@@ -54,5 +54,5 @@ func (rmd *ReadMetadataRequest) Encrypt(userPassword, ownerPassword string) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(ReadMetadataRequest))
+	_ = MultipartRequest(new(ReadMetadataRequest))
 )
