@@ -1,6 +1,8 @@
 package gotenberg
 
-import "errors"
+import (
+	"errors"
+)
 
 const (
 	sameSiteStrict = "Strict"

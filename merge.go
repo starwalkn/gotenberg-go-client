@@ -77,5 +77,5 @@ func (req *MergeRequest) Encrypt(userPassword, ownerPassword string) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(MergeRequest))
+	_ = MultipartRequest(new(MergeRequest))
 )

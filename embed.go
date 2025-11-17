@@ -2,25 +2,26 @@ package gotenberg
 
 import "github.com/starwalkn/gotenberg-go-client/v8/document"
 
-type FlattenRequest struct {
+type EmbedRequest struct {
 	pdfs   []document.Document
 	embeds []document.Document
 
 	*baseRequest
 }
 
-func NewFlattenRequest(pdfs ...document.Document) *FlattenRequest {
-	return &FlattenRequest{
+func NewEmbedRequest(pdfs, embeds []document.Document) *EmbedRequest {
+	return &EmbedRequest{
 		pdfs:        pdfs,
+		embeds:      embeds,
 		baseRequest: newBaseRequest(),
 	}
 }
 
-func (req *FlattenRequest) endpoint() string {
-	return "/forms/pdfengines/flatten"
+func (req *EmbedRequest) endpoint() string {
+	return "/forms/pdfengines/embed"
 }
 
-func (req *FlattenRequest) formDocuments() map[string]document.Document {
+func (req *EmbedRequest) formDocuments() map[string]document.Document {
 	files := make(map[string]document.Document)
 
 	for _, pdf := range req.pdfs {
@@ -30,7 +31,7 @@ func (req *FlattenRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
-func (req *FlattenRequest) formEmbeds() map[string]document.Document {
+func (req *EmbedRequest) formEmbeds() map[string]document.Document {
 	embeds := make(map[string]document.Document)
 
 	for _, embed := range req.embeds {
@@ -40,11 +41,7 @@ func (req *FlattenRequest) formEmbeds() map[string]document.Document {
 	return embeds
 }
 
-func (req *FlattenRequest) Embeds(docs ...document.Document) {
-	req.embeds = append(req.embeds, docs...)
-}
-
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequest(new(FlattenRequest))
+	_ = MultipartRequest(new(EmbedRequest))
 )

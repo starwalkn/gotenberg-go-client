@@ -61,5 +61,5 @@ func (req *URLRequest) Embeds(docs ...document.Document) {
 
 // Compile-time checks to ensure type implements desired interfaces.
 var (
-	_ = MultipartRequester(new(URLRequest))
+	_ = MultipartRequest(new(URLRequest))
 )

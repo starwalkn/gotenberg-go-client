@@ -18,11 +18,11 @@ var (
 	errSendRequestFailed = errors.New("request sending failed")
 )
 
-// MultipartRequester is a type for sending form fields and form files (documents) to the Gotenberg API.
-type MultipartRequester interface {
+// MultipartRequest is a type for sending form fields and form files (documents) to the Gotenberg API.
+type MultipartRequest interface {
 	endpoint() string
 
-	baseRequester
+	Request
 }
 
 // Client facilitates interacting with the Gotenberg API.
@@ -48,17 +48,17 @@ func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
 }
 
 // Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(ctx context.Context, req MultipartRequester) (*http.Response, error) {
+func (c *Client) Send(ctx context.Context, req MultipartRequest) (*http.Response, error) {
 	return c.send(ctx, req)
 }
 
-func (c *Client) send(ctx context.Context, r MultipartRequester) (*http.Response, error) {
-	req, err := c.createRequest(ctx, r, r.endpoint())
+func (c *Client) send(ctx context.Context, req MultipartRequest) (*http.Response, error) {
+	r, err := c.createRequest(ctx, req, req.endpoint())
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.httpClient.Do(r)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %w", errSendRequestFailed, err)
 	}
@@ -67,11 +67,11 @@ func (c *Client) send(ctx context.Context, r MultipartRequester) (*http.Response
 }
 
 // Store creates the resulting file to given destination.
-func (c *Client) Store(ctx context.Context, req MultipartRequester, dest string) error {
+func (c *Client) Store(ctx context.Context, req MultipartRequest, dest string) error {
 	return c.store(ctx, req, dest)
 }
 
-func (c *Client) store(ctx context.Context, req MultipartRequester, dest string) error {
+func (c *Client) store(ctx context.Context, req MultipartRequest, dest string) error {
 	if hasWebhook(req) {
 		return errWebhookNotAllowed
 	}
@@ -117,7 +117,7 @@ func writeNewFile(fpath string, in io.Reader) error {
 	return nil
 }
 
-func (c *Client) createRequest(ctx context.Context, mr MultipartRequester, endpoint string) (*http.Request, error) {
+func (c *Client) createRequest(ctx context.Context, mr MultipartRequest, endpoint string) (*http.Request, error) {
 	body, contentType, err := multipartForm(mr)
 	if err != nil {
 		return nil, err
