@@ -22,6 +22,7 @@ func NewHTMLRequest(index document.Document) *HTMLRequest {
 	return &HTMLRequest{
 		index:           index,
 		assets:          []document.Document{},
+		embeds:          []document.Document{},
 		chromiumRequest: newChromiumRequest(),
 	}
 }
@@ -63,7 +64,7 @@ func (req *HTMLRequest) formEmbeds() map[string]document.Document {
 }
 
 func (req *HTMLRequest) Embeds(docs ...document.Document) {
-	req.embeds = append(req.embeds, docs...)
+	req.embeds = docs
 }
 
 // Assets sets assets form files.

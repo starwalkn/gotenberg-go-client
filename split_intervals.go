@@ -19,6 +19,7 @@ func NewSplitIntervalsRequest(pdfs ...document.Document) *SplitIntervalsRequest 
 
 	return &SplitIntervalsRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: br,
 	}
 }

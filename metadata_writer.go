@@ -14,6 +14,7 @@ type WriteMetadataRequest struct {
 func NewWriteMetadataRequest(pdfs ...document.Document) *WriteMetadataRequest {
 	return &WriteMetadataRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: newBaseRequest(),
 	}
 }

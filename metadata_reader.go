@@ -14,6 +14,7 @@ type ReadMetadataRequest struct {
 func NewReadMetadataRequest(pdfs ...document.Document) *ReadMetadataRequest {
 	return &ReadMetadataRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: newBaseRequest(),
 	}
 }

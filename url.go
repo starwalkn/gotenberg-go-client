@@ -15,7 +15,10 @@ type URLRequest struct {
 }
 
 func NewURLRequest(url string) *URLRequest {
-	req := &URLRequest{chromiumRequest: newChromiumRequest()}
+	req := &URLRequest{
+		embeds:          []document.Document{},
+		chromiumRequest: newChromiumRequest(),
+	}
 	req.fields[fieldURL] = url
 
 	return req

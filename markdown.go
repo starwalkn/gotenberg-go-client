@@ -22,9 +22,11 @@ func NewMarkdownRequest(index document.Document, markdowns ...document.Document)
 		index:           index,
 		markdowns:       markdowns,
 		assets:          []document.Document{},
+		embeds:          []document.Document{},
 		chromiumRequest: newChromiumRequest(),
 	}
 }
+
 func (req *MarkdownRequest) endpoint() string {
 	return endpointMarkdownConvert
 }

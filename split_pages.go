@@ -19,6 +19,7 @@ func NewSplitPagesRequest(pdfs ...document.Document) *SplitPagesRequest {
 
 	return &SplitPagesRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: br,
 	}
 }

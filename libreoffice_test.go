@@ -23,8 +23,8 @@ func TestLibreOffice(t *testing.T) {
 	req.Trace("testLibreOffice")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -62,8 +62,8 @@ func TestLibreOfficeLosslessCompression(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.LosslessImageCompression()
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -85,8 +85,8 @@ func TestLibreOfficeCompression(t *testing.T) {
 	req.Quality(1)
 	req.ReduceImageResolution()
 	req.MaxImageResolution(75)
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -107,8 +107,8 @@ func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
 	req.Trace("testLibreOfficeMultipleWithoutMerge")
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.zip")
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.zip", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.zip", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -132,8 +132,8 @@ func TestLibreOfficeMultipleWithMerge(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.Merge()
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -157,8 +157,8 @@ func TestLibreOfficePdfA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfA(PdfA3b)
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -178,12 +178,40 @@ func TestLibreOfficePdfUA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 	req.OutputFilename("foo.pdf")
 	req.PdfUA()
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFUA, err := test.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
+}
+
+func TestLibreOfficeEmbeds(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	require.NoError(t, err)
+
+	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+
+	req := NewLibreOfficeRequest(doc1)
+	req.Trace("testLibreOfficeEmbeds")
+	req.UseBasicAuth("foo", "bar")
+	req.OutputFilename("foo.pdf")
+	req.Merge()
+
+	doc2, err := document.FromPath("document2.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
+	require.NoError(t, err)
+
+	req.Embeds(doc2)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
+	err = c.Store(context.Background(), req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+
+	hasEmbeds, err := test.HasEmbeds(dest)
+	require.NoError(t, err)
+	assert.True(t, hasEmbeds)
 }

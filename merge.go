@@ -17,6 +17,7 @@ type MergeRequest struct {
 func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
 	return &MergeRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: newBaseRequest(),
 	}
 }

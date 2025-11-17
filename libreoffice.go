@@ -19,6 +19,7 @@ type LibreOfficeRequest struct {
 func NewLibreOfficeRequest(docs ...document.Document) *LibreOfficeRequest {
 	return &LibreOfficeRequest{
 		docs:        docs,
+		embeds:      []document.Document{},
 		baseRequest: newBaseRequest(),
 	}
 }
@@ -47,7 +48,7 @@ func (req *LibreOfficeRequest) formEmbeds() map[string]document.Document {
 }
 
 func (req *LibreOfficeRequest) Embeds(docs ...document.Document) {
-	req.embeds = append(req.embeds, docs...)
+	req.embeds = docs
 }
 
 // Password sets the password for opening the source file.
