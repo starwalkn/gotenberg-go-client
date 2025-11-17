@@ -13,12 +13,18 @@ const (
 type HTMLRequest struct {
 	index  document.Document
 	assets []document.Document
+	embeds []document.Document
 
 	*chromiumRequest
 }
 
 func NewHTMLRequest(index document.Document) *HTMLRequest {
-	return &HTMLRequest{index, []document.Document{}, newChromiumRequest()}
+	return &HTMLRequest{
+		index:           index,
+		assets:          []document.Document{},
+		embeds:          []document.Document{},
+		chromiumRequest: newChromiumRequest(),
+	}
 }
 
 func (req *HTMLRequest) endpoint() string {
@@ -45,6 +51,20 @@ func (req *HTMLRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (req *HTMLRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *HTMLRequest) Embeds(docs ...document.Document) {
+	req.embeds = docs
 }
 
 // Assets sets assets form files.

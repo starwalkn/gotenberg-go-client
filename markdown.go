@@ -12,12 +12,19 @@ type MarkdownRequest struct {
 	index     document.Document
 	markdowns []document.Document
 	assets    []document.Document
+	embeds    []document.Document
 
 	*chromiumRequest
 }
 
 func NewMarkdownRequest(index document.Document, markdowns ...document.Document) *MarkdownRequest {
-	return &MarkdownRequest{index, markdowns, []document.Document{}, newChromiumRequest()}
+	return &MarkdownRequest{
+		index:           index,
+		markdowns:       markdowns,
+		assets:          []document.Document{},
+		embeds:          []document.Document{},
+		chromiumRequest: newChromiumRequest(),
+	}
 }
 
 func (req *MarkdownRequest) endpoint() string {
@@ -45,6 +52,20 @@ func (req *MarkdownRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (req *MarkdownRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *MarkdownRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
 }
 
 // Assets sets assets form files.

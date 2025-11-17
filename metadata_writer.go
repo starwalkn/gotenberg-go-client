@@ -5,7 +5,8 @@ import "github.com/starwalkn/gotenberg-go-client/v8/document"
 const endpointMetadataWrite = "/forms/pdfengines/metadata/write"
 
 type WriteMetadataRequest struct {
-	pdfs []document.Document
+	pdfs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
@@ -13,6 +14,7 @@ type WriteMetadataRequest struct {
 func NewWriteMetadataRequest(pdfs ...document.Document) *WriteMetadataRequest {
 	return &WriteMetadataRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: newBaseRequest(),
 	}
 }
@@ -31,8 +33,27 @@ func (wmd *WriteMetadataRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
+func (wmd *WriteMetadataRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range wmd.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (wmd *WriteMetadataRequest) Embeds(docs ...document.Document) {
+	wmd.embeds = append(wmd.embeds, docs...)
+}
+
 func (wmd *WriteMetadataRequest) Metadata(md []byte) {
 	wmd.fields[fieldMetadata] = string(md)
+}
+
+func (wmd *WriteMetadataRequest) Encrypt(userPassword, ownerPassword string) {
+	wmd.fields[fieldUserPassword] = userPassword
+	wmd.fields[fieldOwnerPassword] = ownerPassword
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

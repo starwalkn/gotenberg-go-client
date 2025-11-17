@@ -19,7 +19,11 @@ func multipartForm(mr MultipartRequester) (body *bytes.Buffer, contentType strin
 		}
 	}()
 
-	if err = addDocuments(writer, mr.formDocuments()); err != nil {
+	if err = addDocuments(writer, mr.formDocuments(), "files"); err != nil {
+		return nil, "", err
+	}
+
+	if err = addDocuments(writer, mr.formEmbeds(), "embeds"); err != nil {
 		return nil, "", err
 	}
 
@@ -40,14 +44,14 @@ func addFormFields(writer *multipart.Writer, formFields map[formField]string) er
 	return nil
 }
 
-func addDocuments(writer *multipart.Writer, documents map[string]document.Document) error {
+func addDocuments(writer *multipart.Writer, documents map[string]document.Document, fieldname string) error {
 	for fname, doc := range documents {
 		in, err := doc.Reader()
 		if err != nil {
 			return fmt.Errorf("getting %s reader: %w", fname, err)
 		}
 
-		part, err := writer.CreateFormFile("files", fname)
+		part, err := writer.CreateFormFile(fieldname, fname)
 		if err != nil {
 			_ = in.Close()
 

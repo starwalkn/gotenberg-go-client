@@ -7,7 +7,8 @@ import (
 )
 
 type SplitIntervalsRequest struct {
-	pdfs []document.Document
+	pdfs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
@@ -18,6 +19,7 @@ func NewSplitIntervalsRequest(pdfs ...document.Document) *SplitIntervalsRequest 
 
 	return &SplitIntervalsRequest{
 		pdfs:        pdfs,
+		embeds:      []document.Document{},
 		baseRequest: br,
 	}
 }
@@ -36,6 +38,20 @@ func (req *SplitIntervalsRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
+func (req *SplitIntervalsRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *SplitIntervalsRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
+}
+
 // SplitSpan sets the interval for split.
 func (req *SplitIntervalsRequest) SplitSpan(span int) {
 	req.fields[fieldSplitSpan] = strconv.Itoa(span)
@@ -44,4 +60,9 @@ func (req *SplitIntervalsRequest) SplitSpan(span int) {
 // Flatten defines whether the resulting PDF should be flattened.
 func (req *SplitIntervalsRequest) Flatten(val bool) {
 	req.fields[fieldSplitFlatten] = strconv.FormatBool(val)
+}
+
+func (req *SplitIntervalsRequest) Encrypt(userPassword, ownerPassword string) {
+	req.fields[fieldUserPassword] = userPassword
+	req.fields[fieldOwnerPassword] = ownerPassword
 }

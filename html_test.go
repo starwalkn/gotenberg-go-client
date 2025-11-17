@@ -46,8 +46,8 @@ func TestHTML(t *testing.T) {
 	req.PaperSize(A4)
 	req.Margins(NormalMargins)
 	req.Scale(1.5)
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -90,9 +90,9 @@ func TestHTMLScreenshot(t *testing.T) {
 	err = req.Cookies(cks)
 	require.NoError(t, err)
 
-	dirPath := t.TempDir()
 	req.Format(JPEG)
-	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.jpeg", t.TempDir())
 	err = c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -117,8 +117,8 @@ func TestHTMLPdfA(t *testing.T) {
 	require.NoError(t, err)
 
 	req.PdfA(PdfA3b)
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
@@ -142,12 +142,56 @@ func TestHTMLPdfUA(t *testing.T) {
 	require.NoError(t, err)
 
 	req.PdfUA()
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 	err = c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 	isPDFUA, err := test.IsPDFUA(dest)
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
+}
+
+func TestHTMLEmbeds(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	require.NoError(t, err)
+
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	require.NoError(t, err)
+	req := NewHTMLRequest(index)
+	req.Trace("testHTMLEmbeds")
+	req.UseBasicAuth("foo", "bar")
+
+	var embeds []document.Document
+
+	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	require.NoError(t, err)
+	embeds = append(embeds, header)
+	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	require.NoError(t, err)
+	embeds = append(embeds, footer)
+	font, err := document.FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
+	require.NoError(t, err)
+	embeds = append(embeds, font)
+	img, err := document.FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
+	require.NoError(t, err)
+	embeds = append(embeds, img)
+	style, err := document.FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
+	require.NoError(t, err)
+	embeds = append(embeds, style)
+
+	req.Embeds(embeds...)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
+	err = c.Store(context.Background(), req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
+
+	hasEmbeds, err := test.HasEmbeds(dest)
+	require.NoError(t, err)
+	assert.True(t, hasEmbeds)
 }
