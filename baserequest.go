@@ -13,6 +13,7 @@ type baseRequester interface {
 	customHeaders() map[httpHeader]string
 	formFields() map[formField]string
 	formDocuments() map[string]document.Document
+	formEmbeds() map[string]document.Document
 }
 
 type baseRequest struct {
@@ -105,13 +106,14 @@ func ensureWebhookMethod(method string) string {
 // this is equivalent to map[string]map[string]string, which this method accepts, but headers map can be nil.
 //
 // URLs MUST return a Content-Disposition header with a filename parameter.
-func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
+func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) {
 	dfs := make([]downloadFrom, 0, len(downloads))
 
 	for url, headers := range downloads {
 		dfs = append(dfs, downloadFrom{
 			URL:              url,
 			ExtraHTTPHeaders: headers,
+			Embedded:         embedded,
 		})
 	}
 
@@ -126,4 +128,5 @@ func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string) {
 type downloadFrom struct {
 	URL              string            `json:"url"`
 	ExtraHTTPHeaders map[string]string `json:"extraHttpHeaders"`
+	Embedded         bool              `json:"embedded"`
 }

@@ -151,3 +151,43 @@ func TestHTMLPdfUA(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, isPDFUA)
 }
+
+func TestHTMLEmbeds(t *testing.T) {
+	c, err := NewClient("http://localhost:3000", http.DefaultClient)
+	require.NoError(t, err)
+
+	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
+	require.NoError(t, err)
+	req := NewHTMLRequest(index)
+	req.Trace("testHTMLEmbeds")
+	req.UseBasicAuth("foo", "bar")
+
+	var embeds []document.Document
+
+	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
+	require.NoError(t, err)
+	embeds = append(embeds, header)
+	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
+	require.NoError(t, err)
+	embeds = append(embeds, footer)
+	font, err := document.FromPath("font.woff", test.HTMLTestFilePath(t, "font.woff"))
+	require.NoError(t, err)
+	embeds = append(embeds, font)
+	img, err := document.FromPath("img.gif", test.HTMLTestFilePath(t, "img.gif"))
+	require.NoError(t, err)
+	embeds = append(embeds, img)
+	style, err := document.FromPath("style.css", test.HTMLTestFilePath(t, "style.css"))
+	require.NoError(t, err)
+	embeds = append(embeds, style)
+
+	req.Embeds(embeds...)
+
+	dirPath := "./test"
+	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
+	err = c.Store(context.Background(), req, dest)
+	require.NoError(t, err)
+	assert.FileExists(t, dest)
+	isPDF, err := test.IsPDF(dest)
+	require.NoError(t, err)
+	assert.True(t, isPDF)
+}

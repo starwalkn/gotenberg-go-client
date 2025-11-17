@@ -8,13 +8,17 @@ import (
 
 // MergeRequest facilitates work with PDF files with the Gotenberg API.
 type MergeRequest struct {
-	pdfs []document.Document
+	pdfs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
 
 func NewMergeRequest(pdfs ...document.Document) *MergeRequest {
-	return &MergeRequest{pdfs, newBaseRequest()}
+	return &MergeRequest{
+		pdfs:        pdfs,
+		baseRequest: newBaseRequest(),
+	}
 }
 
 func (req *MergeRequest) endpoint() string {
@@ -29,6 +33,20 @@ func (req *MergeRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (req *MergeRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *MergeRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
 }
 
 // PdfA sets the PDF/A format of the resulting PDF.
@@ -49,6 +67,11 @@ func (req *MergeRequest) Metadata(md []byte) {
 // Flatten defines whether the resulting PDF should be flattened.
 func (req *MergeRequest) Flatten(val bool) {
 	req.fields[fieldMergeFlatten] = strconv.FormatBool(val)
+}
+
+func (req *MergeRequest) Encrypt(userPassword, ownerPassword string) {
+	req.fields[fieldUserPassword] = userPassword
+	req.fields[fieldOwnerPassword] = ownerPassword
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

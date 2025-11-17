@@ -5,7 +5,8 @@ import "github.com/starwalkn/gotenberg-go-client/v8/document"
 const endpointMetadataRead = "/forms/pdfengines/metadata/read"
 
 type ReadMetadataRequest struct {
-	pdfs []document.Document
+	pdfs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
@@ -29,6 +30,25 @@ func (rmd *ReadMetadataRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (rmd *ReadMetadataRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range rmd.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (rmd *ReadMetadataRequest) Embeds(docs ...document.Document) {
+	rmd.embeds = append(rmd.embeds, docs...)
+}
+
+func (rmd *ReadMetadataRequest) Encrypt(userPassword, ownerPassword string) {
+	rmd.fields[fieldUserPassword] = userPassword
+	rmd.fields[fieldOwnerPassword] = ownerPassword
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

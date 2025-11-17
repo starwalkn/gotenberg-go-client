@@ -10,7 +10,8 @@ const endpointOfficeConvert = "/forms/libreoffice/convert"
 
 // LibreOfficeRequest facilitates LibreOffice documents conversion with the Gotenberg API.
 type LibreOfficeRequest struct {
-	docs []document.Document
+	docs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
@@ -33,6 +34,20 @@ func (req *LibreOfficeRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (req *LibreOfficeRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *LibreOfficeRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
 }
 
 // Password sets the password for opening the source file.
@@ -199,6 +214,11 @@ func (req *LibreOfficeRequest) Merge() {
 // mind that doing so might result in missing links in the final PDF.
 func (req *LibreOfficeRequest) UpdateIndexes(value bool) {
 	req.fields[fieldOfficeUpdateIndexes] = strconv.FormatBool(value)
+}
+
+func (req *LibreOfficeRequest) Encrypt(userPassword, ownerPassword string) {
+	req.fields[fieldUserPassword] = userPassword
+	req.fields[fieldOwnerPassword] = ownerPassword
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

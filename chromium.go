@@ -227,6 +227,11 @@ func (req *chromiumRequest) GenerateTaggedPDF(val bool) {
 	req.fields[fieldChromiumGenerateTaggedPDF] = strconv.FormatBool(val)
 }
 
+func (req *chromiumRequest) Encrypt(userPassword, ownerPassword string) {
+	req.fields[fieldUserPassword] = userPassword
+	req.fields[fieldOwnerPassword] = ownerPassword
+}
+
 // ScreenshotWidth Width sets the device screen width in pixels.
 func (req *chromiumRequest) ScreenshotWidth(width int) {
 	req.fields[fieldScreenshotWidth] = strconv.Itoa(width)

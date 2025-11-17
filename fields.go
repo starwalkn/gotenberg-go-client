@@ -4,8 +4,10 @@ type formField string
 
 // Common property.
 const (
-	fieldMetadata     formField = "metadata"
-	fieldDownloadFrom formField = "downloadFrom"
+	fieldMetadata      formField = "metadata"
+	fieldDownloadFrom  formField = "downloadFrom"
+	fieldUserPassword  formField = "userPassword"
+	fieldOwnerPassword formField = "ownerPassword"
 )
 
 // URL request property.

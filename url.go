@@ -9,11 +9,13 @@ const (
 
 // URLRequest facilitates remote URL conversion with the Gotenberg API.
 type URLRequest struct {
+	embeds []document.Document
+
 	*chromiumRequest
 }
 
 func NewURLRequest(url string) *URLRequest {
-	req := &URLRequest{newChromiumRequest()}
+	req := &URLRequest{chromiumRequest: newChromiumRequest()}
 	req.fields[fieldURL] = url
 
 	return req
@@ -38,6 +40,20 @@ func (req *URLRequest) formDocuments() map[string]document.Document {
 	}
 
 	return files
+}
+
+func (req *URLRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *URLRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
 }
 
 // Compile-time checks to ensure type implements desired interfaces.

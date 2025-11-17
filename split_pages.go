@@ -7,7 +7,8 @@ import (
 )
 
 type SplitPagesRequest struct {
-	pdfs []document.Document
+	pdfs   []document.Document
+	embeds []document.Document
 
 	*baseRequest
 }
@@ -36,6 +37,20 @@ func (req *SplitPagesRequest) formDocuments() map[string]document.Document {
 	return files
 }
 
+func (req *SplitPagesRequest) formEmbeds() map[string]document.Document {
+	embeds := make(map[string]document.Document)
+
+	for _, embed := range req.embeds {
+		embeds[embed.Filename()] = embed
+	}
+
+	return embeds
+}
+
+func (req *SplitPagesRequest) Embeds(docs ...document.Document) {
+	req.embeds = append(req.embeds, docs...)
+}
+
 // SplitSpan sets the interval for split.
 func (req *SplitPagesRequest) SplitSpan(span string) {
 	req.fields[fieldSplitSpan] = span
@@ -48,4 +63,9 @@ func (req *SplitPagesRequest) SplitUnify(val bool) {
 // Flatten defines whether the resulting PDF should be flattened.
 func (req *SplitPagesRequest) Flatten(val bool) {
 	req.fields[fieldSplitFlatten] = strconv.FormatBool(val)
+}
+
+func (req *SplitPagesRequest) Encrypt(userPassword, ownerPassword string) {
+	req.fields[fieldUserPassword] = userPassword
+	req.fields[fieldOwnerPassword] = ownerPassword
 }
