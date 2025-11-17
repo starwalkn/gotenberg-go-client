@@ -252,6 +252,7 @@ func IsValidJPEG(path string) (bool, error) {
 	return true, nil
 }
 
+//nolint:gochecknoglobals // only for tests
 var embedMarkers = [][]byte{
 	[]byte("/EmbeddedFiles"),
 	[]byte("/Filespec"),
