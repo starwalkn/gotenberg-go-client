@@ -349,6 +349,11 @@ func (r *MarkdownRequest) SetWebhookExtraHeaders(headers map[string]string) *Mar
 	return r
 }
 
+func (r *MarkdownRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *MarkdownRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *MarkdownRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }
@@ -368,4 +373,5 @@ func (r *MarkdownRequest) StoreScreenshot(ctx context.Context, path string) erro
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = MultipartRequest(new(MarkdownRequest))
+	_ = ScreenshotRequest(new(MarkdownRequest))
 )

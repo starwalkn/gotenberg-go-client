@@ -347,6 +347,11 @@ func (r *HTMLRequest) SetWebhookExtraHeaders(headers map[string]string) *HTMLReq
 	return r
 }
 
+func (r *HTMLRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *HTMLRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *HTMLRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

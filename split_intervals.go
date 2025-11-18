@@ -99,6 +99,11 @@ func (r *SplitIntervalsRequest) SetWebhookExtraHeaders(headers map[string]string
 	return r
 }
 
+func (r *SplitIntervalsRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *SplitIntervalsRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *SplitIntervalsRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }
@@ -106,3 +111,8 @@ func (r *SplitIntervalsRequest) Store(ctx context.Context, path string) error {
 func (r *SplitIntervalsRequest) Send(ctx context.Context) (*http.Response, error) {
 	return r.client.send(ctx, r)
 }
+
+// Compile-time checks to ensure type implements desired interfaces.
+var (
+	_ = MultipartRequest(new(SplitIntervalsRequest))
+)

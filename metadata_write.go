@@ -93,6 +93,11 @@ func (r *WriteMetadataRequest) SetWebhookExtraHeaders(headers map[string]string)
 	return r
 }
 
+func (r *WriteMetadataRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *WriteMetadataRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *WriteMetadataRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

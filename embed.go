@@ -74,6 +74,11 @@ func (r *EmbedRequest) SetWebhookExtraHeaders(headers map[string]string) *EmbedR
 	return r
 }
 
+func (r *EmbedRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *EmbedRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *EmbedRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

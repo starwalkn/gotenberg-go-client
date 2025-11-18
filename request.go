@@ -2,6 +2,8 @@ package gotenberg
 
 import (
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
@@ -34,6 +36,17 @@ func newBaseRequest() *baseRequest {
 		headers: make(map[string]string),
 		fields:  make(map[formField]string),
 	}
+}
+
+type chromiumRequest struct {
+	header document.Document
+	footer document.Document
+
+	*baseRequest
+}
+
+func newChromiumRequest() *chromiumRequest {
+	return &chromiumRequest{nil, nil, newBaseRequest()}
 }
 
 func (br *baseRequest) customHeaders() map[string]string {
@@ -128,4 +141,13 @@ type downloadFrom struct {
 	URL              string            `json:"url"`
 	ExtraHTTPHeaders map[string]string `json:"extraHttpHeaders"`
 	Embedded         bool              `json:"embedded"`
+}
+
+func mustJSON(data interface{}) string {
+	b, err := json.Marshal(data)
+	if err != nil {
+		panic(fmt.Errorf("json marshaling failed: %w", err))
+	}
+
+	return string(b)
 }

@@ -112,6 +112,11 @@ func (r *MergeRequest) SetWebhookExtraHeaders(headers map[string]string) *MergeR
 	return r
 }
 
+func (r *MergeRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *MergeRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *MergeRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

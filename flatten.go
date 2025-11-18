@@ -79,6 +79,11 @@ func (r *FlattenRequest) SetWebhookExtraHeaders(headers map[string]string) *Flat
 	return r
 }
 
+func (r *FlattenRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *FlattenRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *FlattenRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

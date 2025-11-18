@@ -334,6 +334,11 @@ func (r *URLRequest) SetWebhookExtraHeaders(headers map[string]string) *URLReque
 	return r
 }
 
+func (r *URLRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *URLRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *URLRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }
@@ -353,4 +358,5 @@ func (r *URLRequest) StoreScreenshot(ctx context.Context, path string) error {
 // Compile-time checks to ensure type implements desired interfaces.
 var (
 	_ = MultipartRequest(new(URLRequest))
+	_ = ScreenshotRequest(new(URLRequest))
 )

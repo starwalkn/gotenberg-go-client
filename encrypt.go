@@ -69,6 +69,11 @@ func (r *EncryptRequest) SetWebhookExtraHeaders(headers map[string]string) *Encr
 	return r
 }
 
+func (r *EncryptRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *EncryptRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *EncryptRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }

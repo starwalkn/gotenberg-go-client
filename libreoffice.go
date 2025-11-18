@@ -287,6 +287,11 @@ func (r *LibreOfficeRequest) SetWebhookExtraHeaders(headers map[string]string) *
 	return r
 }
 
+func (r *LibreOfficeRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *LibreOfficeRequest {
+	r.baseRequest.DownloadFrom(downloads, embedded)
+	return r
+}
+
 func (r *LibreOfficeRequest) Store(ctx context.Context, path string) error {
 	return r.client.store(ctx, r, path)
 }
