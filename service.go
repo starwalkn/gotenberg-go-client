@@ -1,6 +1,6 @@
 package gotenberg
 
-import "github.com/starwalkn/gotenberg-go-client/v8/document"
+import "github.com/starwalkn/gotenberg-go-client/v9/document"
 
 type ChromiumService struct {
 	client *Client

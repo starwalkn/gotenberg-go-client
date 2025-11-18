@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
 )
 
 // MergeRequest facilitates work with PDF files with the Gotenberg API.

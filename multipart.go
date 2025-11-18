@@ -6,7 +6,7 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
 )
 
 func multipartForm(mr MultipartRequest) (body *bytes.Buffer, contentType string, err error) {

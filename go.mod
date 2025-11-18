@@ -1,4 +1,4 @@
-module github.com/starwalkn/gotenberg-go-client/v8
+module github.com/starwalkn/gotenberg-go-client/v9
 
 go 1.24.2
 

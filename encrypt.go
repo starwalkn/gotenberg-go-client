@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
 )
 
 type EncryptRequest struct {
