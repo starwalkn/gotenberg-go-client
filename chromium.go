@@ -22,210 +22,252 @@ func newChromiumRequest() *chromiumRequest {
 
 // WaitDelay sets the duration (i.e., "1s", "2ms", etc.) to wait when loading an
 // HTML document before converting it to PDF.
-func (req *chromiumRequest) WaitDelay(delay time.Duration) {
-	req.fields[fieldChromiumWaitDelay] = delay.String()
+func (r *chromiumRequest) WaitDelay(delay time.Duration) *chromiumRequest {
+	r.fields[fieldChromiumWaitDelay] = delay.String()
+	return r
 }
 
 // WaitForExpression sets the JavaScript expression to wait before converting an
 // HTML document into PDF until it returns true.
-func (req *chromiumRequest) WaitForExpression(expression string) {
-	req.fields[fieldChromiumWaitForExpression] = expression
+func (r *chromiumRequest) WaitForExpression(expression string) *chromiumRequest {
+	r.fields[fieldChromiumWaitForExpression] = expression
+	return r
 }
 
 // EmulatePrintMediaType forces Chromium to emulate the media type "print".
-func (req *chromiumRequest) EmulatePrintMediaType() {
-	req.fields[fieldChromiumEmulatedMediaType] = "print"
+func (r *chromiumRequest) EmulatePrintMediaType() *chromiumRequest {
+	r.fields[fieldChromiumEmulatedMediaType] = "print"
+	return r
 }
 
 // EmulateScreenMediaType forces Chromium to emulate the media type "screen".
-func (req *chromiumRequest) EmulateScreenMediaType() {
-	req.fields[fieldChromiumEmulatedMediaType] = "screen"
+func (r *chromiumRequest) EmulateScreenMediaType() *chromiumRequest {
+	r.fields[fieldChromiumEmulatedMediaType] = "screen"
+	return r
 }
 
 // Cookies to store in the Chromium cookie jar.
-func (req *chromiumRequest) Cookies(cookies []Cookie) {
-	req.fields[fieldChromiumCookies] = mustJSON(cookies)
+func (r *chromiumRequest) Cookies(cookies []Cookie) *chromiumRequest {
+	r.fields[fieldChromiumCookies] = mustJSON(cookies)
+	return r
 }
 
 // UserAgent overrides the default User-Agent HTTP header.
-func (req *chromiumRequest) UserAgent(ua string) {
-	req.fields[fieldChromiumUserAgent] = ua
+func (r *chromiumRequest) UserAgent(ua string) *chromiumRequest {
+	r.fields[fieldChromiumUserAgent] = ua
+	return r
 }
 
 // ExtraHTTPHeaders sets extra HTTP headers that Chromium will send when loading the HTML document.
-func (req *chromiumRequest) ExtraHTTPHeaders(headers map[string]string) {
-	req.fields[fieldChromiumExtraHTTPHeaders] = mustJSON(headers)
+func (r *chromiumRequest) ExtraHTTPHeaders(headers map[string]string) *chromiumRequest {
+	r.fields[fieldChromiumExtraHTTPHeaders] = mustJSON(headers)
+	return r
 }
 
 // FailOnHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from the main page is not acceptable.
-func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []int) {
-	req.fields[fieldChromiumFailOnHTTPStatusCodes] = mustJSON(statusCodes)
+func (r *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []int) *chromiumRequest {
+	r.fields[fieldChromiumFailOnHTTPStatusCodes] = mustJSON(statusCodes)
+	return r
 }
 
 // FailOnResourceHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from at least one resource is not acceptable.
-func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) {
-	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = mustJSON(statusCodes)
+func (r *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) *chromiumRequest {
+	r.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = mustJSON(statusCodes)
+	return r
 }
 
 // FailOnConsoleExceptions forces Gotenberg to return a 409 Conflict response
 // if there are exceptions in the Chromium console.
-func (req *chromiumRequest) FailOnConsoleExceptions() {
-	req.fields[fieldChromiumFailOnConsoleExceptions] = strconv.FormatBool(true)
+func (r *chromiumRequest) FailOnConsoleExceptions() *chromiumRequest {
+	r.fields[fieldChromiumFailOnConsoleExceptions] = strconv.FormatBool(true)
+	return r
 }
 
 // FailOnResourceLoadingFailed forces Gotenberg to return a 409 Conflict if Chromium
 // fails to load at least one resource.
-func (req *chromiumRequest) FailOnResourceLoadingFailed() {
-	req.fields[fieldChromiumFailOnResourceLoadingFailed] = strconv.FormatBool(true)
+func (r *chromiumRequest) FailOnResourceLoadingFailed() *chromiumRequest {
+	r.fields[fieldChromiumFailOnResourceLoadingFailed] = strconv.FormatBool(true)
+	return r
 }
 
 // SkipNetworkIdleEvent specifies whether Chromium have to wait or not for its network to be idle.
 // Enabled by default in Gotenberg >= 8.11.0.
-func (req *chromiumRequest) SkipNetworkIdleEvent(val bool) {
-	req.fields[fieldChromiumSkipNetworkIdleEvent] = strconv.FormatBool(val)
+func (r *chromiumRequest) SkipNetworkIdleEvent(val bool) *chromiumRequest {
+	r.fields[fieldChromiumSkipNetworkIdleEvent] = strconv.FormatBool(val)
+	return r
 }
 
 // SinglePage defines whether to print the entire content in one single page.
-func (req *chromiumRequest) SinglePage() {
-	req.fields[fieldChromiumSinglePage] = strconv.FormatBool(true)
+func (r *chromiumRequest) SinglePage() *chromiumRequest {
+	r.fields[fieldChromiumSinglePage] = strconv.FormatBool(true)
+	return r
 }
 
 // PaperSize sets paperWidth and paperHeight form fields with the provided unit.
 // If unit is empty, it defaults to inches. Default is Letter (8.5 x 11 inches).
-func (req *chromiumRequest) PaperSize(size PaperDimensions) {
+func (r *chromiumRequest) PaperSize(size PaperDimensions) *chromiumRequest {
 	if size.Unit == "" {
 		size.Unit = IN
 	}
 
-	req.fields[fieldChromiumPaperWidth] = fmt.Sprintf("%f%s", size.Width, size.Unit)
-	req.fields[fieldChromiumPaperHeight] = fmt.Sprintf("%f%s", size.Height, size.Unit)
+	r.fields[fieldChromiumPaperWidth] = fmt.Sprintf("%f%s", size.Width, size.Unit)
+	r.fields[fieldChromiumPaperHeight] = fmt.Sprintf("%f%s", size.Height, size.Unit)
+
+	return r
 }
 
 // Margins sets marginTop, marginBottom, marginLeft and marginRight form fields. Default unit is inches.
-func (req *chromiumRequest) Margins(margins PageMargins) {
+func (r *chromiumRequest) Margins(margins PageMargins) *chromiumRequest {
 	if margins.Unit == "" {
 		margins.Unit = IN
 	}
 
-	req.fields[fieldChromiumMarginTop] = fmt.Sprintf("%f%s", margins.Top, margins.Unit)
-	req.fields[fieldChromiumMarginBottom] = fmt.Sprintf("%f%s", margins.Bottom, margins.Unit)
-	req.fields[fieldChromiumMarginLeft] = fmt.Sprintf("%f%s", margins.Left, margins.Unit)
-	req.fields[fieldChromiumMarginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
+	r.fields[fieldChromiumMarginTop] = fmt.Sprintf("%f%s", margins.Top, margins.Unit)
+	r.fields[fieldChromiumMarginBottom] = fmt.Sprintf("%f%s", margins.Bottom, margins.Unit)
+	r.fields[fieldChromiumMarginLeft] = fmt.Sprintf("%f%s", margins.Left, margins.Unit)
+	r.fields[fieldChromiumMarginRight] = fmt.Sprintf("%f%s", margins.Right, margins.Unit)
+
+	return r
 }
 
 // PreferCSSPageSize forces page size as defined by CSS.
-func (req *chromiumRequest) PreferCSSPageSize() {
-	req.fields[fieldChromiumPreferCSSPageSize] = strconv.FormatBool(true)
+func (r *chromiumRequest) PreferCSSPageSize() *chromiumRequest {
+	r.fields[fieldChromiumPreferCSSPageSize] = strconv.FormatBool(true)
+	return r
 }
 
 // PrintBackground prints the background graphics.
-func (req *chromiumRequest) PrintBackground() {
-	req.fields[fieldChromiumPrintBackground] = strconv.FormatBool(true)
+func (r *chromiumRequest) PrintBackground() *chromiumRequest {
+	r.fields[fieldChromiumPrintBackground] = strconv.FormatBool(true)
+	return r
 }
 
 // OmitBackground hides default white background and allows generating PDFs with transparency.
-func (req *chromiumRequest) OmitBackground() {
-	req.fields[fieldChromiumOmitBackground] = strconv.FormatBool(true)
+func (r *chromiumRequest) OmitBackground() *chromiumRequest {
+	r.fields[fieldChromiumOmitBackground] = strconv.FormatBool(true)
+	return r
 }
 
 // Landscape sets the paper orientation to landscape.
-func (req *chromiumRequest) Landscape() {
-	req.fields[fieldChromiumLandscapeChrome] = strconv.FormatBool(true)
+func (r *chromiumRequest) Landscape() *chromiumRequest {
+	r.fields[fieldChromiumLandscapeChrome] = strconv.FormatBool(true)
+	return r
 }
 
 // Scale overrides the default scale of the page rendering (i.e., 1.0).
-func (req *chromiumRequest) Scale(factor float64) {
-	req.fields[fieldChromiumScale] = fmt.Sprintf("%f", factor)
+func (r *chromiumRequest) Scale(factor float64) *chromiumRequest {
+	r.fields[fieldChromiumScale] = fmt.Sprintf("%f", factor)
+	return r
 }
 
 // NativePageRanges sets the page ranges to print, e.g., "1-5, 8, 11-13". Empty means all pages.
-func (req *chromiumRequest) NativePageRanges(ranges string) {
-	req.fields[fieldChromiumNativePageRanges] = ranges
+func (r *chromiumRequest) NativePageRanges(ranges string) *chromiumRequest {
+	r.fields[fieldChromiumNativePageRanges] = ranges
+	return r
 }
 
 // GenerateDocumentOutline embeds the document outline into the PDF.
-func (req *chromiumRequest) GenerateDocumentOutline() {
-	req.fields[fieldChromiumGenerateDocumentOutline] = strconv.FormatBool(true)
+func (r *chromiumRequest) GenerateDocumentOutline() *chromiumRequest {
+	r.fields[fieldChromiumGenerateDocumentOutline] = strconv.FormatBool(true)
+	return r
 }
 
 // Header adds a header to each page.
-func (req *chromiumRequest) Header(header document.Document) {
-	req.header = header
+func (r *chromiumRequest) Header(header document.Document) *chromiumRequest {
+	r.header = header
+	return r
 }
 
 // Footer adds a footer to each page.
-func (req *chromiumRequest) Footer(footer document.Document) {
-	req.footer = footer
+func (r *chromiumRequest) Footer(footer document.Document) *chromiumRequest {
+	r.footer = footer
+	return r
 }
 
 // PdfA sets the PDF/A format of the resulting PDF.
-func (req *chromiumRequest) PdfA(pdfa PdfAFormat) {
-	req.fields[fieldOfficePdfA] = string(pdfa)
+func (r *chromiumRequest) PdfA(pdfa PdfAFormat) *chromiumRequest {
+	r.fields[fieldOfficePdfA] = string(pdfa)
+	return r
 }
 
 // PdfUA enables PDF for Universal Access for optimal accessibility.
-func (req *chromiumRequest) PdfUA() {
-	req.fields[fieldOfficePdfUa] = strconv.FormatBool(true)
+func (r *chromiumRequest) PdfUA() *chromiumRequest {
+	r.fields[fieldOfficePdfUa] = strconv.FormatBool(true)
+	return r
 }
 
 // Metadata sets the metadata to write.
-func (req *chromiumRequest) Metadata(jsonData []byte) {
-	req.fields[fieldMetadata] = string(jsonData)
+func (r *chromiumRequest) Metadata(jsonData []byte) *chromiumRequest {
+	r.fields[fieldMetadata] = string(jsonData)
+	return r
 }
 
 // SplitIntervals splits the resulting PDF by interval.
-func (req *chromiumRequest) SplitIntervals(span int) {
-	req.fields[fieldSplitMode] = splitModeIntervals
-	req.fields[fieldSplitSpan] = strconv.Itoa(span)
+func (r *chromiumRequest) SplitIntervals(span int) *chromiumRequest {
+	r.fields[fieldSplitMode] = splitModeIntervals
+	r.fields[fieldSplitSpan] = strconv.Itoa(span)
+
+	return r
 }
 
 // SplitPages splits the resulting PDF by pages. Span should have the format “1-5”.
-func (req *chromiumRequest) SplitPages(span string, unify bool) {
-	req.fields[fieldSplitMode] = splitModePages
-	req.fields[fieldSplitSpan] = span
-	req.fields[fieldSplitUnify] = strconv.FormatBool(unify)
+func (r *chromiumRequest) SplitPages(span string, unify bool) *chromiumRequest {
+	r.fields[fieldSplitMode] = splitModePages
+	r.fields[fieldSplitSpan] = span
+	r.fields[fieldSplitUnify] = strconv.FormatBool(unify)
+
+	return r
 }
 
 // GenerateTaggedPDF generates tagged (accessible) PDF.
-func (req *chromiumRequest) GenerateTaggedPDF(val bool) {
-	req.fields[fieldChromiumGenerateTaggedPDF] = strconv.FormatBool(val)
+func (r *chromiumRequest) GenerateTaggedPDF(val bool) *chromiumRequest {
+	r.fields[fieldChromiumGenerateTaggedPDF] = strconv.FormatBool(val)
+	return r
 }
 
-func (req *chromiumRequest) Encrypt(userPassword, ownerPassword string) {
-	req.fields[fieldUserPassword] = userPassword
-	req.fields[fieldOwnerPassword] = ownerPassword
+func (r *chromiumRequest) Encrypt(userPassword, ownerPassword string) *chromiumRequest {
+	r.fields[fieldUserPassword] = userPassword
+	r.fields[fieldOwnerPassword] = ownerPassword
+
+	return r
 }
 
 // ScreenshotWidth Width sets the device screen width in pixels.
-func (req *chromiumRequest) ScreenshotWidth(width int) {
-	req.fields[fieldScreenshotWidth] = strconv.Itoa(width)
+func (r *chromiumRequest) ScreenshotWidth(width int) *chromiumRequest {
+	r.fields[fieldScreenshotWidth] = strconv.Itoa(width)
+	return r
 }
 
 // ScreenshotHeight sets the device screen height in pixels.
-func (req *chromiumRequest) ScreenshotHeight(height int) {
-	req.fields[fieldScreenshotHeight] = strconv.Itoa(height)
+func (r *chromiumRequest) ScreenshotHeight(height int) *chromiumRequest {
+	r.fields[fieldScreenshotHeight] = strconv.Itoa(height)
+	return r
 }
 
 // ScreenshotClip defines whether to clip the screenshot according to the device dimensions.
-func (req *chromiumRequest) ScreenshotClip() {
-	req.fields[fieldScreenshotClip] = strconv.FormatBool(true)
+func (r *chromiumRequest) ScreenshotClip() *chromiumRequest {
+	r.fields[fieldScreenshotClip] = strconv.FormatBool(true)
+	return r
 }
 
 // ScreenshotQuality sets the compression quality from range 0 to 100 (jpeg only).
-func (req *chromiumRequest) ScreenshotQuality(quality int) {
-	req.fields[fieldScreenshotQuality] = strconv.Itoa(quality)
+func (r *chromiumRequest) ScreenshotQuality(quality int) *chromiumRequest {
+	r.fields[fieldScreenshotQuality] = strconv.Itoa(quality)
+	return r
 }
 
 // ScreenshotOptimizeForSpeed defines whether to optimize image encoding for speed, not for resulting size.
-func (req *chromiumRequest) ScreenshotOptimizeForSpeed() {
-	req.fields[fieldScreenshotOptimizeForSpeed] = strconv.FormatBool(true)
+func (r *chromiumRequest) ScreenshotOptimizeForSpeed() *chromiumRequest {
+	r.fields[fieldScreenshotOptimizeForSpeed] = strconv.FormatBool(true)
+	return r
 }
 
 // Format sets the image compression format, either PNG, JPEG or WEBP. Default is PNG.
-func (req *chromiumRequest) Format(format ImageFormat) {
-	req.fields[fieldScreenshotFormat] = string(format)
+func (r *chromiumRequest) Format(format ImageFormat) *chromiumRequest {
+	r.fields[fieldScreenshotFormat] = string(format)
+	return r
 }
 
 func mustJSON(data interface{}) string {

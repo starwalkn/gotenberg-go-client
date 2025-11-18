@@ -2,31 +2,41 @@ package gotenberg
 
 import (
 	"encoding/base64"
-	"encoding/json"
 
 	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
+const (
+	headerAuthorization       = "Authorization"
+	headerOutputFilename      = "Gotenberg-Output-Filename"
+	headerTrace               = "Gotenberg-Trace"
+	headerWebhookURL          = "Gotenberg-Webhook-Url"
+	headerWebhookErrorURL     = "Gotenberg-Webhook-Error-Url"
+	headerWebhookMethod       = "Gotenberg-Webhook-Method"
+	headerWebhookErrorMethod  = "Gotenberg-Webhook-Error-Method"
+	headerWebhookExtraHeaders = "Gotenberg-Webhook-Extra-Http-Headers"
+)
+
 type Request interface {
-	customHeaders() map[httpHeader]string
+	customHeaders() map[string]string
 	formFields() map[formField]string
 	formDocuments() map[string]document.Document
 	formEmbeds() map[string]document.Document
 }
 
 type baseRequest struct {
-	headers map[httpHeader]string
+	headers map[string]string
 	fields  map[formField]string
 }
 
 func newBaseRequest() *baseRequest {
 	return &baseRequest{
-		headers: make(map[httpHeader]string),
+		headers: make(map[string]string),
 		fields:  make(map[formField]string),
 	}
 }
 
-func (br *baseRequest) customHeaders() map[httpHeader]string {
+func (br *baseRequest) customHeaders() map[string]string {
 	return br.headers
 }
 
@@ -37,42 +47,51 @@ func (br *baseRequest) formFields() map[formField]string {
 // OutputFilename overrides the default UUID output filename.
 //
 // NOTE: Gotenberg adds the file extension automatically; you don't have to set it.
-func (br *baseRequest) OutputFilename(filename string) {
+func (br *baseRequest) OutputFilename(filename string) *baseRequest {
 	br.headers[headerOutputFilename] = filename
+	return br
 }
 
 // Trace overrides the default UUID trace, or request ID, that identifies a request in Gotenberg's logs.
-func (br *baseRequest) Trace(trace string) {
+func (br *baseRequest) Trace(trace string) *baseRequest {
 	br.headers[headerTrace] = trace
+	return br
 }
 
-// UseBasicAuth sets the basic authentication credentials.
-func (br *baseRequest) UseBasicAuth(username, password string) {
+// BasicAuth sets the basic authentication credentials.
+func (br *baseRequest) BasicAuth(username, password string) *baseRequest {
 	auth := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 	br.headers[headerAuthorization] = "Basic " + auth
+
+	return br
 }
 
 // UseWebhook sets the callback and error callback that Gotenberg will use to send
 // respectively the output file and the error response.
-func (br *baseRequest) UseWebhook(hookURL string, errorURL string) {
+func (br *baseRequest) UseWebhook(hookURL string, errorURL string) *baseRequest {
 	br.headers[headerWebhookURL] = hookURL
 	br.headers[headerWebhookErrorURL] = errorURL
+
+	return br
 }
 
 // SetWebhookMethod Overrides the default HTTP method that Gotenberg will use to call the webhook.
-func (br *baseRequest) SetWebhookMethod(method string) {
+func (br *baseRequest) SetWebhookMethod(method string) *baseRequest {
 	br.headers[headerWebhookMethod] = method
+	return br
 }
 
 // SetWebhookErrorMethod overrides the default HTTP method that Gotenberg will use to call the error webhook.
-func (br *baseRequest) SetWebhookErrorMethod(method string) {
+func (br *baseRequest) SetWebhookErrorMethod(method string) *baseRequest {
 	br.headers[headerWebhookErrorMethod] = method
+	return br
 }
 
 // SetWebhookExtraHeaders sets the extra HTTP headers that Gotenberg will send alongside the
 // request to the webhook and error webhook.
-func (br *baseRequest) SetWebhookExtraHeaders(headers map[string]string) {
+func (br *baseRequest) SetWebhookExtraHeaders(headers map[string]string) *baseRequest {
 	br.headers[headerWebhookExtraHeaders] = mustJSON(headers)
+	return br
 }
 
 func hasWebhook(req Request) bool {
@@ -89,7 +108,7 @@ func hasWebhook(req Request) bool {
 // this is equivalent to map[string]map[string]string, which this method accepts, but headers map can be nil.
 //
 // URLs MUST return a Content-Disposition header with a filename parameter.
-func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) {
+func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string, embedded bool) *baseRequest {
 	dfs := make([]downloadFrom, 0, len(downloads))
 
 	for url, headers := range downloads {
@@ -100,12 +119,9 @@ func (br *baseRequest) DownloadFrom(downloads map[string]map[string]string, embe
 		})
 	}
 
-	marshaled, err := json.Marshal(dfs)
-	if err != nil {
-		return
-	}
+	br.fields[fieldDownloadFrom] = mustJSON(dfs)
 
-	br.fields[fieldDownloadFrom] = string(marshaled)
+	return br
 }
 
 type downloadFrom struct {

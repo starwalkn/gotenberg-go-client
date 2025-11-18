@@ -19,21 +19,20 @@ func TestSplitIntervals(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitIntervalsRequest(doc)
-	r.Trace("testSplitIntervals")
-	r.UseBasicAuth("foo", "bar")
+	dest := fmt.Sprintf("%s/splitted.zip", t.TempDir())
 
 	var (
 		span          = 1
 		expectedCount = 3
 	)
 
-	r.SplitSpan(span)
-	r.OutputFilename("splitted.zip")
+	err = c.PDFEngines().SplitIntervals(doc).
+		Trace("testSplitIntervals").
+		BasicAuth("foo", "bar").
+		Span(span).
+		OutputFilename("splitted.zip").
+		Store(context.Background(), dest)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/splitted.zip", dirPath)
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -50,16 +49,15 @@ func TestSplitIntervalsOnePage(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitIntervalsRequest(doc)
-	r.Trace("testSplitIntervalsOnePage")
-	r.UseBasicAuth("foo", "bar")
+	dest := fmt.Sprintf("%s/splitted.pdf", t.TempDir())
 
-	r.SplitSpan(3)
-	r.OutputFilename("splitted.pdf")
+	err = c.PDFEngines().SplitIntervals(doc).
+		Trace("testSplitIntervalsOnePage").
+		BasicAuth("foo", "bar").
+		Span(3).
+		OutputFilename("splitted.pdf").
+		Store(context.Background(), dest)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/splitted.pdf", dirPath)
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -74,22 +72,21 @@ func TestSplitPages(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
-	r.Trace("testSplitPages")
-	r.UseBasicAuth("foo", "bar")
+	dest := fmt.Sprintf("%s/splitted.zip", t.TempDir())
 
 	var (
 		span          = "1-2"
 		expectedCount = 2
 	)
 
-	r.SplitSpan(span)
-	r.SplitUnify(false)
-	r.OutputFilename("splitted.zip")
+	err = c.PDFEngines().SplitPages(doc).
+		Trace("testSplitPages").
+		BasicAuth("foo", "bar").
+		Span(span).
+		Unify(false).
+		OutputFilename("splitted.zip").
+		Store(context.Background(), dest)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/splitted.zip", dirPath)
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -106,17 +103,16 @@ func TestSplitPagesOnePage(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
-	r.Trace("testSplitPagesOnePage")
-	r.UseBasicAuth("foo", "bar")
+	dest := fmt.Sprintf("%s/splitted.pdf", t.TempDir())
 
-	r.SplitSpan("1-1")
-	r.SplitUnify(false)
-	r.OutputFilename("splitted.pdf")
+	err = c.PDFEngines().SplitPages(doc).
+		Trace("testSplitPagesOnePage").
+		BasicAuth("foo", "bar").
+		Span("1-1").
+		Unify(false).
+		OutputFilename("splitted.pdf").
+		Store(context.Background(), dest)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/splitted.pdf", dirPath)
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -131,17 +127,16 @@ func TestSplitPagesUnify(t *testing.T) {
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
 
-	r := NewSplitPagesRequest(doc)
-	r.Trace("testSplitPagesUnify")
-	r.UseBasicAuth("foo", "bar")
+	dest := fmt.Sprintf("%s/splitted.pdf", t.TempDir())
 
-	r.SplitSpan("1-2")
-	r.SplitUnify(true)
-	r.OutputFilename("splitted.pdf")
+	err = c.PDFEngines().SplitPages(doc).
+		Trace("testSplitPagesUnify").
+		BasicAuth("foo", "bar").
+		Span("1-2").
+		Unify(true).
+		OutputFilename("splitted.pdf").
+		Store(context.Background(), dest)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/splitted.pdf", dirPath)
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

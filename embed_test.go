@@ -24,12 +24,13 @@ func TestEmbed(t *testing.T) {
 	require.NoError(t, err)
 	embeds := []document.Document{doc2}
 
-	r := NewEmbedRequest(docs, embeds)
-	r.Trace("testEmbed")
-	r.UseBasicAuth("foo", "bar")
-
 	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
-	err = c.Store(context.Background(), r, dest)
+
+	err = c.PDFEngines().Embed(docs, embeds).
+		Trace("testEmbed").
+		BasicAuth("foo", "bar").
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

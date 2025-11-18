@@ -20,13 +20,15 @@ func TestMerge(t *testing.T) {
 	require.NoError(t, err)
 	pdf2, err := document.FromPath("gotenberg2.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
-	req := NewMergeRequest(pdf1, pdf2)
-	req.Trace("testMerge")
-	req.UseBasicAuth("foo", "bar")
-	req.OutputFilename("foo.pdf")
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
+
+	err = c.PDFEngines().Merge(pdf1, pdf2).
+		Trace("testMerge").
+		BasicAuth("foo", "bar").
+		OutputFilename("foo.pdf").
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

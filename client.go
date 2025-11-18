@@ -42,9 +42,16 @@ func NewClient(hostname string, httpClient *http.Client) *Client {
 	}
 }
 
-// Send sends a request to the Gotenberg API and returns the response.
-func (c *Client) Send(ctx context.Context, req MultipartRequest) (*http.Response, error) {
-	return c.send(ctx, req)
+func (c *Client) Chromium() *ChromiumService {
+	return &ChromiumService{c}
+}
+
+func (c *Client) LibreOffice() *LibreOfficeService {
+	return &LibreOfficeService{c}
+}
+
+func (c *Client) PDFEngines() *PDFEnginesService {
+	return &PDFEnginesService{c}
 }
 
 func (c *Client) send(ctx context.Context, req MultipartRequest) (*http.Response, error) {
@@ -59,11 +66,6 @@ func (c *Client) send(ctx context.Context, req MultipartRequest) (*http.Response
 	}
 
 	return resp, nil
-}
-
-// Store creates the resulting file to given destination.
-func (c *Client) Store(ctx context.Context, req MultipartRequest, dest string) error {
-	return c.store(ctx, req, dest)
 }
 
 func (c *Client) store(ctx context.Context, req MultipartRequest, dest string) error {
@@ -127,7 +129,7 @@ func (c *Client) createRequest(ctx context.Context, mr MultipartRequest, endpoin
 
 	req.Header.Set("Content-Type", contentType)
 	for key, value := range mr.customHeaders() {
-		req.Header.Set(string(key), value)
+		req.Header.Set(key, value)
 	}
 
 	return req, nil
