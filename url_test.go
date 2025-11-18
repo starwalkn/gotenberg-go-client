@@ -10,20 +10,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/test"
 )
 
 func TestURL(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
-	req := NewURLRequest("http://example.com")
-	req.Trace("testURL")
-	req.UseBasicAuth("foo", "bar")
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
+
+	err := c.Chromium().URL("http://example.com").
+		Trace("testURL").
+		BasicAuth("foo", "bar").
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -33,25 +33,26 @@ func TestURL(t *testing.T) {
 }
 
 func TestURLComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
-	req := NewURLRequest("http://example.com")
-	req.Trace("testURLComplete")
-	req.UseBasicAuth("foo", "bar")
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
-	req.Header(header)
 	footer, err := document.FromPath("footer.html", test.HTMLTestFilePath(t, "footer.html"))
 	require.NoError(t, err)
-	req.Footer(footer)
-	req.OutputFilename("foo.pdf")
-	req.WaitDelay(1 * time.Second)
-	req.PaperSize(A4)
-	req.Margins(NormalMargins)
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
+
+	err = c.Chromium().URL("http://example.com").
+		Trace("testURLComplete").
+		BasicAuth("foo", "bar").
+		Header(header).
+		Footer(footer).
+		OutputFilename("foo.pdf").
+		WaitDelay(1*time.Second).
+		PaperSize(A4).
+		Margins(NormalMargins).
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -61,29 +62,29 @@ func TestURLComplete(t *testing.T) {
 }
 
 func TestURLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
-	req := NewURLRequest("http://example.com")
-	req.Trace("testURLPageRanges")
-	req.UseBasicAuth("foo", "bar")
-	req.NativePageRanges("1-1")
-	resp, err := c.Send(context.Background(), req)
+	resp, err := c.Chromium().URL("http://example.com").
+		Trace("testURLPageRanges").
+		BasicAuth("foo", "bar").
+		NativePageRanges("1-1").
+		Send(context.Background())
+
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
 func TestURLScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
-	req := NewURLRequest("https://example.com")
-	req.Trace("testURLScreenshot")
-	req.UseBasicAuth("foo", "bar")
-	dirPath := t.TempDir()
-	req.Format(JPEG)
-	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(context.Background(), req, dest)
+	dest := fmt.Sprintf("%s/foo.jpeg", t.TempDir())
+
+	err := c.Chromium().URL("http://example.com").
+		Trace("testURLScreenshot").
+		BasicAuth("foo", "bar").
+		Format(JPEG).
+		StoreScreenshot(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

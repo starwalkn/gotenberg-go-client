@@ -9,13 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/test"
 )
 
 func TestEmbed(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
@@ -25,12 +24,13 @@ func TestEmbed(t *testing.T) {
 	require.NoError(t, err)
 	embeds := []document.Document{doc2}
 
-	r := NewEmbedRequest(docs, embeds)
-	r.Trace("testEmbed")
-	r.UseBasicAuth("foo", "bar")
-
 	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
-	err = c.Store(context.Background(), r, dest)
+
+	err = c.PDFEngines().Embed(docs, embeds).
+		Trace("testEmbed").
+		BasicAuth("foo", "bar").
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

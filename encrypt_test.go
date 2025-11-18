@@ -9,28 +9,28 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/test"
 )
 
 func TestEncrypt(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 
 	const (
 		userPassword  = "abc"
 		ownerPassword = "def"
 	)
 
-	r := NewEncryptRequest(userPassword, ownerPassword, doc)
-	r.Trace("testEncrypt")
-	r.UseBasicAuth("foo", "bar")
+	err = c.PDFEngines().Encrypt(userPassword, ownerPassword, doc).
+		Trace("testEncrypt").
+		BasicAuth("foo", "bar").
+		Store(context.Background(), dest)
 
-	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
-	err = c.Store(context.Background(), r, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

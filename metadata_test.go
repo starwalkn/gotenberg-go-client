@@ -10,21 +10,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/starwalkn/gotenberg-go-client/v8/document"
-	"github.com/starwalkn/gotenberg-go-client/v8/test"
+	"github.com/starwalkn/gotenberg-go-client/v9/document"
+	"github.com/starwalkn/gotenberg-go-client/v9/test"
 )
 
 func TestReadWriteMetadata(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
-	// Writing metadata.
 	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))
 	require.NoError(t, err)
-	reqWrite := NewWriteMetadataRequest(pdf1)
-	reqWrite.Trace("testWriteMetadata")
-	reqWrite.UseBasicAuth("foo", "bar")
-	reqWrite.OutputFilename("foo.pdf")
+
+	dest := fmt.Sprintf("%s/foo.pdf", t.TempDir())
 
 	writeDataStruct := struct {
 		Author    string `json:"Author"`
@@ -36,27 +32,31 @@ func TestReadWriteMetadata(t *testing.T) {
 
 	writeData, err := json.Marshal(writeDataStruct)
 	require.NoError(t, err)
-	reqWrite.Metadata(writeData)
 
-	dirPath := t.TempDir()
-	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), reqWrite, dest)
+	err = c.PDFEngines().WriteMetadata(pdf1).
+		Trace("testWriteMetadata").
+		BasicAuth("foo", "bar").
+		OutputFilename("foo.pdf").
+		Metadata(writeData).
+		Store(context.Background(), dest)
+
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
-	// Reading metadata.
 	pdf2, err := document.FromPath("foo.pdf", dest)
 	require.NoError(t, err)
-	reqRead := NewReadMetadataRequest(pdf2)
-	reqRead.Trace("testReadMetadata")
-	reqRead.UseBasicAuth("foo", "bar")
-	reqRead.OutputFilename("foo.pdf")
-	respRead, err := c.Send(context.Background(), reqRead)
+
+	resp, err := c.PDFEngines().ReadMetadata(pdf2).
+		Trace("testReadMetadata").
+		BasicAuth("foo", "bar").
+		OutputFilename("foo.pdf").
+		Send(context.Background())
+
 	require.NoError(t, err)
-	assert.Equal(t, 200, respRead.StatusCode)
+	assert.Equal(t, 200, resp.StatusCode)
 
 	var readData exifData
-	err = json.NewDecoder(respRead.Body).Decode(&readData)
+	err = json.NewDecoder(resp.Body).Decode(&readData)
 	require.NoError(t, err)
 	expected := exifData{
 		FooPdf: writeDataStruct,

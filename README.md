@@ -7,11 +7,11 @@
 
 <b>Client Compatibility Table</b>
 
-|Gotenberg version |                                               Client version                                               | 
-|:----------------:|:----------------------------------------------------------------------------------------------------------:|
-|`8.x` **(actual)**|                        `8.12.0` **(actual)**                                 <br/>                         |                            
-|`7.x`             |                                                 `<= 8.5.0`                                                 |
-|`6.x`             | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
+| Gotenberg version  |                                               Client version                                               | 
+|:------------------:|:----------------------------------------------------------------------------------------------------------:|
+| `8.x` **(actual)** |                         `9.0.0` **(actual)**                                 <br/>                         |                            
+|       `7.x`        |                                                 `<= 8.5.0`                                                 |
+|       `6.x`        | <a href="https://github.com/thecodingmachine/gotenberg-go-client">thecodingmachine/gotenberg-go-client</a> |
 
 ---
 </div>
@@ -24,91 +24,93 @@ To get the latest version of the client:
 $ go get github.com/starwalkn/gotenberg-go-client/v8@latest
 ```
 
+## Supported Routes
+
+| Category        | Routes                                                     |
+|-----------------|------------------------------------------------------------|
+| **Chromium**    | HTML, Markdown, URL → PDF, Screenshots                     |
+| **LibreOffice** | Office documents → PDF                                     |
+| **PDFEngines**  | Merge, Split, Flatten, Embed, Encrypt, Read/Write Metadata |
+
 ## Preparing a documents
 
 ```go
 package main
 
 import (
-    "net/http"
-    "os"
-	
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"os"
+
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    // Create the Gotenberg client.
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	// There are several ways to create documents.
+	f1, err := document.FromPath("data.pdf", "/path/to/file")
+	f2, err := document.FromString("index.html", "<html>Foo</html>")
+	f3, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
 
-    // There are several ways to create documents.
-    f1, err := document.FromPath("data.pdf", "/path/to/file")
-    f2, err := document.FromString("index.html", "<html>Foo</html>")
-    f3, err := document.FromBytes("index.html", []byte("<html>Foo</html>"))
-
-    r, err := os.Open("index.html")
-    f4, err := document.FromReader("index.html", r)
+	r, err := os.Open("index.html")
+	f4, err := document.FromReader("index.html", r)
 }
 ```
 
 ## Converting HTML to PDF
 
 > [!TIP]
-> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters. For the PaperSize 
-> method, you can use predefined parameters such as gotenberg.A4, gotenberg.A3 and so on. The full list of 
-> predefined parameters can be found in [types file](https://github.com/dcaraxes/gotenberg-go-client/v8/blob/master/types.go).
+> Head to the [documentation](https://gotenberg.dev/) to learn about all request parameters. For the PaperSize
+> method, you can use predefined parameters such as gotenberg.A4, gotenberg.A3 and so on. The full list of
+> predefined parameters can be found
+> in [types file](https://github.com/dcaraxes/gotenberg-go-client/v8/blob/master/types.go).
 
 > [!IMPORTANT]
-> To use basic authorization, you must run Gotenberg with the --api-enable-basic-auth flag and have GOTENBERG_API_BASIC_AUTH_USERNAME and GOTENBERG_API_BASIC_AUTH_PASSWORD environment variables. 
+> To use basic authorization, you must run Gotenberg with the --api-enable-basic-auth flag and have
+> GOTENBERG_API_BASIC_AUTH_USERNAME and GOTENBERG_API_BASIC_AUTH_PASSWORD environment variables.
 
 ```go
 package main
 
 import (
-    "context"
-    "net/http"
-    
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"context"
+	"log"
+	"net/http"
+
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    // Creates the Gotenberg documents from a files paths.
-    index, err := document.FromPath("index.html", "/path/to/file")
+	// Creates the Gotenberg documents from a files paths.
+	index, err := document.FromPath("index.html", "/path/to/file")
+	if err != nil {
+		// Handle error.
+	}
 
-    // Create the HTML request.
-    req := gotenberg.NewHTMLRequest(index)
+	err = c.Chromium().HTML(index).
+		// Setting up basic auth (if enabled).
+		BasicAuth("username", "password").
+		// Set the document parameters to request (optional).
+		Margins(gotenberg.NoMargins).
+		Scale(0.75).
+		PaperSize(gotenberg.A4).
+		// Store method allows you to store the resulting PDF in a particular destination.
+		Store(context.Background(), "path/to/store.pdf")
 
-    // Loading style and image from the specified urls. 
-    downloads := make(map[string]map[string]string)
-    downloads["http://my.style.css"] = nil
-    downloads["http://my.img.gif"] = map[string]string{"X-Header": "Foo"}
+	// If you wish to redirect the response directly to the browser, you may also use:
+	resp, err := c.Chromium().HTML(index).
+		// ...
+		PaperSize(gotenberg.A4).
+		Send(context.Background())
 
-    req.DownloadFrom(downloads)
-
-    // Setting up basic auth (if needed).
-    req.UseBasicAuth("username", "password")
-
-    // Set the document parameters to request (optional).
-    req.Margins(gotenberg.NoMargins)
-    req.Scale(0.75)
-    req.PaperSize(gotenberg.A4)
-
-    // Skips the IDLE events for faster PDF conversion.
-    req.SkipNetworkIdleEvent()
-
-    // Store method allows you to store the resulting PDF in a particular destination.
-    err := client.Store(context.Background(), req, "path/to/store.pdf")
-
-    // If you wish to redirect the response directly to the browser, you may also use:
-    resp, err := client.Send(context.Background(), req)
+	// Handle response...
 }
 
 ```
 
 ## Working with metadata
+
 Reading metadata available only for PDF files, but you can write metadata to all Gotenberg supporting files.
 
 ### Writing metadata:
@@ -120,36 +122,43 @@ Reading metadata available only for PDF files, but you can write metadata to all
 package main
 
 import (
-    "context"
-    "encoding/json"
-    "net/http"
+	"context"
+	"encoding/json"
+	"net/http"
 
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
-	
-    // Prepare the files required for your conversion.
-    doc, err := document.FromPath("filename.ext", "/path/to/file")
-    req := gotenberg.NewWriteMetadataRequest(doc)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    // Sets result file name.
-    req.OutputFilename("foo.pdf")
+	// Prepare the files required for your operation.
+	doc, err := document.FromPath("filename.ext", "/path/to/file")
+	if err != nil {
+		// Handle error.
+	}
 
-    data := struct {
-        Author    string `json:"Author"`
-        Copyright string `json:"Copyright"`
-    }{
-        Author:    "Author name",
-        Copyright: "Copyright",
-    }
+	// Sample metadata for writing to PDF.
+	data := struct {
+		Author    string `json:"Author"`
+		Copyright string `json:"Copyright"`
+	}{
+		Author:    "Author name",
+		Copyright: "Copyright",
+	}
 
-    md, err := json.Marshal(data)
-    req.Metadata(md)
+	md, err := json.Marshal(data)
+	if err != nil {
+		// Handle error.
+	}
 
-    resp, err := client.Send(context.Background(), req)
+	resp, err := c.PDFEngines().WriteMetadata(doc).
+		OutputFilename("document.pdf").
+		Metadata(md).
+		Send(context.Background())
+
+	// Handle response...
 }
 ```
 
@@ -159,32 +168,33 @@ func main() {
 package main
 
 import (
-    "context"
-    "encoding/json"
-    "net/http"
+	"context"
+	"encoding/json"
+	"net/http"
 
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    // Prepare the files required for your conversion.
-    doc, err := document.FromPath("filename.ext", "/path/to/file")
-    req := gotenberg.NewReadMetadataRequest(doc)
+	// Prepare the files required for your operation.
+	doc, err := document.FromPath("filename.ext", "/path/to/file")
+	if err != nil {
+		// Handle error.
+	}
 
-    resp, err := client.Send(context.Background(), req)
+	resp, err := c.PDFEngines().ReadMetadata(doc).Send(context.Background())
 
-    var data = struct {
-            FooPdf struct {
-                Author    string `json:"Author"`
-                Copyright string `json:"Copyright"`
-            } `json:"foo.pdf"`
-        }
+	var data = struct {
+		DocPdf struct {
+			Author    string `json:"Author"`
+			Copyright string `json:"Copyright"`
+		} `json:"doc.pdf"`
+	}
 
-    // Decode metadata into a struct.
-    err = json.NewDecoder(resp.Body).Decode(&data)
+	// Decode metadata into a structure...
+	err = json.NewDecoder(resp.Body).Decode(&data)
 }
 
 ```
@@ -198,56 +208,63 @@ func main() {
 package main
 
 import (
-    "context"
-    "net/http"
+	"context"
+	"net/http"
 
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    index, err := document.FromPath("index.html", "/path/to/file")
+	index, err := document.FromPath("index.html", "/path/to/file")
+	if err != nil {
+		// Handle error.
+	}
 
-    // Create the HTML request and set the image format (optional).
-    req := gotenberg.NewHTMLRequest(index)
-    req.Format(gotenberg.JPEG)
-
-    resp, err := client.Screenshot(context.Background(), req)
+	// Handle response for stores screenshot into a specifies path with
+	// StoreScreenshot(context.Background(), "path/to/store/.image.jpeg") instead of Screenshot(context.Background())
+	resp, err := c.Chromium().HTML(index).
+		Format(gotenberg.JPEG).
+		Screenshot(context.Background())
 }
 
 ```
 
 ## PDF splitting
+
 These queries allow you to split a PDF file page by page or at a specified interval.
 
 ### Split by pages
 
 > [!IMPORTANT]
-> When splitting a PDF file, it is important to note that specifying `req.Unify(true)` will return/save the PDF file, while `req.Unify(false)` will cause Gotenberg to return a ZIP archive with the files.
+> When splitting a PDF file, it is important to note that specifying `req.Unify(true)` will return/save the PDF file,
+> while `req.Unify(false)` will cause Gotenberg to return a ZIP archive with the files.
 
 ```go
 package main
 
 import (
-    "context"
-    "net/http"
+	"context"
+	"net/http"
 
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+	doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+	if err != nil {
+		// Handle error
+	}
 
-    req := gotenberg.NewSplitPagesRequest(doc)
-    req.Span("1-3")
-    req.Unify(false)
-
-    resp, err := client.Store(context.Background(), req)
+	err = c.PDFEngines().SplitPages(doc).
+		Span("1-3").
+		Unify(false).
+		Store(context.Background(), "path/to/store.zip")
 }
 ```
 
@@ -257,22 +274,24 @@ func main() {
 package main
 
 import (
-    "context"
-    "net/http"
+	"context"
+	"net/http"
 
-    "github.com/starwalkn/gotenberg-go-client/v8"
-    "github.com/starwalkn/gotenberg-go-client/v8/document"
+	"github.com/starwalkn/gotenberg-go-client/v8"
+	"github.com/starwalkn/gotenberg-go-client/v8/document"
 )
 
 func main() {
-    client, err := gotenberg.NewClient("localhost:3000", http.DefaultClient)
+	c := gotenberg.NewClient("localhost:3000", http.DefaultClient)
 
-    doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+	doc, err := document.FromPath("gotenberg.pdf", "/path/to/file")
+	if err != nil {
+		// Handle error.
+	}
 
-    req := gotenberg.NewSplitIntervalsRequest(doc)
-    req.Span(2)
-
-    resp, err := client.Store(context.Background(), req)
+	err = c.PDFEngines().SplitIntervals(doc).
+		Span(2).
+		Store(context.Background(), "path/to/document.pdf")
 }
 ```
 
