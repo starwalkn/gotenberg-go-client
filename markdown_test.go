@@ -15,8 +15,7 @@ import (
 )
 
 func TestMarkdown(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -30,11 +29,10 @@ func TestMarkdown(t *testing.T) {
 	req.Trace("testMarkdown")
 	req.UseBasicAuth("foo", "bar")
 
-	err = req.ExtraHTTPHeaders(map[string]string{
+	req.ExtraHTTPHeaders(map[string]string{
 		"X-Header":        "Value",
 		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
 	})
-	require.NoError(t, err)
 
 	header, err := document.FromPath("header.html", test.MarkdownTestFilePath(t, "header.html"))
 	require.NoError(t, err)
@@ -69,8 +67,7 @@ func TestMarkdown(t *testing.T) {
 }
 
 func TestMarkdownPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -84,11 +81,10 @@ func TestMarkdownPageRanges(t *testing.T) {
 	req.Trace("testMarkdownPageRanges")
 	req.UseBasicAuth("foo", "bar")
 
-	err = req.ExtraHTTPHeaders(map[string]string{
+	req.ExtraHTTPHeaders(map[string]string{
 		"X-Header":        "Value",
 		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
 	})
-	require.NoError(t, err)
 
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
@@ -97,8 +93,7 @@ func TestMarkdownPageRanges(t *testing.T) {
 }
 
 func TestMarkdownScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.MarkdownTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -112,11 +107,10 @@ func TestMarkdownScreenshot(t *testing.T) {
 	req.Trace("testMarkdownScreenshot")
 	req.UseBasicAuth("foo", "bar")
 
-	err = req.ExtraHTTPHeaders(map[string]string{
+	req.ExtraHTTPHeaders(map[string]string{
 		"X-Header":        "Value",
 		"X-Scoped-Header": `value;scope=https?:\\/\\/([a-zA-Z0-9-]+\\.)*domain\\.com\\/.*`,
 	})
-	require.NoError(t, err)
 
 	require.NoError(t, err)
 	dirPath := t.TempDir()

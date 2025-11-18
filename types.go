@@ -139,3 +139,13 @@ const (
 	PdfA2b PdfAFormat = "PDF/A-2b"
 	PdfA3b PdfAFormat = "PDF/A-3b"
 )
+
+type Cookie struct {
+	Name     string `json:"name"`
+	Value    string `json:"value"`
+	Domain   string `json:"domain"`
+	Path     string `json:"path,omitempty"`
+	Secure   bool   `json:"secure,omitempty"`
+	HTTPOnly bool   `json:"http_only,omitempty"`
+	SameSite string `json:"same_site,omitempty"`
+}

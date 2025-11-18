@@ -14,8 +14,7 @@ import (
 )
 
 func TestLibreOffice(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -37,8 +36,7 @@ func TestLibreOffice(t *testing.T) {
 }
 
 func TestLibreOfficePageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -52,8 +50,7 @@ func TestLibreOfficePageRanges(t *testing.T) {
 }
 
 func TestLibreOfficeLosslessCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -73,8 +70,7 @@ func TestLibreOfficeLosslessCompression(t *testing.T) {
 }
 
 func TestLibreOfficeCompression(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -96,8 +92,7 @@ func TestLibreOfficeCompression(t *testing.T) {
 }
 
 func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -120,8 +115,7 @@ func TestLibreOfficeMultipleWithoutMerge(t *testing.T) {
 }
 
 func TestLibreOfficeMultipleWithMerge(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -147,8 +141,7 @@ func TestLibreOfficeMultipleWithMerge(t *testing.T) {
 }
 
 func TestLibreOfficePdfA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -168,8 +161,7 @@ func TestLibreOfficePdfA(t *testing.T) {
 }
 
 func TestLibreOfficePdfUA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc, err := document.FromPath("document.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)
@@ -189,8 +181,7 @@ func TestLibreOfficePdfUA(t *testing.T) {
 }
 
 func TestLibreOfficeEmbeds(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	doc1, err := document.FromPath("document1.docx", test.LibreOfficeTestFilePath(t, "document.docx"))
 	require.NoError(t, err)

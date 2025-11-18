@@ -15,8 +15,7 @@ import (
 )
 
 func TestHTML(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -25,8 +24,7 @@ func TestHTML(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 
 	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
-	err = req.Cookies(cks)
-	require.NoError(t, err)
+	req.Cookies(cks)
 
 	header, err := document.FromPath("header.html", test.HTMLTestFilePath(t, "header.html"))
 	require.NoError(t, err)
@@ -57,8 +55,7 @@ func TestHTML(t *testing.T) {
 }
 
 func TestHTMLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", nil)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -67,8 +64,7 @@ func TestHTMLPageRanges(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 
 	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
-	err = req.Cookies(cks)
-	require.NoError(t, err)
+	req.Cookies(cks)
 
 	req.NativePageRanges("1-1")
 	resp, err := c.Send(context.Background(), req)
@@ -77,8 +73,7 @@ func TestHTMLPageRanges(t *testing.T) {
 }
 
 func TestHTMLScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -87,8 +82,7 @@ func TestHTMLScreenshot(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 
 	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
-	err = req.Cookies(cks)
-	require.NoError(t, err)
+	req.Cookies(cks)
 
 	req.Format(JPEG)
 
@@ -103,8 +97,7 @@ func TestHTMLScreenshot(t *testing.T) {
 }
 
 func TestHTMLPdfA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -113,8 +106,7 @@ func TestHTMLPdfA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 
 	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
-	err = req.Cookies(cks)
-	require.NoError(t, err)
+	req.Cookies(cks)
 
 	req.PdfA(PdfA3b)
 
@@ -128,8 +120,7 @@ func TestHTMLPdfA(t *testing.T) {
 }
 
 func TestHTMLPdfUA(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)
@@ -138,8 +129,7 @@ func TestHTMLPdfUA(t *testing.T) {
 	req.UseBasicAuth("foo", "bar")
 
 	cks := []Cookie{{Name: "foo", Value: "bar", Domain: "mydomain.com"}}
-	err = req.Cookies(cks)
-	require.NoError(t, err)
+	req.Cookies(cks)
 
 	req.PdfUA()
 
@@ -153,8 +143,7 @@ func TestHTMLPdfUA(t *testing.T) {
 }
 
 func TestHTMLEmbeds(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	index, err := document.FromPath("index.html", test.HTMLTestFilePath(t, "index.html"))
 	require.NoError(t, err)

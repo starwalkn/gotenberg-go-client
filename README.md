@@ -24,6 +24,16 @@ To get the latest version of the client:
 $ go get github.com/starwalkn/gotenberg-go-client/v8@latest
 ```
 
+## Supported Routes
+
+| Category        | Routes                                                     |
+|-----------------|------------------------------------------------------------|
+| **Chromium**    | HTML → PDF, Markdown → PDF, URL → PDF, Screenshots         |
+| **LibreOffice** | Office documents → PDF                                     |
+| **PDF Engines** | Merge, Split, Flatten, Embed, Encrypt, Read/Write Metadata |
+
+
+
 ## Preparing a documents
 
 ```go

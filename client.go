@@ -12,7 +12,6 @@ import (
 )
 
 var (
-	errEmptyHostname     = errors.New("empty hostname")
 	errWebhookNotAllowed = errors.New("webhook is not allowed for request")
 	errGenerationFailed  = errors.New("resulting file could not be generated")
 	errSendRequestFailed = errors.New("request sending failed")
@@ -32,19 +31,15 @@ type Client struct {
 }
 
 // NewClient creates a new gotenberg.Client. If http.Client is passed as nil, then http.DefaultClient is used.
-func NewClient(hostname string, httpClient *http.Client) (*Client, error) {
+func NewClient(hostname string, httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
-	}
-
-	if hostname == "" {
-		return nil, errEmptyHostname
 	}
 
 	return &Client{
 		hostname:   hostname,
 		httpClient: httpClient,
-	}, nil
+	}
 }
 
 // Send sends a request to the Gotenberg API and returns the response.

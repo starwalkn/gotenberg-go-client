@@ -43,21 +43,8 @@ func (req *chromiumRequest) EmulateScreenMediaType() {
 }
 
 // Cookies to store in the Chromium cookie jar.
-func (req *chromiumRequest) Cookies(cookies []Cookie) error {
-	for _, cookie := range cookies {
-		if err := cookie.validate(); err != nil {
-			return fmt.Errorf("validate cookies: %w", err)
-		}
-	}
-
-	marshaledCookies, err := json.Marshal(cookies)
-	if err != nil {
-		return fmt.Errorf("marshal cookies to JSON: %w", err)
-	}
-
-	req.fields[fieldChromiumCookies] = string(marshaledCookies)
-
-	return nil
+func (req *chromiumRequest) Cookies(cookies []Cookie) {
+	req.fields[fieldChromiumCookies] = mustJSON(cookies)
 }
 
 // UserAgent overrides the default User-Agent HTTP header.
@@ -66,41 +53,20 @@ func (req *chromiumRequest) UserAgent(ua string) {
 }
 
 // ExtraHTTPHeaders sets extra HTTP headers that Chromium will send when loading the HTML document.
-func (req *chromiumRequest) ExtraHTTPHeaders(headers map[string]string) error {
-	marshaledHeaders, err := json.Marshal(headers)
-	if err != nil {
-		return fmt.Errorf("marshal headers to JSON: %w", err)
-	}
-
-	req.fields[fieldChromiumExtraHTTPHeaders] = string(marshaledHeaders)
-
-	return nil
+func (req *chromiumRequest) ExtraHTTPHeaders(headers map[string]string) {
+	req.fields[fieldChromiumExtraHTTPHeaders] = mustJSON(headers)
 }
 
 // FailOnHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from the main page is not acceptable.
-func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []int) error {
-	marshaledStatusCodes, err := json.Marshal(statusCodes)
-	if err != nil {
-		return fmt.Errorf("marshal HTTP status codes to JSON: %w", err)
-	}
-
-	req.fields[fieldChromiumFailOnHTTPStatusCodes] = string(marshaledStatusCodes)
-
-	return nil
+func (req *chromiumRequest) FailOnHTTPStatusCodes(statusCodes []int) {
+	req.fields[fieldChromiumFailOnHTTPStatusCodes] = mustJSON(statusCodes)
 }
 
 // FailOnResourceHTTPStatusCodes forces Gotenberg to return a 409 Conflict response
 // if the HTTP status code from at least one resource is not acceptable.
-func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) error {
-	marshaledStatusCodes, err := json.Marshal(statusCodes)
-	if err != nil {
-		return fmt.Errorf("marshal HTTP status codes to JSON: %w", err)
-	}
-
-	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = string(marshaledStatusCodes)
-
-	return nil
+func (req *chromiumRequest) FailOnResourceHTTPStatusCodes(statusCodes []int) {
+	req.fields[fieldChromiumFailOnResourceHTTPStatusCodes] = mustJSON(statusCodes)
 }
 
 // FailOnConsoleExceptions forces Gotenberg to return a 409 Conflict response
@@ -260,4 +226,13 @@ func (req *chromiumRequest) ScreenshotOptimizeForSpeed() {
 // Format sets the image compression format, either PNG, JPEG or WEBP. Default is PNG.
 func (req *chromiumRequest) Format(format ImageFormat) {
 	req.fields[fieldScreenshotFormat] = string(format)
+}
+
+func mustJSON(data interface{}) string {
+	b, err := json.Marshal(data)
+	if err != nil {
+		panic(fmt.Errorf("json marshaling failed: %w", err))
+	}
+
+	return string(b)
 }

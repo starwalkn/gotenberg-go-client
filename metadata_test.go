@@ -15,8 +15,7 @@ import (
 )
 
 func TestReadWriteMetadata(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	// Writing metadata.
 	pdf1, err := document.FromPath("gotenberg1.pdf", test.PDFTestFilePath(t, "gotenberg.pdf"))

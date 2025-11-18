@@ -15,15 +15,14 @@ import (
 )
 
 func TestURL(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	req := NewURLRequest("http://example.com")
 	req.Trace("testURL")
 	req.UseBasicAuth("foo", "bar")
 	dirPath := t.TempDir()
 	dest := fmt.Sprintf("%s/foo.pdf", dirPath)
-	err = c.Store(context.Background(), req, dest)
+	err := c.Store(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 
@@ -33,8 +32,7 @@ func TestURL(t *testing.T) {
 }
 
 func TestURLComplete(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	req := NewURLRequest("http://example.com")
 	req.Trace("testURLComplete")
@@ -61,8 +59,7 @@ func TestURLComplete(t *testing.T) {
 }
 
 func TestURLPageRanges(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	req := NewURLRequest("http://example.com")
 	req.Trace("testURLPageRanges")
@@ -74,8 +71,7 @@ func TestURLPageRanges(t *testing.T) {
 }
 
 func TestURLScreenshot(t *testing.T) {
-	c, err := NewClient("http://localhost:3000", http.DefaultClient)
-	require.NoError(t, err)
+	c := NewClient("http://localhost:3000", http.DefaultClient)
 
 	req := NewURLRequest("https://example.com")
 	req.Trace("testURLScreenshot")
@@ -83,7 +79,7 @@ func TestURLScreenshot(t *testing.T) {
 	dirPath := t.TempDir()
 	req.Format(JPEG)
 	dest := fmt.Sprintf("%s/foo.jpeg", dirPath)
-	err = c.StoreScreenshot(context.Background(), req, dest)
+	err := c.StoreScreenshot(context.Background(), req, dest)
 	require.NoError(t, err)
 	assert.FileExists(t, dest)
 

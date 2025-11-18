@@ -15,8 +15,6 @@ import (
 	"runtime"
 	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 // HTMLTestFilePath returns the absolute file path of a file in "html" folder in test/data.
@@ -41,17 +39,23 @@ func PDFTestFilePath(t *testing.T, filename string) string {
 
 func abs(t *testing.T, kind, filename string) string {
 	_, gofilename, _, ok := runtime.Caller(0)
-	require.True(t, ok, "got no caller information")
+	if !ok {
+		t.Fatal("got no caller information")
+	}
 
 	if filename == "" {
 		fpath, err := filepath.Abs(fmt.Sprintf("%s/data/%s", path.Dir(gofilename), kind))
-		require.NoErrorf(t, err, `getting the absolute path of "%s"`, kind)
+		if err != nil {
+			t.Fatalf(`getting the absolute path of "%s": %s`, kind, err.Error())
+		}
 
 		return fpath
 	}
 
 	fpath, err := filepath.Abs(fmt.Sprintf("%s/data/%s/%s", path.Dir(gofilename), kind, filename))
-	require.NoErrorf(t, err, `getting the absolute path of "%s"`, filename)
+	if err != nil {
+		t.Fatalf(`getting the absolute path of "%s": %s`, filename, err.Error())
+	}
 
 	return fpath
 }
